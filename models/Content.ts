@@ -76,7 +76,7 @@ export interface ISettings {
 /** This is the entry created daily, to store the user's data. */
 export interface IDailyEntry {
   /** Use the at date as the primary key. The date is the day of the entry. */
-  at: Date;
+  at: string;
   content: IContent; // references Content.id
   entries: IEntry[];
 }

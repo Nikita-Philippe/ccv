@@ -12,6 +12,7 @@ import * as $Config_card from "./islands/Config/card.tsx";
 import * as $Config_index from "./islands/Config/index.tsx";
 import * as $Field_String from "./islands/Field/String.tsx";
 import * as $Field_index from "./islands/Field/index.tsx";
+import * as $SaveDailyButton from "./islands/SaveDailyButton.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -28,6 +29,7 @@ const manifest = {
     "./islands/Config/index.tsx": $Config_index,
     "./islands/Field/String.tsx": $Field_String,
     "./islands/Field/index.tsx": $Field_index,
+    "./islands/SaveDailyButton.tsx": $SaveDailyButton,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

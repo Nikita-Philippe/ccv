@@ -4,22 +4,25 @@ import { FIELD_MULTISTRING_DELIMITER } from "@utils/constants.ts";
 
 type FieldProps = {
   field: TField;
+  lastValue?: any; // TODO: type this
 };
 
-export default function Field({ field }: FieldProps) {
-  const [value, setValue] = useState("");
+export default function Field({ field, lastValue }: FieldProps) {
+  const [value, setValue] = useState<string>(lastValue);
 
   const baseInputProps = {
     class:
       "block w-full px-3 py-2 mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
-    name: field.type !== EConfigCardType.multistring ? field.name : undefined,
+    name: field.name,
+    defaultValue: lastValue,
+    defaultChecked: lastValue,
   };
 
   const onCustomChange = (e: Event, index: number) => {
     const target = e.target as HTMLInputElement;
     const newValue = target.value;
     setValue((prev) => {
-      const values = prev.split(FIELD_MULTISTRING_DELIMITER);
+      const values = prev?.split(FIELD_MULTISTRING_DELIMITER) ?? [];
       values[index] = newValue;
       return values.join(FIELD_MULTISTRING_DELIMITER);
     });
@@ -30,7 +33,13 @@ export default function Field({ field }: FieldProps) {
       case EConfigCardType.string:
         return <input type="text" {...baseInputProps} />;
       case EConfigCardType.boolean:
-        return <input type="checkbox" {...baseInputProps} />;
+        return (
+          <>
+            {/* Set hidden to, if unchecked, send the value */}
+            <input type="hidden" name={field.name} value={0} />
+            <input type="checkbox" {...baseInputProps} />
+          </>
+        );
       case EConfigCardType.int:
         return <input type="number" {...baseInputProps} />;
       case EConfigCardType.textarea:
@@ -46,6 +55,8 @@ export default function Field({ field }: FieldProps) {
                 type="text"
                 onChange={(e) => onCustomChange(e, i)}
                 {...baseInputProps}
+                defaultValue={lastValue?.split(FIELD_MULTISTRING_DELIMITER)?.[i]}
+                name={undefined}
               />
             ))}
           </div>
