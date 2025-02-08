@@ -8,6 +8,7 @@ import * as $_layout from "./routes/_layout.tsx";
 import * as $api_config_id_ from "./routes/api/config/[[id]].tsx";
 import * as $config from "./routes/config.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $settings from "./routes/settings.tsx";
 import * as $Config_card from "./islands/Config/card.tsx";
 import * as $Config_index from "./islands/Config/index.tsx";
 import * as $Field_String from "./islands/Field/String.tsx";
@@ -23,6 +24,7 @@ const manifest = {
     "./routes/api/config/[[id]].tsx": $api_config_id_,
     "./routes/config.tsx": $config,
     "./routes/index.tsx": $index,
+    "./routes/settings.tsx": $settings,
   },
   islands: {
     "./islands/Config/card.tsx": $Config_card,
