@@ -11,7 +11,6 @@ import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
 import config from "./fresh.config.ts";
 
-import "./cron.ts";
 
 const cron = await import("./cron.ts");
 await cron.default();
