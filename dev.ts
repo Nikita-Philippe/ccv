@@ -5,7 +5,9 @@ import config from "./fresh.config.ts";
 
 import "$std/dotenv/load.ts";
 
-const cron = await import("./cron.ts");
-await cron.default();
+if (!Deno.args.includes("build")) {
+    const cron = await import("./cron.ts");
+    await cron.default();
+}
 
 await dev(import.meta.url, "./main.ts", config);
