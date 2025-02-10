@@ -52,7 +52,6 @@ export const setContent = async (content: PartialBy<IContent, "id">): Promise<IC
   }
 
   // Set a new id, to create a new content
-  // TODO: check whats the best approach here. Keep only new entries, or update existing ones?
   if (!content.id) content.id = crypto.randomUUID();
   const res = await kv.set([KV_CONTENT, content.id], content);
   if (res.ok) return await getContent(content.id);

@@ -96,7 +96,9 @@ export const stringifyEntryValue = (entry: IEntry, content: IContent): IEntry["v
 };
 
 export const missingEntries = async (days: number): Promise<string[]> => {
-  const allDays = Array.from({ length: days }, (_, i) => i).map((i) => getDailyEntryKey(DateTime.now().minus({ days: i + 1 })));
+  const allDays = Array.from({ length: days }, (_, i) => i).map((i) =>
+    getDailyEntryKey(DateTime.now().minus({ days: i + 1 }))
+  );
   const entries = await kv.list<IDailyEntry>({ prefix: [KV_DAILY_ENTRY] }, {
     limit: days,
     reverse: true,
@@ -107,10 +109,24 @@ export const missingEntries = async (days: number): Promise<string[]> => {
       allDays.splice(allDays.indexOf(date), 1);
     }
   }
-  return allDays
+  return allDays;
 };
 
 export const isTodayAlreadySaved = async (): Promise<boolean> => {
   const lastDay = await getEntry();
   return DateTime.now().minus({ days: 1 }).toISODate() === lastDay?.at;
-}
+};
+
+export const exportEntries = async (contentId: IContent["id"], from: TDailyEntryKey, to: TDailyEntryKey) => {
+  const entries = await kv.list<IDailyEntry>({ prefix: [KV_DAILY_ENTRY] }, {
+    limit: 1000,
+    reverse: true,
+  });
+  const contents = [];
+  for await (const entry of entries) {
+    if (entry.value.content === contentId && entry.value.at >= from && entry.value.at <= to) {
+      contents.push(entry.value);
+    }
+  }
+  return contents;
+};

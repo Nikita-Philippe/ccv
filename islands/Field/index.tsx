@@ -4,7 +4,7 @@ import { FIELD_MULTISTRING_DELIMITER } from "@utils/constants.ts";
 
 type FieldProps = {
   field: TField;
-  lastValue?: any; // TODO: type this
+  lastValue?: any;
 };
 
 export default function Field({ field, lastValue }: FieldProps) {

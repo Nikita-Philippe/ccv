@@ -1,0 +1,53 @@
+# TODOs:
+
+- Content:
+  - [x] Add validation/sanitize on each content field (name, etc)
+  - [ ] Add types
+    - [ ] Add date picker
+    - [x] Add rating (maybe as variant of number)
+  - [x] Add loader on saving datas
+  - [x] Add field grouping
+  - [ ] Style content
+  - [ ] Rethink the content saving. Check whats the best approach here. Keep only new entries, or update existing ones?
+  - [ ] Rethink the way of configuring content. Maybe a form like in daily entry, and if click on field it opens a floating same-context modal to edit it.
+- Dailentry
+  - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible
+  - [ ] Style entries
+    - [ ] Add icons support
+  - [ ] Make them dynamic using previous values
+    - [ ] Use previous values
+    - [ ] Propose in dropdown previous/mains values
+  - [x] Select missing entry selects the date of it
+- UI:
+  - [ ] Create the main app layout
+  - [x] Add toast
+  - [ ] Add loader
+  - [ ] Themes
+- Settings:
+  - [ ] Daily delta (1 day default)
+  - [ ] Notifications when/how
+  - [ ] Multi string delimiter (default: '|||')
+  - [ ] Custom data backups
+- System:
+  - [ ] Backups/export
+    - [ ] Find ways to save the data (gdrive ?)
+    - [ ] Add daily/weekly backup cron
+    - [x] Add export button
+      - [x] Export files (json, csv)
+      - [ ] Expand export with additionnal parameters
+  - [ ] Import
+    - [ ] Add import button
+    - [ ] Auto import from source
+  - [ ] Types
+    - [ ] Add types for field values
+  - [ ] Add auth
+    - [ ] Add login
+    - [ ] Add logout
+    - [ ] Add register
+    - [ ] Add forgot/reset password
+  - [ ] Add seeding, for default configuration
+- Stats
+  - [ ] Think about stats
+- Ideas
+  - [ ] Can datas be cleanup automatically, server side ?
+  - [ ] Version/deploy version in the app about

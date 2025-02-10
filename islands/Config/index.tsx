@@ -4,6 +4,9 @@ import ConfigCard from "@islands/Config/card.tsx";
 import { PartialBy } from "@models/Common.ts";
 import { isEqual } from "lodash";
 import ky from "ky";
+import { useToast } from "@islands/UI/Toast/useToast.tsx";
+import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
+import { HTTPError } from "@models/Errors.ts";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -12,9 +15,10 @@ const baseContent: IPartialContent = {
 export default function ConfigCollection({ content: defaultContent }: {
   content: IContent | null;
 }) {
+  const { toast } = useToast();
+  const [submitState, setSubmitState] = useState<"idle" | "loading">("idle");
   const [content, setContent] = useState<IPartialContent>(defaultContent ?? baseContent);
 
-  // TODO: better modification detection
   const isModified = useMemo(() => !isEqual((defaultContent ?? baseContent).fields, content.fields), [
     JSON.stringify(content.fields),
   ]);
@@ -29,6 +33,7 @@ export default function ConfigCollection({ content: defaultContent }: {
           label: "",
           type: EConfigCardType.string,
           icon: "",
+          group: "",
         },
       ],
     }));
@@ -51,10 +56,24 @@ export default function ConfigCollection({ content: defaultContent }: {
   };
 
   const saveContent = useCallback(() => {
+    setSubmitState("loading");
     ky.put("/api/config", { json: { content } })
       .json<IContent | null>()
-      .then((res) => setContent((p) => res ?? p))
-      .catch((e) => console.error(e));
+      .then((res) => {
+        setContent((p) => res ?? p);
+        toast({
+          description: "Your content has been saved.",
+        });
+        setSubmitState("idle");
+      })
+      .catch(async (e) => {
+        const errorBody: HTTPError = await e.response?.json();
+        toast({
+          title: errorBody?.error?.message ?? "Error",
+          description: errorBody?.error?.details.join("\n"),
+        });
+        setSubmitState("idle");
+      });
   }, [content]);
 
   return (
@@ -77,10 +96,12 @@ export default function ConfigCollection({ content: defaultContent }: {
       {isModified && (
         <button
           onClick={saveContent}
+          disabled={submitState === "loading"}
         >
-          Save
+          {submitState === "loading" ? "Saving..." : "Save"}
         </button>
       )}
+      <Toaster />
     </div>
   );
 }

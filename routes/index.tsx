@@ -13,6 +13,7 @@ import { difference } from "lodash";
 import { DateTime } from "luxon";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import SaveButton from "@islands/SaveDailyButton.tsx";
+import { TField } from "@models/Content.ts";
 
 type HandlerType = {
   // toast: Toast | null;
@@ -55,18 +56,16 @@ export const handler: Handlers<HandlerType | null> = {
   },
 };
 
-/** // TODO:
- *  - add toast
- *  - add previous data
- *  - add date picker
- *  - add backup cron
- *  - add export button
- *  - add check for same field names
- */
 export default async function Home({ data }: PageProps<{ message: string }>) {
   const content = await getContent();
   const lastDay = await getEntry();
   const missingDays = await missingEntries(APP_DAYS_MISS_CHECK);
+
+  const entriesContent = content?.fields.reduce((acc, field) => {
+    if (!acc[field.group]) acc[field.group] = [];
+    acc[field.group].push(field);
+    return acc;
+  }, {} as Record<TField["group"], TField[]>);
 
   return (
     <form
@@ -75,17 +74,23 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
     >
       {<p>{data?.message}</p>}
       <input type="hidden" name="id" value={content?.id} />
-      {content?.fields.map((field, index) => {
-        const lastEntry = lastDay?.entries.find((e) => e.name === field.name);
-        const lastValue = lastEntry ? stringifyEntryValue(lastEntry, content) : undefined;
-        return (
-          <Field
-            key={field.name}
-            field={field}
-            lastValue={lastValue}
-          />
-        );
-      })}
+      {content && entriesContent &&
+        Object.entries(entriesContent).map(([group, fields]) => (
+          <div key={group} className="flex flex-col gap-2">
+            <h2>{group}</h2>
+            {fields.map((field) => {
+              const lastEntry = lastDay?.entries.find((e) => e.name === field.name);
+              const lastValue = lastEntry ? stringifyEntryValue(lastEntry, content) : undefined;
+              return (
+                <Field
+                  key={field.name}
+                  field={field}
+                  lastValue={lastValue}
+                />
+              );
+            })}
+          </div>
+        ))}
       <SaveButton missingDays={missingDays} daysChecked={APP_DAYS_MISS_CHECK} />
     </form>
   );
