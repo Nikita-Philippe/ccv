@@ -12,6 +12,9 @@ export default function Layout({ Component, state }: PageProps) {
           <li>
             <a href="/config">config</a>
           </li>
+          <li>
+            <a href="/settings">settings</a>
+          </li>
         </ul>
       </nav>
       <Component />

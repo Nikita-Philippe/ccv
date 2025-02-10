@@ -10,7 +10,7 @@ type Props = {
 };
 
 /** Save button for daily entries form.
- * 
+ *
  * Adds also the date picker and the missing days.
  */
 export default function SaveButton({ missingDays, daysChecked }: Props) {
@@ -41,7 +41,11 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
         defaultValue={chosenDate}
         onChange={(e) => setChosenDate(e.currentTarget.value)}
       />
-      {missingDays?.map((day) => <p>Missing entry for {DateTime.fromISO(day).setLocale("fr").toLocaleString()}</p>)}
+      {missingDays?.map((day) => (
+        <div onClick={() => setChosenDate(day)}>
+          <p>Missing entry for {DateTime.fromISO(day).setLocale("fr").toLocaleString()}</p>
+        </div>
+      ))}
     </>
   );
 }

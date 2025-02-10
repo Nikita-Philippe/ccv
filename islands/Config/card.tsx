@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { type ChangeEvent } from "preact/compat";
-import { EConfigCardType, IIntField, IMultistringField, IPartialContent } from "@models/Content.ts";
+import { EConfigCardType, IIntField, IMultistringField, IntFieldVariants, IPartialContent } from "@models/Content.ts";
 import { debounce } from "lodash";
 
 type Config = IPartialContent["fields"][0];
@@ -94,6 +94,21 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
         </div>
 
         <div>
+          <label htmlFor="label" className={`block mb-2 ${configErrors.label ? "text-red-500" : ""}`}>
+            Group
+          </label>
+          <input
+            id="group"
+            name="group"
+            type="text"
+            className={`w-full p-2 border ${configErrors.label ? "border-red-500" : "border-gray-300"} rounded`}
+            value={config.group}
+            onChange={handleChange}
+          />
+          {configErrors.label && <p className="mt-2 text-red-500 text-sm">{configErrors.group}</p>}
+        </div>
+
+        <div>
           <label className="block mb-2">Select a field type</label>
           <select
             name="type"
@@ -133,7 +148,30 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
               className="w-full p-2 border border-gray-300 rounded"
               value={(config as IMultistringField).input_nb}
               onChange={handleNumberChange}
+              pattern="[0-9]*"
             />
+          </div>
+        )}
+
+        {config.type === "int" && (
+          <div>
+            <label htmlFor="max" className={`block mb-2 ${configErrors.max ? "text-red-500" : ""}`}>
+              Variant
+            </label>
+            <select
+              id="variant"
+              name="variant"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={(config as IIntField).variant}
+              onChange={handleChange}
+            >
+              {config.type === "int" && IntFieldVariants.map((variant) => (
+                <option key={variant} value={variant}>
+                  {variant}
+                </option>
+              ))}
+            </select>
+            {configErrors.max && <p className="mt-2 text-red-500 text-sm">{configErrors.max}</p>}
           </div>
         )}
 
@@ -150,6 +188,7 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
                 className={`w-full p-2 border ${configErrors.min ? "border-red-500" : "border-gray-300"} rounded`}
                 value={(config as IIntField).min}
                 onChange={handleNumberChange}
+                pattern="[0-9]*"
               />
               {configErrors.min && <p className="mt-2 text-red-500 text-sm">{configErrors.min}</p>}
             </div>
@@ -164,6 +203,7 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
                 className={`w-full p-2 border ${configErrors.max ? "border-red-500" : "border-gray-300"} rounded`}
                 value={(config as IIntField).max}
                 onChange={handleNumberChange}
+                pattern="[0-9]*"
               />
               {configErrors.max && <p className="mt-2 text-red-500 text-sm">{configErrors.max}</p>}
             </div>

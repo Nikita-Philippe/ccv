@@ -17,6 +17,7 @@ interface IBaseField {
   name: string;
   label: string;
   icon: string;
+  group: string;
 }
 
 export interface IBooleanField extends IBaseField {
@@ -27,7 +28,9 @@ export interface IIntField extends IBaseField {
   type: EConfigCardType.int;
   min: number;
   max: number;
+  variant: "default" | "rating";
 }
+export const IntFieldVariants: IIntField["variant"][] = ["default", "rating"];
 
 export interface IStringField extends IBaseField {
   type: EConfigCardType.string;
@@ -67,22 +70,25 @@ export interface IPartialContent {
 
 /** This is the settings, containing the app settings. */
 export interface ISettings {
+  id: string;
   saving_hour: number;
   saving_delta: number;
   theme: string;
-  notifications: string;
+  notifications: {
+    discord: boolean;
+  }
 }
 
 /** This is the entry created daily, to store the user's data. */
 export interface IDailyEntry {
   /** Use the at date as the primary key. The date is the day of the entry. */
   at: string;
-  content: IContent; // references Content.id
+  content: IContent['id'];
   entries: IEntry[];
 }
 
 /** This is a single key-value entry. */
 export interface IEntry {
   name: string;
-  value: any; // TODO: Define the type of the value
+  value: any;
 }
