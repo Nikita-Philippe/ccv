@@ -27,7 +27,7 @@ interface ToastViewportProps extends PrimitiveOrderedListProps {
    */
   label?: string;
 }
-export const Viewport: React.ForwardRefExoticComponent<ToastViewportProps & React.RefAttributes<HTMLOListElement>>;
+// export const Viewport: React.ForwardRefExoticComponent<ToastViewportProps & React.RefAttributes<HTMLOListElement>>;
 
 
 type ToastImplPrivateProps = {
