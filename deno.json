@@ -1,10 +1,11 @@
 {
   "lock": false,
   "tasks": {
+    "css": "deno run -A npm:@tailwindcss/cli -i ./static/app.css -o ./static/styles.css --watch",
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
     "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=static/,routes/,cron.ts dev.ts",
+    "start": "deno run -A --watch=routes/,cron.ts dev.ts",
     "build": "deno run -A dev.ts build",
     "preview": "deno run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
@@ -22,13 +23,17 @@
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "daisyui": "npm:daisyui@^5.0.0-beta.7",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "tailwindcss": "npm:tailwindcss@3.4.1",
-    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
+
+    "@tailwindcss/postcss": "npm:@tailwindcss/postcss@^4",
+    "autoprefixer": "npm:autoprefixer@^10.4.20",
+    "postcss": "npm:postcss@^8.5.1",
+    "postcss-nested": "npm:postcss-nested@^7.0.2",
+
     "$std/": "https://deno.land/std@0.216.0/",
     "@models/": "./models/",
     "@components/": "./components/",
@@ -86,6 +91,11 @@
     "react-style-singleton": "https://esm.sh/v132/*react-style-singleton@2.2.1?alias=react:preact/compat,@types/react:preact/compat",
     "use-sidecar": "https://esm.sh/v132/*use-sidecar@1.1.2?alias=react:preact/compat,@types/react:preact/compat",
     "use-callback-ref": "https://esm.sh/v132/*use-callback-ref@1.3.0?alias=react:preact/compat,@types/react:preact/compat"
+  },
+  "scopes": {
+    "https://esm.sh/": {
+      "tslib": "https://esm.sh/v102/tslib@2.5.1"
+    }
   },
   "compilerOptions": {
     "jsx": "react-jsx",
