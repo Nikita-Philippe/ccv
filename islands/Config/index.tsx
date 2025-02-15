@@ -7,6 +7,7 @@ import ky from "ky";
 import { useToast } from "@islands/UI/Toast/useToast.tsx";
 import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
 import { HTTPError } from "@models/Errors.ts";
+import Plus from "@icons/plus.tsx";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -37,6 +38,14 @@ export default function ConfigCollection({ content: defaultContent }: {
         },
       ],
     }));
+  };
+
+  const duplicateField = (index: number) => {
+    setContent((prev) => {
+      const fields = [...prev.fields];
+      fields.splice(index, 0, { ...fields[index] });
+      return { ...prev, fields };
+    });
   };
 
   const removeField = (index: number) => {
@@ -77,24 +86,28 @@ export default function ConfigCollection({ content: defaultContent }: {
   }, [content]);
 
   return (
-    <div>
-      {content?.fields.map((field, index) => (
-        <ConfigCard
-          key={field.id}
-          config={field}
-          bubbleConfig={(cfg) => setField(index, cfg)}
-          removeConfig={() => removeField(index)}
-        />
-      ))}
-      <div>
+    <>
+      {/* 2 items per line (if space available), gap of 2 */}
+      <div className="grid gap-4 grid-cols-2">
+        {content?.fields.map((field, index) => (
+          <ConfigCard
+            key={field.id}
+            config={field}
+            bubbleConfig={(cfg) => setField(index, cfg)}
+            removeConfig={() => removeField(index)}
+            duplicateConfig={() => duplicateField(index)}
+          />
+        ))}
         <button
+          className={"flex items-center justify-center p-2 border border-gray-200 rounded"}
           onClick={addBlankEntry}
         >
-          Add field
+          <Plus size={42} />
         </button>
       </div>
       {isModified && (
         <button
+          className={"btn fixed bottom-2 right-2 min-w-32"}
           onClick={saveContent}
           disabled={submitState === "loading"}
         >
@@ -102,6 +115,6 @@ export default function ConfigCollection({ content: defaultContent }: {
         </button>
       )}
       <Toaster />
-    </div>
+    </>
   );
 }

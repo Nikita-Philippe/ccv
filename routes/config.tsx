@@ -1,4 +1,3 @@
-import { useSignal } from "@preact/signals";
 import { getContent } from "../utils/content.ts";
 import ConfigCollection from "@islands/Config/index.tsx";
 
