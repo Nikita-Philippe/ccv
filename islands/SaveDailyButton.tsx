@@ -1,8 +1,11 @@
 import { DateTime } from "luxon";
 import { JSX } from "preact";
-import { useCallback, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import { getDailyEntryKey } from "@utils/common.ts";
 import { difference } from "lodash";
+import { cn } from "@utils/cn.ts";
+import DatePicker, { DateToFR } from "@islands/Field/DatePicker.tsx";
+import Card from "@islands/UI/Card.tsx";
 
 type Props = {
   missingDays: string[];
@@ -32,20 +35,32 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
 
   return (
     <>
-      <button type="submit" onClick={handleClick}>
-        Save
-      </button>
-      <input
-        type="date"
-        name="date"
-        defaultValue={chosenDate}
-        onChange={(e) => setChosenDate(e.currentTarget.value)}
-      />
-      {missingDays?.map((day) => (
-        <div onClick={() => setChosenDate(day)}>
-          <p>Missing entry for {DateTime.fromISO(day).setLocale("fr").toLocaleString()}</p>
-        </div>
-      ))}
+      <div className="flex items-center gap-2">
+        <button type="submit" class="btn btn-primary grow" onClick={handleClick}>
+          Save
+        </button>
+        <label className={"input max-w-[220px]"}>
+          <span className={"label"}>Entry date</span>
+          <DatePicker defaultValue={chosenDate} onChange={(date) => setChosenDate(date)} customDate={chosenDate} />
+        </label>
+      </div>
+      {(missingDays ?? []).length > 0 && (
+        <Card
+          title="Missing entries"
+          sx={{ container: "h-fit", content: "grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))]" }}
+        >
+          {missingDays.map((day) => (
+            <button
+              type="button"
+              class={cn("btn whitespace-nowrap", chosenDate === day && "btn-primary")}
+              onClick={() => setChosenDate(day)}
+              key={day}
+            >
+              {DateToFR(day)}
+            </button>
+          ))}
+        </Card>
+      )}
     </>
   );
 }

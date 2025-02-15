@@ -12,10 +12,12 @@ import * as $index from "./routes/index.tsx";
 import * as $settings from "./routes/settings.tsx";
 import * as $Config_card from "./islands/Config/card.tsx";
 import * as $Config_index from "./islands/Config/index.tsx";
+import * as $Field_DatePicker from "./islands/Field/DatePicker.tsx";
 import * as $Field_String from "./islands/Field/String.tsx";
 import * as $Field_index from "./islands/Field/index.tsx";
 import * as $SaveDailyButton from "./islands/SaveDailyButton.tsx";
 import * as $Settings_ExportButtons from "./islands/Settings/ExportButtons.tsx";
+import * as $UI_Card from "./islands/UI/Card.tsx";
 import * as $UI_Toast_Toast from "./islands/UI/Toast/Toast.tsx";
 import * as $UI_Toast_Toaster from "./islands/UI/Toast/Toaster.tsx";
 import * as $UI_Toast_toast_d from "./islands/UI/Toast/toast.d.ts";
@@ -36,10 +38,12 @@ const manifest = {
   islands: {
     "./islands/Config/card.tsx": $Config_card,
     "./islands/Config/index.tsx": $Config_index,
+    "./islands/Field/DatePicker.tsx": $Field_DatePicker,
     "./islands/Field/String.tsx": $Field_String,
     "./islands/Field/index.tsx": $Field_index,
     "./islands/SaveDailyButton.tsx": $SaveDailyButton,
     "./islands/Settings/ExportButtons.tsx": $Settings_ExportButtons,
+    "./islands/UI/Card.tsx": $UI_Card,
     "./islands/UI/Toast/Toast.tsx": $UI_Toast_Toast,
     "./islands/UI/Toast/Toaster.tsx": $UI_Toast_Toaster,
     "./islands/UI/Toast/toast.d.ts": $UI_Toast_toast_d,
