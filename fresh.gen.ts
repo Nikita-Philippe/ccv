@@ -5,8 +5,10 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
+import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_config_id_ from "./routes/api/config/[[id]].tsx";
 import * as $api_settings_export from "./routes/api/settings/export.ts";
+import * as $beta from "./routes/beta.tsx";
 import * as $config from "./routes/config.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $settings from "./routes/settings.tsx";
@@ -20,6 +22,7 @@ import * as $Settings_ExportButtons from "./islands/Settings/ExportButtons.tsx";
 import * as $UI_Card from "./islands/UI/Card.tsx";
 import * as $UI_Toast_Toast from "./islands/UI/Toast/Toast.tsx";
 import * as $UI_Toast_Toaster from "./islands/UI/Toast/Toaster.tsx";
+import * as $UI_Toast_ToasterWrapper from "./islands/UI/Toast/ToasterWrapper.tsx";
 import * as $UI_Toast_toast_d from "./islands/UI/Toast/toast.d.ts";
 import * as $UI_Toast_useToast from "./islands/UI/Toast/useToast.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -29,8 +32,10 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
+    "./routes/_middleware.ts": $_middleware,
     "./routes/api/config/[[id]].tsx": $api_config_id_,
     "./routes/api/settings/export.ts": $api_settings_export,
+    "./routes/beta.tsx": $beta,
     "./routes/config.tsx": $config,
     "./routes/index.tsx": $index,
     "./routes/settings.tsx": $settings,
@@ -46,6 +51,7 @@ const manifest = {
     "./islands/UI/Card.tsx": $UI_Card,
     "./islands/UI/Toast/Toast.tsx": $UI_Toast_Toast,
     "./islands/UI/Toast/Toaster.tsx": $UI_Toast_Toaster,
+    "./islands/UI/Toast/ToasterWrapper.tsx": $UI_Toast_ToasterWrapper,
     "./islands/UI/Toast/toast.d.ts": $UI_Toast_toast_d,
     "./islands/UI/Toast/useToast.tsx": $UI_Toast_useToast,
   },

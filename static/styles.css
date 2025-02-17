@@ -2091,6 +2091,9 @@
     height: -moz-fit-content;
     height: fit-content;
   }
+  .h-screen {
+    height: 100vh;
+  }
   .max-h-screen {
     max-height: 100vh;
   }
@@ -2099,6 +2102,9 @@
   }
   .w-4 {
     width: calc(var(--spacing) * 4);
+  }
+  .w-10\/12 {
+    width: calc(10/12 * 100%);
   }
   .w-full {
     width: 100%;
@@ -2114,6 +2120,9 @@
   }
   .max-w-\[220px\] {
     max-width: 220px;
+  }
+  .max-w-md {
+    max-width: var(--container-md);
   }
   .max-w-screen-md {
     max-width: var(--breakpoint-md);
@@ -2184,6 +2193,9 @@
   .gap-4 {
     gap: calc(var(--spacing) * 4);
   }
+  .gap-5 {
+    gap: calc(var(--spacing) * 5);
+  }
   .gap-x-2 {
     -moz-column-gap: calc(var(--spacing) * 2);
          column-gap: calc(var(--spacing) * 2);
@@ -2204,6 +2216,9 @@
   .rounded-md {
     border-radius: var(--radius-md);
   }
+  .rounded-none {
+    border-radius: 0;
+  }
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -2211,6 +2226,18 @@
   .border-2 {
     border-style: var(--tw-border-style);
     border-width: 2px;
+  }
+  .border-x-0 {
+    border-inline-style: var(--tw-border-style);
+    border-inline-width: 0px;
+  }
+  .border-t-0 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 0px;
+  }
+  .border-b-2 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 2px;
   }
   .border-gray-200 {
     border-color: var(--color-gray-200);
@@ -2368,6 +2395,10 @@
   .mask-circle {
     -webkit-mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle fill='black' cx='100' cy='100' r='100' fill-rule='evenodd'/%3e%3c/svg%3e");
             mask-image: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle fill='black' cx='100' cy='100' r='100' fill-rule='evenodd'/%3e%3c/svg%3e");
+  }
+  .outline-none {
+    --tw-outline-style: none;
+    outline-style: none;
   }
   .group-hover\:opacity-100 {
     &:is(:where(.group):hover *) {
