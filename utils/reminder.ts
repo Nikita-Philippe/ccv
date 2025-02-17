@@ -4,6 +4,15 @@ import { getEntry } from "@utils/entries.ts";
 
 export const checkForDailyAnswer = async () => {
   const lastEntry = await getEntry();
+  
+  console.log("Last entry:", lastEntry);
+  console.log("Infos:", {
+    hasLastEntry: !!lastEntry,
+    lastEntryAt: lastEntry?.at,
+    now: DateTime.now(),
+    isEntryBeforeNow: lastEntry ? DateTime.fromISO(lastEntry.at) < DateTime.now() : "notfound",
+    isSending: !lastEntry || DateTime.fromISO(lastEntry.at) < DateTime.now(),
+  });
 
   if (!lastEntry || DateTime.fromISO(lastEntry.at) < DateTime.now()) {
     const res = await sendDiscordPushNotification({ content: "Answer CCV! 📝" });
