@@ -70,7 +70,7 @@ interface ToastProps extends Omit<ToastImplProps, keyof ToastImplPrivateProps> {
    */
   forceMount?: true;
 }
-export const Root: React.ForwardRefExoticComponent<ToastProps & React.RefAttributes<HTMLLIElement>>;
+// export const Root: React.ForwardRefExoticComponent<ToastProps & React.RefAttributes<HTMLLIElement>>;
 
 
 // deno-lint-ignore no-empty-interface
@@ -85,19 +85,19 @@ interface ToastActionProps extends ToastCloseProps {
    */
   altText: string;
 }
-export const Action: React.ForwardRefExoticComponent<ToastActionProps & React.RefAttributes<HTMLButtonElement>>;
+// export const Action: React.ForwardRefExoticComponent<ToastActionProps & React.RefAttributes<HTMLButtonElement>>;
 
 
-export const Close: React.ForwardRefExoticComponent<ToastCloseProps & React.RefAttributes<HTMLButtonElement>>;
+// export const Close: React.ForwardRefExoticComponent<ToastCloseProps & React.RefAttributes<HTMLButtonElement>>;
 
 
 // deno-lint-ignore no-empty-interface
 interface ToastTitleProps extends PrimitiveDivProps {
 }
-export const Title: React.ForwardRefExoticComponent<ToastTitleProps & React.RefAttributes<HTMLDivElement>>;
+// export const Title: React.ForwardRefExoticComponent<ToastTitleProps & React.RefAttributes<HTMLDivElement>>;
 
 
 // deno-lint-ignore no-empty-interface
 interface ToastDescriptionProps extends PrimitiveDivProps {
 }
-export const Description: React.ForwardRefExoticComponent<ToastDescriptionProps & React.RefAttributes<HTMLDivElement>>;
+// export const Description: React.ForwardRefExoticComponent<ToastDescriptionProps & React.RefAttributes<HTMLDivElement>>;
