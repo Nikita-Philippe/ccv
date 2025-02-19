@@ -1,7 +1,8 @@
-import { Handlers, PageProps } from "$fresh/server.ts";
+import { Handlers, RouteContext } from "$fresh/server.ts";
 import Field from "@islands/Field/index.tsx";
 import SaveButton from "@islands/SaveDailyButton.tsx";
 import Card from "@islands/UI/Card.tsx";
+import ToasterWrapper from "@islands/UI/Toast/ToasterWrapper.tsx";
 import { TField } from "@models/Content.ts";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import { getContent } from "@utils/content.ts";
@@ -9,7 +10,7 @@ import { getEntry, missingEntries, parseEntry, saveEntries, stringifyEntryValue 
 import { capitalize, difference } from "lodash";
 
 type HandlerType = {
-  // toast: Toast | null;
+  message?: string;
 };
 
 export const handler: Handlers<HandlerType | null> = {
@@ -45,11 +46,12 @@ export const handler: Handlers<HandlerType | null> = {
       date.toString(),
     );
 
-    return await ctx.render({ message: "goood" });
+    if (!res?.at) return await ctx.render({ message: "An error occured while saving. Please try again." });
+    return await ctx.render({ message: "Data saved successfully" });
   },
 };
 
-export default async function Home({ data }: PageProps<{ message: string }>) {
+export default async function Home(_: Request, { data }: RouteContext<HandlerType>) {
   const content = await getContent();
   const lastDay = await getEntry();
   const missingDays = await missingEntries(APP_DAYS_MISS_CHECK);
@@ -67,7 +69,6 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
       method="POST"
       className="flex flex-col gap-2 justify-start"
     >
-      {<p>{data?.message}</p>}
       <input type="hidden" name="id" value={content?.id} />
       {content && entriesContent &&
         entriesContent.map(({ group, fields }) => (
@@ -86,6 +87,7 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
           </Card>
         ))}
       <SaveButton missingDays={missingDays} daysChecked={APP_DAYS_MISS_CHECK} />
+      {data?.message && <ToasterWrapper content={{ id: "1", description: data.message }} />}
     </form>
   );
 }
