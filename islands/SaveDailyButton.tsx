@@ -42,6 +42,7 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
         <label className={"input max-w-[220px]"}>
           <span className={"label"}>Entry date</span>
           <DatePicker defaultValue={chosenDate} onChange={(date) => setChosenDate(date)} customDate={chosenDate} />
+          <input type="hidden" name="date" value={chosenDate} />
         </label>
       </div>
       {(missingDays ?? []).length > 0 && (
