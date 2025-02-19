@@ -28,9 +28,9 @@ export interface IIntField extends IBaseField {
   type: EConfigCardType.int;
   min: number;
   max: number;
-  variant: "default" | "rating";
+  variant: "default" | "rating" | "range";
 }
-export const IntFieldVariants: IIntField["variant"][] = ["default", "rating"];
+export const IntFieldVariants: IIntField["variant"][] = ["default", "rating", "range"];
 
 export interface IStringField extends IBaseField {
   type: EConfigCardType.string;

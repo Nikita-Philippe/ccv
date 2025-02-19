@@ -1,19 +1,12 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import Field from "@islands/Field/index.tsx";
-import { getContent } from "@utils/content.ts";
-import {
-  getEntry,
-  isTodayAlreadySaved,
-  missingEntries,
-  parseEntry,
-  saveEntries,
-  stringifyEntryValue,
-} from "@utils/entries.ts";
-import { difference } from "lodash";
-import { DateTime } from "luxon";
-import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import SaveButton from "@islands/SaveDailyButton.tsx";
+import Card from "@islands/UI/Card.tsx";
 import { TField } from "@models/Content.ts";
+import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
+import { getContent } from "@utils/content.ts";
+import { getEntry, missingEntries, parseEntry, saveEntries, stringifyEntryValue } from "@utils/entries.ts";
+import { capitalize, difference } from "lodash";
 
 type HandlerType = {
   // toast: Toast | null;
@@ -62,10 +55,12 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
   const missingDays = await missingEntries(APP_DAYS_MISS_CHECK);
 
   const entriesContent = content?.fields.reduce((acc, field) => {
-    if (!acc[field.group]) acc[field.group] = [];
-    acc[field.group].push(field);
+    const group = field.group ?? "";
+    const entry = acc.find((e) => e.group === group);
+    if (entry) entry.fields.push(field);
+    else acc.push({ group, fields: [field] });
     return acc;
-  }, {} as Record<TField["group"], TField[]>);
+  }, [] as { group: TField["group"]; fields: TField[] }[]).sort((a, b) => b.group.localeCompare(a.group));
 
   return (
     <form
@@ -75,9 +70,8 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
       {<p>{data?.message}</p>}
       <input type="hidden" name="id" value={content?.id} />
       {content && entriesContent &&
-        Object.entries(entriesContent).map(([group, fields]) => (
-          <div key={group} className="flex flex-col gap-2">
-            <h2>{group}</h2>
+        entriesContent.map(({ group, fields }) => (
+          <Card key={group} title={capitalize(group)}>
             {fields.map((field) => {
               const lastEntry = lastDay?.entries.find((e) => e.name === field.name);
               const lastValue = lastEntry ? stringifyEntryValue(lastEntry, content) : undefined;
@@ -89,7 +83,7 @@ export default async function Home({ data }: PageProps<{ message: string }>) {
                 />
               );
             })}
-          </div>
+          </Card>
         ))}
       <SaveButton missingDays={missingDays} daysChecked={APP_DAYS_MISS_CHECK} />
     </form>

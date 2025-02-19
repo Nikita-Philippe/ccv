@@ -2,6 +2,10 @@ import { useEffect, useState } from "preact/hooks";
 import { type ChangeEvent } from "preact/compat";
 import { EConfigCardType, IIntField, IMultistringField, IntFieldVariants, IPartialContent } from "@models/Content.ts";
 import { debounce } from "lodash";
+import Trash from "@icons/trash.tsx";
+import Copy from "@icons/copy.tsx";
+import { cn } from "@utils/cn.ts";
+import Card from "@islands/UI/Card.tsx";
 
 type Config = IPartialContent["fields"][0];
 
@@ -31,9 +35,10 @@ type Props = {
   config: Config;
   bubbleConfig: (config: Config) => void;
   removeConfig: () => void;
+  duplicateConfig: () => void;
 };
 
-export default function ConfigCard({ bubbleConfig, removeConfig, config: initialConfig }: Props) {
+export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig, config: initialConfig }: Props) {
   const [config, setConfig] = useState<Config>(initialConfig);
   const configErrors = validateConfig(config);
 
@@ -62,57 +67,55 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
   }, [config]);
 
   return (
-    <div className="border rounded p-4 max-w-md mx-auto">
-      <div className="grid gap-6 mb-6 md:grid-cols-2">
-        <div>
-          <label htmlFor="name" className={`block mb-2 ${configErrors.name ? "text-red-500" : ""}`}>
-            Name
-          </label>
+    <Card sx={{ content: "flex-col justify-between" }}>
+      <div className="grid gap-x-2 mb-2 md:grid-cols-2">
+        {/* Name Field */}
+        <fieldset className="fieldset">
+          <legend htmlFor="name" className="fieldset-legend">Name</legend>
           <input
-            id="name"
-            name="name"
             type="text"
-            className={`w-full p-2 border ${configErrors.name ? "border-red-500" : "border-gray-300"} rounded`}
+            name="name"
+            className={cn("input input-bordered w-full", configErrors.name && "input-error")}
             value={config.name}
             onChange={handleChange}
           />
-          {configErrors.name && <p className="mt-2 text-red-500 text-sm">{configErrors.name}</p>}
-        </div>
-        <div>
-          <label htmlFor="label" className={`block mb-2 ${configErrors.label ? "text-red-500" : ""}`}>
-            Label
-          </label>
+          {configErrors.name && <p className="fieldset-label text-error">{configErrors.name}</p>}
+        </fieldset>
+
+        {/* Label Field */}
+        <fieldset className="fieldset">
+          <legend htmlFor="label" className="fieldset-legend">Label</legend>
           <input
             id="label"
             name="label"
             type="text"
-            className={`w-full p-2 border ${configErrors.label ? "border-red-500" : "border-gray-300"} rounded`}
+            className={cn("input input-bordered w-full", configErrors.label && "input-error")}
             value={config.label}
             onChange={handleChange}
           />
-          {configErrors.label && <p className="mt-2 text-red-500 text-sm">{configErrors.label}</p>}
-        </div>
+          {configErrors.label && <p className="fieldset-label text-error">{configErrors.label}</p>}
+        </fieldset>
 
-        <div>
-          <label htmlFor="label" className={`block mb-2 ${configErrors.label ? "text-red-500" : ""}`}>
-            Group
-          </label>
+        {/* Group Field */}
+        <fieldset className="fieldset">
+          <legend htmlFor="group" className="fieldset-legend">Group</legend>
           <input
             id="group"
             name="group"
             type="text"
-            className={`w-full p-2 border ${configErrors.label ? "border-red-500" : "border-gray-300"} rounded`}
+            className={cn("input input-bordered w-full", configErrors.group && "input-error")}
             value={config.group}
             onChange={handleChange}
           />
-          {configErrors.label && <p className="mt-2 text-red-500 text-sm">{configErrors.group}</p>}
-        </div>
+          {configErrors.group && <p className="fieldset-label text-error">{configErrors.group}</p>}
+        </fieldset>
 
-        <div>
-          <label className="block mb-2">Select a field type</label>
+        {/* Field Type Select */}
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Field Type</legend>
           <select
             name="type"
-            className="w-full p-2 border border-gray-300 rounded"
+            className="select select-bordered w-full"
             value={config.type}
             onChange={handleChange}
           >
@@ -122,98 +125,99 @@ export default function ConfigCard({ bubbleConfig, removeConfig, config: initial
               </option>
             ))}
           </select>
-        </div>
+        </fieldset>
 
-        <div>
-          <label htmlFor="icon" className="block mb-2">
-            Icon
-          </label>
+        {/* Icon Field */}
+        <fieldset className="fieldset">
+          <legend htmlFor="icon" className="fieldset-legend">Icon</legend>
           <input
             type="text"
             id="icon"
-            className="w-full p-2 border border-gray-200 bg-gray-100 rounded"
+            className="input input-bordered bg-gray-100 w-full"
             disabled
           />
-        </div>
+        </fieldset>
 
+        {/* Multistring Field */}
         {config.type === "multistring" && (
-          <div>
-            <label htmlFor="input_nb" className="block mb-2">
-              Number of inputs
-            </label>
+          <fieldset className="fieldset">
+            <legend htmlFor="input_nb" className="fieldset-legend">Number of Inputs</legend>
             <input
               id="input_nb"
               name="input_nb"
               type="number"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="input input-bordered w-full"
               value={(config as IMultistringField).input_nb}
               onChange={handleNumberChange}
               pattern="[0-9]*"
             />
-          </div>
+          </fieldset>
         )}
 
+        {/* Int Field: Variant */}
         {config.type === "int" && (
-          <div>
-            <label htmlFor="max" className={`block mb-2 ${configErrors.max ? "text-red-500" : ""}`}>
-              Variant
-            </label>
+          <fieldset className="fieldset">
+            <legend htmlFor="variant" className="fieldset-legend">Variant</legend>
             <select
               id="variant"
               name="variant"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="select select-bordered w-full"
               value={(config as IIntField).variant}
               onChange={handleChange}
             >
-              {config.type === "int" && IntFieldVariants.map((variant) => (
+              {IntFieldVariants.map((variant) => (
                 <option key={variant} value={variant}>
                   {variant}
                 </option>
               ))}
             </select>
-            {configErrors.max && <p className="mt-2 text-red-500 text-sm">{configErrors.max}</p>}
-          </div>
+            {configErrors.max && <p className="fieldset-label text-error">{configErrors.max}</p>}
+          </fieldset>
         )}
 
+        {/* Int Field: Min */}
         {config.type === "int" && (
-          <>
-            <div>
-              <label htmlFor="min" className={`block mb-2 ${configErrors.min ? "text-red-500" : ""}`}>
-                Min
-              </label>
-              <input
-                id="min"
-                name="min"
-                type="number"
-                className={`w-full p-2 border ${configErrors.min ? "border-red-500" : "border-gray-300"} rounded`}
-                value={(config as IIntField).min}
-                onChange={handleNumberChange}
-                pattern="[0-9]*"
-              />
-              {configErrors.min && <p className="mt-2 text-red-500 text-sm">{configErrors.min}</p>}
-            </div>
-            <div>
-              <label htmlFor="max" className={`block mb-2 ${configErrors.max ? "text-red-500" : ""}`}>
-                Max
-              </label>
-              <input
-                id="max"
-                name="max"
-                type="number"
-                className={`w-full p-2 border ${configErrors.max ? "border-red-500" : "border-gray-300"} rounded`}
-                value={(config as IIntField).max}
-                onChange={handleNumberChange}
-                pattern="[0-9]*"
-              />
-              {configErrors.max && <p className="mt-2 text-red-500 text-sm">{configErrors.max}</p>}
-            </div>
-          </>
+          <fieldset className="fieldset">
+            <legend htmlFor="min" className="fieldset-legend">Min</legend>
+            <input
+              id="min"
+              name="min"
+              type="number"
+              className={cn("input input-bordered w-full", configErrors.min && "input-error")}
+              value={(config as IIntField).min}
+              onChange={handleNumberChange}
+              pattern="[0-9]*"
+            />
+            {configErrors.min && <p className="fieldset-label text-error">{configErrors.min}</p>}
+          </fieldset>
+        )}
+
+        {/* Int Field: Max */}
+        {config.type === "int" && (
+          <fieldset className="fieldset">
+            <legend htmlFor="max" className="fieldset-legend">Max</legend>
+            <input
+              id="max"
+              name="max"
+              type="number"
+              className={cn("input input-bordered w-full", configErrors.max && "input-error")}
+              value={(config as IIntField).max}
+              onChange={handleNumberChange}
+              pattern="[0-9]*"
+            />
+            {configErrors.max && <p className="fieldset-label text-error">{configErrors.max}</p>}
+          </fieldset>
         )}
       </div>
 
-      <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={remove}>
-        <span className="inline-block">&#128465;</span> {/* Trash icon placeholder */}
-      </button>
-    </div>
+      <div className="flex gap-2 mt-2 justify-end">
+        <button className="btn" onClick={duplicateConfig}>
+          <Copy size={20} />
+        </button>
+        <button className="btn btn-error" onClick={remove}>
+          <Trash size={20} />
+        </button>
+      </div>
+    </Card>
   );
 }

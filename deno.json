@@ -5,7 +5,7 @@
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
     "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=routes/,cron.ts dev.ts",
+    "start": "deno run -A --watch=routes,cron.ts,tailwind.config.ts,static/app.css dev.ts",
     "build": "deno run -A dev.ts build",
     "preview": "deno run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
@@ -23,12 +23,13 @@
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "daisyui": "npm:daisyui@^5.0.0-beta.7",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-
+    
+    "daisyui": "npm:daisyui@^5.0.0-beta.7",
+    "tailwindcss": "npm:tailwindcss@^4",
     "@tailwindcss/postcss": "npm:@tailwindcss/postcss@^4",
     "autoprefixer": "npm:autoprefixer@^10.4.20",
     "postcss": "npm:postcss@^8.5.1",
@@ -44,6 +45,8 @@
     "luxon": "https://esm.sh/luxon@3.5.0",
     "clsx": "https://esm.sh/clsx@2.0.0",
     "tailwind-merge": "https://esm.sh/tailwind-merge@1.14.0",
+    "pikaday": "npm:pikaday",
+
     "class-variance-authority": "https://esm.sh/class-variance-authority@0.7.0",
     "@icons/": "https://deno.land/x/tabler_icons_tsx@0.0.5/tsx/",
     "@radix-ui/react-toast": "https://esm.sh/*@radix-ui/react-toast@1.1.5?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat",
