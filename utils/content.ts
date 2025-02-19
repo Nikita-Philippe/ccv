@@ -1,6 +1,7 @@
 import { PartialBy } from "../models/Common.ts";
 import { IContent, TField } from "../models/Content.ts";
 import { KV_CONTENT, KV_SINGLE_FIELD } from "./constants.ts";
+import { DateTime } from "luxon";
 
 const kv = await Deno.openKv();
 
@@ -51,8 +52,8 @@ export const setContent = async (content: PartialBy<IContent, "id">): Promise<IC
     else content.fields.slice(index, 1);
   }
 
-  // Set a new id, to create a new content
-  if (!content.id) content.id = crypto.randomUUID();
+  // Set a new id, to create a new content. Use date to have a sequencially inserted entries
+  if (!content.id) content.id = String(DateTime.now().toUnixInteger());
   const res = await kv.set([KV_CONTENT, content.id], content);
   if (res.ok) return await getContent(content.id);
   else return null;

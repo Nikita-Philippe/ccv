@@ -12,6 +12,7 @@ import * as $beta from "./routes/beta.tsx";
 import * as $config from "./routes/config.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $settings from "./routes/settings.tsx";
+import * as $Config_ExportConfig from "./islands/Config/ExportConfig.tsx";
 import * as $Config_card from "./islands/Config/card.tsx";
 import * as $Config_index from "./islands/Config/index.tsx";
 import * as $Field_DatePicker from "./islands/Field/DatePicker.tsx";
@@ -41,6 +42,7 @@ const manifest = {
     "./routes/settings.tsx": $settings,
   },
   islands: {
+    "./islands/Config/ExportConfig.tsx": $Config_ExportConfig,
     "./islands/Config/card.tsx": $Config_card,
     "./islands/Config/index.tsx": $Config_index,
     "./islands/Field/DatePicker.tsx": $Field_DatePicker,

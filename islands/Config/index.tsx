@@ -8,6 +8,7 @@ import { useToast } from "@islands/UI/Toast/useToast.tsx";
 import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
 import { HTTPError } from "@models/Errors.ts";
 import Plus from "@icons/plus.tsx";
+import ExportConfig from "@islands/Config/ExportConfig.tsx";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -19,6 +20,11 @@ export default function ConfigCollection({ content: defaultContent }: {
   const { toast } = useToast();
   const [submitState, setSubmitState] = useState<"idle" | "loading">("idle");
   const [content, setContent] = useState<IPartialContent>(defaultContent ?? baseContent);
+
+  // FIXME: debug only. to be removed
+  useEffect(() => {
+    (globalThis as any).clearEntries = () => ky.put("/api/config/debug")
+  }, [])
 
   const isModified = useMemo(() => !isEqual((defaultContent ?? baseContent).fields, content.fields), [
     JSON.stringify(content.fields),
@@ -64,9 +70,9 @@ export default function ConfigCollection({ content: defaultContent }: {
     });
   };
 
-  const saveContent = useCallback(() => {
+  const saveContent = useCallback((forceContent?: IPartialContent) => {
     setSubmitState("loading");
-    ky.put("/api/config", { json: { content } })
+    ky.put("/api/config", { json: { content: forceContent ?? content } })
       .json<IContent | null>()
       .then((res) => {
         setContent((p) => res ?? p);
@@ -85,8 +91,15 @@ export default function ConfigCollection({ content: defaultContent }: {
       });
   }, [content]);
 
+  const replaceByImportedContent = (newContent: IPartialContent) => {
+    if (globalThis.confirm('Are you sure you want to replace the whole config ? The current config will be entirely replaced')) {
+      saveContent(newContent)
+    }
+  };
+
   return (
     <>
+      <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
       {/* 2 items per line (if space available), gap of 2 */}
       <div className="grid gap-4 grid-cols-2">
         {content?.fields.map((field, index) => (
@@ -108,7 +121,7 @@ export default function ConfigCollection({ content: defaultContent }: {
       {isModified && (
         <button
           className={"btn fixed bottom-2 right-2 min-w-32"}
-          onClick={saveContent}
+          onClick={() => saveContent()}
           disabled={submitState === "loading"}
         >
           {submitState === "loading" ? "Saving..." : "Save"}

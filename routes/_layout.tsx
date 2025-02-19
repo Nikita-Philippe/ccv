@@ -23,7 +23,7 @@ export default function Layout({ Component, state, route }: PageProps) {
   ].map((item) => ({ item, active: item.href === route }));
 
   return (
-    <div class="max-w-2xl p-6 mx-auto">
+    <div class="max-w-2xl p-6 mx-auto relative">
       <div role="tablist" className="tabs pb-4">
         {navItems.map(({ item, active }) => (
           <a
@@ -35,7 +35,7 @@ export default function Layout({ Component, state, route }: PageProps) {
           </a>
         ))}
       </div>
-      <div class={""}>
+      <div>
         <Component />
       </div>
     </div>
