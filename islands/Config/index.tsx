@@ -7,7 +7,7 @@ import ky from "ky";
 import { useToast } from "@islands/UI/Toast/useToast.tsx";
 import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
 import { HTTPError } from "@models/Errors.ts";
-import Plus from "@icons/plus.tsx";
+import { IconPlus as Plus } from "@icons";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
 
 const baseContent: IPartialContent = {

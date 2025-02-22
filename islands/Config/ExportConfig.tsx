@@ -1,5 +1,4 @@
-import FileExport from "@icons/cloud-download.tsx";
-import FileImport from "@icons/file-import.tsx";
+import { IconFileImport as FileImport, IconCloudDownload as FileExport } from "@icons";
 import { IPartialContent } from "@models/Content.ts";
 import { getDailyEntryKey } from "@utils/common.ts";
 import { DateTime } from "luxon";

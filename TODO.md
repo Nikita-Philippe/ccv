@@ -5,18 +5,18 @@
   - [ ] Add types
     - [ ] Add date picker
     - [x] Add rating (maybe as variant of number)
-      - [ ] Add rating check for max-min-step
-      - [ ] Add step
+      - [x] Add rating check for max-min-step
+      - [x] Add step
     - [ ] Add localization? (find a way to easily have it)
   - [x] Add loader on saving datas
   - [x] Add field grouping
   - [ ] Style content
   - [ ] Rethink the content saving. Check whats the best approach here. Keep only new entries, or update existing ones?
   - [ ] Rethink the way of configuring content. Maybe a form like in daily entry, and if click on field it opens a floating same-context modal to edit it.
-  - [ ] Clone content
+  - [x] Clone content
   - [ ] Reorder content
-  - [ ] Cannot change name. Can only add or delete entries if already used
-  - [ ] Cannot save if validation error
+  - [x] Cannot change name. Can only add or delete entries if already used
+  - [x] Cannot save if validation error
   - [ ] Delete avant last entry not working (entry index not correct)
 - Dailentry
   - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible

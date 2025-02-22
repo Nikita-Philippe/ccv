@@ -28,6 +28,7 @@ export interface IIntField extends IBaseField {
   type: EConfigCardType.int;
   min: number;
   max: number;
+  step: number;
   variant: "default" | "rating" | "range";
 }
 export const IntFieldVariants: IIntField["variant"][] = ["default", "rating", "range"];
@@ -92,3 +93,5 @@ export interface IEntry {
   name: string;
   value: any;
 }
+
+export const ICONS_LIST_LS_KEY = "ccv_ls_icons";
