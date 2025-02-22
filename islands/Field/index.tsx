@@ -61,7 +61,7 @@ export default function Field({ field, lastValue }: FieldProps) {
           const range = {
             min: field.min ?? 0,
             max: field.max ?? 10,
-            step: 1,
+            step: field.step ?? 1,
             stepNb: (field.max ?? 10) - (field.min ?? 0),
           };
           return (
@@ -86,7 +86,7 @@ export default function Field({ field, lastValue }: FieldProps) {
               class="input input-primary max-w-28"
               min={field.min}
               max={field.max}
-              step={1}
+              step={field.step ?? 1}
               {...baseInputProps}
             />
           );

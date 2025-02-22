@@ -1,9 +1,8 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { type ChangeEvent } from "preact/compat";
 import { EConfigCardType, IIntField, IMultistringField, IntFieldVariants, IPartialContent } from "@models/Content.ts";
 import { debounce } from "lodash";
-import Trash from "@icons/trash.tsx";
-import Copy from "@icons/copy.tsx";
+import { IconCopy as Copy, IconTrash as Trash } from "@icons";
 import { cn } from "@utils/cn.ts";
 import Card from "@islands/UI/Card.tsx";
 
@@ -21,13 +20,25 @@ function validateConfig(cfg: Config) {
   const errors: Record<string, string> = {};
   if (!cfg.name) errors.name = "Name is required";
   else if (!/^[a-zA-Z0-9_]+$/.test(cfg.name)) errors.name = "Name must be alphanumeric";
+
   if (cfg.type === EConfigCardType.int) {
-    const { min, max } = cfg as IIntField;
+    const { min, max, step, variant } = cfg as IIntField;
     if (min !== undefined && min < 0) errors.min = "Min must be greater than 0";
     if (min !== undefined && max !== undefined && min > max) {
       errors.max = "Max must be greater than Min";
     }
+    if (step !== undefined && step < 0) errors.step = "Step must be greater than 0";
+    if (variant === "rating" || variant === "range") {
+      if (min == undefined) errors.min = "Min is required for rating";
+      if (max == undefined) errors.max = "Max is required for rating";
+      if (step == undefined) errors.step = "Step is required for rating";
+    }
   }
+
+  if (cfg.type === EConfigCardType.multistring) {
+    if ((cfg as IMultistringField).input_nb < 1) errors.input_nb = "Input number must be greater than 0";
+  }
+
   return errors;
 }
 
@@ -40,7 +51,9 @@ type Props = {
 
 export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig, config: initialConfig }: Props) {
   const [config, setConfig] = useState<Config>(initialConfig);
-  const configErrors = validateConfig(config);
+  const configErrors = useMemo(() => validateConfig(config), [JSON.stringify(config)]);
+
+  const isAlreadyConfigured = useMemo(() => Boolean(initialConfig?.name), []);
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const target = e.target as HTMLInputElement | HTMLSelectElement;
@@ -70,7 +83,10 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
     <Card sx={{ content: "flex-col justify-between" }}>
       <div className="grid gap-x-2 mb-2 md:grid-cols-2">
         {/* Name Field */}
-        <fieldset className="fieldset">
+        <fieldset
+          className={cn("fieldset", isAlreadyConfigured && "tooltip")}
+          data-tip="Le nom est unique et ne peux être changé."
+        >
           <legend htmlFor="name" className="fieldset-legend">Name</legend>
           <input
             type="text"
@@ -78,6 +94,7 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
             className={cn("input input-bordered w-full", configErrors.name && "input-error")}
             value={config.name}
             onChange={handleChange}
+            readOnly={isAlreadyConfigured}
           />
           {configErrors.name && <p className="fieldset-label text-error">{configErrors.name}</p>}
         </fieldset>
@@ -127,16 +144,6 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
           </select>
         </fieldset>
 
-        {/* Icon Field */}
-        <fieldset className="fieldset">
-          <legend htmlFor="icon" className="fieldset-legend">Icon</legend>
-          <input
-            type="text"
-            id="icon"
-            className="input input-bordered bg-gray-100 w-full"
-            disabled
-          />
-        </fieldset>
 
         {/* Multistring Field */}
         {config.type === "multistring" && (
@@ -146,11 +153,12 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
               id="input_nb"
               name="input_nb"
               type="number"
-              className="input input-bordered w-full"
+              className={cn("input input-bordered w-full", configErrors.input_nb && "input-error")}
               value={(config as IMultistringField).input_nb}
               onChange={handleNumberChange}
               pattern="[0-9]*"
             />
+            {configErrors.input_nb && <p className="fieldset-label text-error">{configErrors.input_nb}</p>}
           </fieldset>
         )}
 
@@ -177,36 +185,51 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
 
         {/* Int Field: Min */}
         {config.type === "int" && (
-          <fieldset className="fieldset">
-            <legend htmlFor="min" className="fieldset-legend">Min</legend>
-            <input
-              id="min"
-              name="min"
-              type="number"
-              className={cn("input input-bordered w-full", configErrors.min && "input-error")}
-              value={(config as IIntField).min}
-              onChange={handleNumberChange}
-              pattern="[0-9]*"
-            />
-            {configErrors.min && <p className="fieldset-label text-error">{configErrors.min}</p>}
-          </fieldset>
-        )}
+          <div className="col-span-2 grid gap-x-2 md:grid-cols-3">
+            <fieldset className="fieldset">
+              <legend htmlFor="min" className="fieldset-legend">Min</legend>
+              <input
+                id="min"
+                name="min"
+                type="number"
+                className={cn("input input-bordered w-full", configErrors.min && "input-error")}
+                value={(config as IIntField).min}
+                onChange={handleNumberChange}
+                pattern="[0-9]*"
+              />
+              {configErrors.min && <p className="fieldset-label text-error">{configErrors.min}</p>}
+            </fieldset>
 
-        {/* Int Field: Max */}
-        {config.type === "int" && (
-          <fieldset className="fieldset">
-            <legend htmlFor="max" className="fieldset-legend">Max</legend>
-            <input
-              id="max"
-              name="max"
-              type="number"
-              className={cn("input input-bordered w-full", configErrors.max && "input-error")}
-              value={(config as IIntField).max}
-              onChange={handleNumberChange}
-              pattern="[0-9]*"
-            />
-            {configErrors.max && <p className="fieldset-label text-error">{configErrors.max}</p>}
-          </fieldset>
+            {/* Int Field: Max */}
+            <fieldset className="fieldset">
+              <legend htmlFor="max" className="fieldset-legend">Max</legend>
+              <input
+                id="max"
+                name="max"
+                type="number"
+                className={cn("input input-bordered w-full", configErrors.max && "input-error")}
+                value={(config as IIntField).max}
+                onChange={handleNumberChange}
+                pattern="[0-9]*"
+              />
+              {configErrors.max && <p className="fieldset-label text-error">{configErrors.max}</p>}
+            </fieldset>
+
+            {/* Int Field: Step */}
+            <fieldset className="fieldset">
+              <legend htmlFor="step" className="fieldset-legend">Step</legend>
+              <input
+                id="step"
+                name="step"
+                type="number"
+                className={cn("input input-bordered w-full", configErrors.step && "input-error")}
+                value={(config as IIntField).step}
+                onChange={handleNumberChange}
+                pattern="[0-9]*"
+              />
+              {configErrors.step && <p className="fieldset-label text-error">{configErrors.step}</p>}
+            </fieldset>
+          </div>
         )}
       </div>
 
