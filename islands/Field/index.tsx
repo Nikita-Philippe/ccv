@@ -1,11 +1,40 @@
-import { EConfigCardType, TField } from "@models/Content.ts";
+import { EConfigCardType, IIntField, TField } from "@models/Content.ts";
 import { useState } from "preact/hooks";
 import { FIELD_MULTISTRING_DELIMITER } from "@utils/constants.ts";
 import { capitalize } from "lodash";
+import { cn } from "@utils/cn.ts";
 
 type FieldProps = {
   field: TField;
   lastValue?: any;
+};
+
+/** Each field has a default size, to correctly display it in the content.
+ *
+ * @returns The size of the field, as a percentage
+ */
+const getFieldSize = (field: TField): number => {
+  switch (field.type) {
+    case EConfigCardType.boolean:
+      return 20;
+    case EConfigCardType.int: {
+      switch ((field as IIntField).variant) {
+        case "rating":
+          return 60;
+        case "range":
+          return 60;
+        default:
+          return 20;
+      }
+    }
+    case EConfigCardType.string:
+    case EConfigCardType.multistring:
+      return 60;
+    case EConfigCardType.textarea:
+      return 80;
+    default:
+      return 0;
+  }
 };
 
 export default function Field({ field, lastValue }: FieldProps) {
@@ -36,7 +65,9 @@ export default function Field({ field, lastValue }: FieldProps) {
           <>
             {/* Set an hidden input to send the value to form even if unchecked */}
             <input type="hidden" name={field.name} value={0} />
-            <input type="checkbox" className="checkbox checkbox-neutral" {...baseInputProps} />
+            <div class="flex items-center justify-center w-full">
+              <input type="checkbox" className="checkbox checkbox-neutral checkbox-lg" {...baseInputProps} />
+            </div>
           </>
         );
       case EConfigCardType.int:
@@ -115,8 +146,13 @@ export default function Field({ field, lastValue }: FieldProps) {
     }
   };
 
+  const fieldSize = getFieldSize(field);
+
   return (
-    <fieldset className="fieldset max-w-1/2 grow">
+    <fieldset
+      className={cn("fieldset")}
+      style={{ flex: `0 0 calc(${fieldSize}% - 8px)` }} // 8px is gap-2
+    >
       <legend className="fieldset-legend">{capitalize(field.label)}</legend>
       {content()}
     </fieldset>
