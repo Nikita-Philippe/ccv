@@ -3,6 +3,7 @@ import { TField } from "@models/Content.ts";
 import { getContent } from "@utils/content.ts";
 import { exportEntries } from "@utils/entries.ts";
 import { datasToCSV, datasToJSON } from "@utils/export.ts";
+import { getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
 
 export const handler: Handlers<TField | null> = {
   async GET(req) {
@@ -13,7 +14,10 @@ export const handler: Handlers<TField | null> = {
     const to = url.searchParams.get("to");
     const type = url.searchParams.get("type");
 
-    const content = await getContent(id ?? "");
+    const user = await getUserBySession({ req });
+    if (!user) return getHelloPageRedirect(req.url);
+
+    const content = await getContent({ user, id: id ?? undefined });
 
     if (!id || !content || !from || !to || !type) {
       return new Response(JSON.stringify({ error: "Missing parameters" }), { status: 400 });

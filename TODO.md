@@ -31,6 +31,11 @@
   - [x] Add toast
   - [ ] Add loader
   - [ ] Themes
+  - [ ] Pages
+    - [ ] No content on index
+    - [ ] Hello page
+    - [ ] Better signin/out
+    - [ ] Tell public user 'your are public, warning in x days everything delete'
 - Settings:
   - [ ] Daily delta (1 day default)
   - [ ] Notifications when/how
@@ -48,12 +53,15 @@
     - [ ] Auto import from source
   - [ ] Types
     - [ ] Add types for field values
-  - [ ] Add auth
-    - [ ] Add login
-    - [ ] Add logout
-    - [ ] Add register
-    - [ ] Add forgot/reset password
+  - [x] Add auth
+    - [x] Add login
+    - [x] Add logout
+    - [x] Add register
   - [ ] Add seeding, for default configuration
+  - [ ] Sync
+    - [ ] When signing, transfer all current public content to the new signed in user
+  - [ ] Encode config & content per-user (signed in only?)
+  - [ ] Periodically delete content/config of public users from kv
 - Stats
   - [ ] Think about stats
 - Ideas

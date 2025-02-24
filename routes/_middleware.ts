@@ -1,9 +1,11 @@
 import { FreshContext } from "$fresh/server.ts";
-import { verifyBetaCode } from "@utils/auth.ts";
-import { getCookies } from "$std/http/cookie.ts";
+import { setCookie } from "$std/http/cookie.ts";
+import { createPublicUser, getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
+import { PUBLIC_USER_ID } from "@utils/constants.ts";
+import { DateTime } from "luxon";
 
+// List of routes to not check for user authorization
 const authorizedRoutes = [
-  "/beta",
   "/styles.css",
   "/favicon.ico",
 ];
@@ -13,17 +15,27 @@ export async function handler(req: Request, ctx: FreshContext) {
   const route = new URL(url).pathname;
 
   if (!authorizedRoutes.includes(route)) {
-    const betaCode = getCookies(req.headers).beta_code;
-    if (!betaCode || betaCode && !await verifyBetaCode(betaCode, true)) {
-      return new Response("", {
-        status: 303,
-        headers: {
-          Location: `/beta`,
-        },
+    const user = await getUserBySession({ req });
+
+    // If no user (or bad id), create a public user and redirect to "hello" page
+    if (!user) {
+      const resp = getHelloPageRedirect();
+
+      const newUser = await createPublicUser();
+      console.log("Creating public user", newUser.id);
+
+      const expires = DateTime.now().plus({ days: 7 }).toJSDate();
+      setCookie(resp.headers, {
+        name: PUBLIC_USER_ID,
+        value: encodeURIComponent(JSON.stringify(newUser)),
+        path: "/",
+        httpOnly: true,
+        expires,
       });
+
+      return resp;
     }
   }
 
-  const resp = await ctx.next();
-  return resp;
+  return await ctx.next();
 }

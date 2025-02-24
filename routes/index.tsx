@@ -8,6 +8,7 @@ import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import { getContent } from "@utils/content.ts";
 import { getEntry, missingEntries, parseEntry, saveEntries, stringifyEntryValue } from "@utils/entries.ts";
 import { capitalize, difference } from "lodash";
+import { getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
 
 type HandlerType = {
   message?: string;
@@ -16,13 +17,15 @@ type HandlerType = {
 export const handler: Handlers<HandlerType | null> = {
   async POST(req, ctx) {
     const form = await req.formData();
-    const url = new URL(req.url);
 
     const { id: contentId, date, ...formData } = Object.fromEntries(form);
 
     if (!contentId) return await ctx.render({ message: "No content id provided" });
 
-    const content = await getContent(contentId.toString());
+    const user = await getUserBySession({ req });
+    if (!user) return await ctx.render();
+
+    const content = await getContent({ user, id: contentId.toString() });
 
     if (!content) return await ctx.render({ message: "No content found" });
 
@@ -51,8 +54,11 @@ export const handler: Handlers<HandlerType | null> = {
   },
 };
 
-export default async function Home(_: Request, { data }: RouteContext<HandlerType>) {
-  const content = await getContent();
+export default async function Home(req: Request, { data }: RouteContext<HandlerType>) {
+  const user = await getUserBySession({ req });
+  if (!user) return getHelloPageRedirect(req.url);
+
+  const content = await getContent({ user });
   const lastDay = await getEntry();
   const missingDays = await missingEntries(APP_DAYS_MISS_CHECK);
 
@@ -64,30 +70,41 @@ export default async function Home(_: Request, { data }: RouteContext<HandlerTyp
     return acc;
   }, [] as { group: TField["group"]; fields: TField[] }[]).sort((a, b) => b.group.localeCompare(a.group));
 
-  return (
-    <form
-      method="POST"
-      className="flex flex-col gap-2 justify-start"
-    >
-      <input type="hidden" name="id" value={content?.id} />
-      {content && entriesContent &&
-        entriesContent.map(({ group, fields }) => (
-          <Card key={group} title={capitalize(group)}>
-            {fields.map((field) => {
-              const lastEntry = lastDay?.entries.find((e) => e.name === field.name);
-              const lastValue = lastEntry ? stringifyEntryValue(lastEntry, content) : undefined;
-              return (
-                <Field
-                  key={field.name}
-                  field={field}
-                  lastValue={lastValue}
-                />
-              );
-            })}
-          </Card>
-        ))}
-      <SaveButton missingDays={missingDays} daysChecked={APP_DAYS_MISS_CHECK} />
-      {data?.message && <ToasterWrapper content={{ id: "1", description: data.message }} />}
-    </form>
-  );
+  if (!content || !entriesContent) {
+    return (
+      <div>
+        <h3>
+          You don't have any content configured yet
+        </h3>
+        <a className={"link"} href="/config">Go to config page to create one your first form !</a>
+      </div>
+    );
+  } else {
+    return (
+      <form
+        method="POST"
+        className="flex flex-col gap-2 justify-start"
+      >
+        <input type="hidden" name="id" value={content?.id} />
+        {content && entriesContent &&
+          entriesContent.map(({ group, fields }) => (
+            <Card key={group} title={capitalize(group)}>
+              {fields.map((field) => {
+                const lastEntry = lastDay?.entries.find((e) => e.name === field.name);
+                const lastValue = lastEntry ? stringifyEntryValue(lastEntry, content) : undefined;
+                return (
+                  <Field
+                    key={field.name}
+                    field={field}
+                    lastValue={lastValue}
+                  />
+                );
+              })}
+            </Card>
+          ))}
+        <SaveButton missingDays={missingDays} daysChecked={APP_DAYS_MISS_CHECK} />
+        {data?.message && <ToasterWrapper content={{ id: "1", description: data.message }} />}
+      </form>
+    );
+  }
 }
