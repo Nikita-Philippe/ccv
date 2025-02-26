@@ -27,7 +27,7 @@ export async function handler(req: Request, ctx: FreshContext) {
       const expires = DateTime.now().plus({ days: 7 }).toJSDate();
       setCookie(resp.headers, {
         name: PUBLIC_USER_ID,
-        value: encodeURIComponent(JSON.stringify(newUser)),
+        value: encodeURIComponent(JSON.stringify({ ...newUser, expires })),
         path: "/",
         httpOnly: true,
         expires,

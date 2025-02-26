@@ -9,6 +9,7 @@ import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
 import { HTTPError } from "@models/Errors.ts";
 import { IconPlus as Plus } from "@icons";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
+import Card from "@islands/UI/Card.tsx";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -23,8 +24,8 @@ export default function ConfigCollection({ content: defaultContent }: {
 
   // FIXME: debug only. to be removed
   useEffect(() => {
-    (globalThis as any).clearEntries = () => ky.put("/api/config/debug")
-  }, [])
+    (globalThis as any).clearEntries = () => ky.put("/api/config/debug");
+  }, []);
 
   const isModified = useMemo(() => !isEqual((defaultContent ?? baseContent).fields, content.fields), [
     JSON.stringify(content.fields),
@@ -92,14 +93,20 @@ export default function ConfigCollection({ content: defaultContent }: {
   }, [content]);
 
   const replaceByImportedContent = (newContent: IPartialContent) => {
-    if (globalThis.confirm('Are you sure you want to replace the whole config ? The current config will be entirely replaced')) {
-      saveContent(newContent)
+    if (
+      globalThis.confirm(
+        "Are you sure you want to replace the whole config ? The current config will be entirely replaced",
+      )
+    ) {
+      saveContent(newContent);
     }
   };
 
   return (
     <>
-      <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
+      {content?.id && content?.fields.length > 0 && (
+        <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
+      )}
       {/* 2 items per line (if space available), gap of 2 */}
       <div className="grid gap-4 grid-cols-2">
         {content?.fields.map((field, index) => (
@@ -111,12 +118,14 @@ export default function ConfigCollection({ content: defaultContent }: {
             duplicateConfig={() => duplicateField(index)}
           />
         ))}
-        <button
-          className={"flex items-center justify-center p-2 border border-gray-200 rounded"}
-          onClick={addBlankEntry}
-        >
-          <Plus size={42} />
-        </button>
+        <Card>
+          <button
+            className={"w-full h-full flex justify-center items-center cursor-pointer"}
+            onClick={addBlankEntry}
+          >
+            <Plus size={42} />
+          </button>
+        </Card>
       </div>
       {isModified && (
         <button

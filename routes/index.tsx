@@ -72,12 +72,17 @@ export default async function Home(req: Request, { data }: RouteContext<HandlerT
 
   if (!content || !entriesContent) {
     return (
-      <div>
+      <Card sx={{ content: "p-4 flex-col no-wrap relative" }}>
         <h3>
-          You don't have any content configured yet
+          You don't have any content configured yet.
         </h3>
-        <a className={"link"} href="/config">Go to config page to create one your first form !</a>
-      </div>
+        <p>
+          <button class={"btn w-fit h-fit py-0.5"}>
+            <a href="/config">Configure</a>
+          </button>{" "}
+          now your first form, and start tracking your habits !
+        </p>
+      </Card>
     );
   } else {
     return (

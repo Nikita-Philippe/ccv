@@ -1,4 +1,4 @@
-import { getCookies } from "$std/http/cookie.ts";
+import { getCookies, setCookie } from "$std/http/cookie.ts";
 import { PartialBy } from "@models/Common.ts";
 import { IAuthenticatedUser, IPublicUser, TUser } from "@models/User.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
@@ -50,10 +50,28 @@ export const createPublicUser = async (): Promise<IPublicUser> =>
     isAuthenticated: false,
   });
 
-/** Get the current public user from the request */
-const getPublicUser = (req: Request): IPublicUser | null => {
+/** Get the current public user from the request
+ * 
+ * @param req The request to get the public user from
+ * @returns The public user, or null if not found */
+export const getPublicUser = (req: Request): IPublicUser & { expires: string } | null => {
   const cookie = getCookies(req.headers)[PUBLIC_USER_ID];
   return cookie ? JSON.parse(decodeURIComponent(cookie)) : null;
+};
+
+/** Remove the current public user the request
+ * 
+ * @param resp The response to remove the public user from */
+export const removePublicUser = (req: Request, res: Response) => {
+  if (!getPublicUser(req)) return res;
+  setCookie(res.headers, {
+    name: PUBLIC_USER_ID,
+    value: "",
+    path: "/",
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  return res;
 };
 
 /** Get a redirect response to the hello page.

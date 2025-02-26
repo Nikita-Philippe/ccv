@@ -36,6 +36,7 @@
     - [ ] Hello page
     - [ ] Better signin/out
     - [ ] Tell public user 'your are public, warning in x days everything delete'
+    - [ ] Landing page
 - Settings:
   - [ ] Daily delta (1 day default)
   - [ ] Notifications when/how
@@ -62,8 +63,14 @@
     - [ ] When signing, transfer all current public content to the new signed in user
   - [ ] Encode config & content per-user (signed in only?)
   - [ ] Periodically delete content/config of public users from kv
+  - [ ] Add an admin account (set in env)
 - Stats
   - [ ] Think about stats
+- Deployment
+  - [ ] Add landing fully public page
+  - [ ] Add terms
 - Ideas
   - [ ] Can datas be cleanup automatically, server side ?
   - [ ] Version/deploy version in the app about
+  - [ ] Normalize CCV terms, and fix pages texts
+  - [ ] Add fake "pricing" page

@@ -1,7 +1,7 @@
 import type { Plugin } from "$fresh/server.ts";
 import { PartialBy } from "@models/Common.ts";
 import { IAuthenticatedUser, IGoogleUser } from "@models/User.ts";
-import { getHelloPageRedirect } from "@utils/auth.ts";
+import { getHelloPageRedirect, removePublicUser } from "@utils/auth.ts";
 import { createUser, deleteUserBySession, getUserById, setUserSession } from "@utils/user.ts";
 import { createGoogleOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import ky from "ky";
@@ -37,7 +37,7 @@ export default {
     {
       path: "/callback",
       async handler(req) {
-        const { response, tokens, sessionId } = await handleCallback(req);
+        let { response, tokens, sessionId } = await handleCallback(req);
 
         const googleUser = await ky<IGoogleUser | null>("https://www.googleapis.com/oauth2/v1/userinfo", {
           headers: {
@@ -47,6 +47,9 @@ export default {
 
         // If no user, redirect to hello page to create a public user
         if (!googleUser) return getHelloPageRedirect();
+
+        // Remove public user if exists
+        response = removePublicUser(req, response);
 
         const user = await getUserById(googleUser.id.toString());
         if (!user) {
