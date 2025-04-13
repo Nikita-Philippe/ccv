@@ -1,15 +1,15 @@
-import { StateUpdater, useCallback, useContext, useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { EConfigCardType, IContent, IPartialContent } from "@models/Content.ts";
-import ConfigCard from "@islands/Config/card.tsx";
-import { PartialBy } from "@models/Common.ts";
-import { isEqual } from "lodash";
-import ky from "ky";
-import { useToast } from "@islands/UI/Toast/useToast.tsx";
-import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
-import { HTTPError } from "@models/Errors.ts";
 import { IconPlus as Plus } from "@icons";
+import ConfigCard from "@islands/Config/card.tsx";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
 import Card from "@islands/UI/Card.tsx";
+import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
+import { useToast } from "@islands/UI/Toast/useToast.tsx";
+import { PartialBy } from "@models/Common.ts";
+import { EConfigCardType, IContent, IPartialContent } from "@models/Content.ts";
+import { HTTPError } from "@models/Errors.ts";
+import ky from "ky";
+import { isEqual } from "lodash";
+import { useCallback, useMemo, useState } from "preact/hooks";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -21,11 +21,6 @@ export default function ConfigCollection({ content: defaultContent }: {
   const { toast } = useToast();
   const [submitState, setSubmitState] = useState<"idle" | "loading">("idle");
   const [content, setContent] = useState<IPartialContent>(defaultContent ?? baseContent);
-
-  // FIXME: debug only. to be removed
-  useEffect(() => {
-    (globalThis as any).clearEntries = () => ky.put("/api/config/debug");
-  }, []);
 
   const isModified = useMemo(() => !isEqual((defaultContent ?? baseContent).fields, content.fields), [
     JSON.stringify(content.fields),
@@ -73,7 +68,7 @@ export default function ConfigCollection({ content: defaultContent }: {
 
   const saveContent = useCallback((forceContent?: IPartialContent) => {
     setSubmitState("loading");
-    ky.put("/api/config", { json: { content: forceContent ?? content } })
+    ky.put("/api/config", { json: { content: forceContent ?? content }, retry: 0 })
       .json<IContent | null>()
       .then((res) => {
         setContent((p) => res ?? p);
@@ -86,7 +81,7 @@ export default function ConfigCollection({ content: defaultContent }: {
         const errorBody: HTTPError = await e.response?.json();
         toast({
           title: errorBody?.error?.message ?? "Error",
-          description: errorBody?.error?.details.join("\n"),
+          description: errorBody?.error?.details?.join("\n"),
         });
         setSubmitState("idle");
       });

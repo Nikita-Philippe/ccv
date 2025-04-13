@@ -3,6 +3,10 @@ import { DateTime } from "luxon";
 import { getEntry } from "@utils/entries.ts";
 
 export const checkForDailyAnswer = async () => {
+  // TODO: this needs to be implemented user-based. We need to check all users, and for each if they have a discord webhook attached
+  console.warn("Waiting to be implemented");
+  return true;
+
   const lastEntry = await getEntry();
 
   // Compare if last entry is before current one, by DAY

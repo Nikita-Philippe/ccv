@@ -5,4 +5,7 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** Utility type to make some properties of T optional. */
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
+/** Utility type to make some properties of T required. */
+export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
 export type TDailyEntryKey = Date | string | DateTime;

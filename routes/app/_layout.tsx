@@ -2,26 +2,26 @@ import { RouteContext } from "$fresh/server.ts";
 import { getUserBySession } from "@utils/auth.ts";
 
 export default async function Layout(req: Request, ctx: RouteContext) {
-  const user = await getUserBySession({ req });
+  const user = await getUserBySession(req, true);
 
   const navItems = [
     {
       name: "home",
       label: "Home",
-      href: "/",
-      "f-partial": "/",
+      href: "/app",
+      "f-partial": "/app",
     },
     {
       name: "config",
       label: "config",
-      href: "/config",
-      "f-partial": "/config",
+      href: "/app/config",
+      "f-partial": "/app/config",
     },
     {
       name: "settings",
       label: "settings",
-      href: "/settings",
-      "f-partial": "/settings",
+      href: "/app/settings",
+      "f-partial": "/app/settings",
     },
     !user?.isAuthenticated
       ? ({

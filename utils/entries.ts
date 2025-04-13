@@ -1,42 +1,72 @@
-import { PartialBy, TDailyEntryKey } from "@models/Common.ts";
-import { EConfigCardType, IContent, IEntry, TField } from "@models/Content.ts";
-import { DateTime } from "luxon";
+import { TDailyEntryKey } from "@models/Common.ts";
+import { EConfigCardType, IContent, IDailyEntry, IEntry } from "@models/Content.ts";
+import { TUser } from "@models/User.ts";
+import { getDailyEntryKey, getDateTime } from "@utils/common.ts";
 import { FIELD_MULTISTRING_DELIMITER, KV_DAILY_ENTRY } from "@utils/constants.ts";
-import { IDailyEntry } from "@models/Content.ts";
-import { getDailyEntryKey } from "@utils/common.ts";
+import { hashUserId } from "@utils/crypto.ts";
+import { TKv } from "@utils/database.ts";
+import { getInKv, getLastKey, listInKv, setInKv } from "@utils/kv.ts";
 import { decodeString, encodeString } from "@utils/string.ts";
+import { DateTime } from "luxon";
+import { getUserDatasExpiry } from "@utils/user.ts";
 
-const kv = await Deno.openKv();
+const getEntryKey = async (userId: string, dailyKey: string): Promise<Deno.KvKey> => {
+  const kvKeyId = await hashUserId(userId);
+  return [KV_DAILY_ENTRY, kvKeyId, dailyKey];
+};
 
-export const saveEntries = async (contentId: IContent["id"], entries: IDailyEntry["entries"], at?: TDailyEntryKey) => {
+/** Save daily entry in the KV store
+ *
+ * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
+ * @param user The user to get the content for. Set by default using `getUserBySession`.
+ * @param args.contentId The id of the content (config) to save the entry for.
+ * @param args.entries The entries to save. Must be a valid `IDailyEntry["entries"]` object.
+ * @param args.at The date to save the entry for. If not provided, the current date is used.
+ * @returns The content. Null if an error occurred.
+ */
+export const saveEntries = async (
+  kv: TKv,
+  user: TUser,
+  { contentId, entries, at }: { contentId: IContent["id"]; entries: IDailyEntry["entries"]; at?: TDailyEntryKey },
+) => {
   // Get date, as AAAA-MM-DD
   const date = getDailyEntryKey(at ?? DateTime.now().toJSDate());
+  const key = await getEntryKey(user.id, date);
 
-  // If entry exists, overwrite it, else create a new one
-  const entry = {
+  // Use key without check to overwrite it if exists (1/day)
+  const created = await setInKv(kv, key, {
     at: date,
     content: contentId,
     entries,
-  };
-  const created = await kv.set([KV_DAILY_ENTRY, date], entry);
-  if (created.ok) return await getEntry(date);
+  }, { expireIn: getUserDatasExpiry(user) });
+  if (created.ok) return await getEntry(kv, user, date);
   return null;
 };
 
-export const getEntry = async (at?: TDailyEntryKey): Promise<IDailyEntry | null> => {
-  if (at) {
-    const entry = await kv.get<IDailyEntry>([KV_DAILY_ENTRY, getDailyEntryKey(at)]);
-    return entry.value;
-  } else {
-    // Reverse res and get the first one
-    const entries = kv.list<IDailyEntry>({ prefix: [KV_DAILY_ENTRY] }, {
-      limit: 1,
-      reverse: true,
-    });
-    const contents = [];
-    for await (const entry of entries) contents.push(entry.value);
-    return contents.pop() ?? null;
+/** Get the daily entry for a user
+ *
+ * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
+ * @param user The user to get the content for. Set by default using `getUserBySession`.
+ * @param args.at The date to get the entry for. If not provided, the last entry is returned.
+ * @returns The content. Null if not found.
+ */
+export const getEntry = async (
+  kv: TKv,
+  user: TUser,
+  at?: TDailyEntryKey,
+): Promise<IDailyEntry | null> => {
+  const kvKeyId = await hashUserId(user.id);
+
+  let lastEntryKey = at ? getDailyEntryKey(at) : null;
+  if (!lastEntryKey) {
+    const lastKey = await getLastKey([KV_DAILY_ENTRY, kvKeyId]);
+    if (lastKey) lastEntryKey = lastKey;
+    else return null;
   }
+
+  const key = await getEntryKey(user.id, lastEntryKey);
+  const entry = await getInKv<IDailyEntry>(kv, key);
+  return entry.value;
 };
 
 /** Parse a string entry, from a form, to a valid savable entry. */
@@ -95,15 +125,23 @@ export const stringifyEntryValue = (entry: IEntry, content: IContent): IEntry["v
   return value;
 };
 
-export const missingEntries = async (days: number): Promise<string[]> => {
+/** Get the list of entries missing a value, for a given user and content.
+ *
+ * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
+ * @param user The user to get the content for. Set by default using `getUserBySession`.
+ * @returns The list of missing entries, as an array of `TDailyEntryKey`.
+ */
+export const missingEntries = async (kv: TKv, user: TUser, { days }: { days: number }) => {
   const allDays = Array.from({ length: days }, (_, i) => i).map((i) =>
     getDailyEntryKey(DateTime.now().minus({ days: i + 1 }))
   );
-  const entries = await kv.list<IDailyEntry>({ prefix: [KV_DAILY_ENTRY] }, {
+  const kvKeyId = await hashUserId(user.id);
+  const entries = await listInKv<IDailyEntry>(kv, { prefix: [KV_DAILY_ENTRY, kvKeyId] }, {
     limit: days,
     reverse: true,
   });
   for await (const entry of entries) {
+    if (!entry.value) continue;
     const date = getDailyEntryKey(entry.value.at);
     if (date && allDays.includes(date)) {
       allDays.splice(allDays.indexOf(date), 1);
@@ -112,18 +150,34 @@ export const missingEntries = async (days: number): Promise<string[]> => {
   return allDays;
 };
 
-export const isTodayAlreadySaved = async (): Promise<boolean> => {
-  const lastDay = await getEntry();
+export const isTodayAlreadySaved = async (kv: TKv, user: TUser) => {
+  const lastDay = await getEntry(kv, user);
   return DateTime.now().minus({ days: 1 }).toISODate() === lastDay?.at;
 };
 
-export const exportEntries = async (contentId: IContent["id"], from: TDailyEntryKey, to: TDailyEntryKey) => {
-  const entries = await kv.list<IDailyEntry>({ prefix: [KV_DAILY_ENTRY] }, {
-    limit: 1000,
+/** Export the entries for a given user and content, between two dates.
+ *
+ * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
+ * @param user The user to get the content for. Set by default using `getUserBySession`.
+ * @param contentId The id of the content to export the entries for.
+ * @param from The start date to export the entries from.
+ * @param to The end date to export the entries to.
+ * @returns The list of entries, as an array of `IDailyEntry`.
+ */
+export const exportEntries = async (
+  kv: TKv,
+  user: TUser,
+  { contentId, from, to }: { contentId: IContent["id"]; from: TDailyEntryKey; to: TDailyEntryKey },
+) => {
+  const kvKeyId = await hashUserId(user.id);
+  const entries = await listInKv<IDailyEntry>(kv, { prefix: [KV_DAILY_ENTRY, kvKeyId] }, {
+    // Get the number of days between from and to, to limit the number of entries
+    limit: Math.abs(getDateTime(from).diff(getDateTime(to), "days").days),
     reverse: true,
   });
   const contents = [];
   for await (const entry of entries) {
+    if (!entry.value) continue;
     if (entry.value.content === contentId && entry.value.at >= from && entry.value.at <= to) {
       contents.push(entry.value);
     }

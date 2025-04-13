@@ -36,6 +36,7 @@
     - [ ] Hello page
     - [ ] Better signin/out
     - [ ] Tell public user 'your are public, warning in x days everything delete'
+      - [ ] Make it more clear for public user that data expiry
     - [ ] Landing page
 - Settings:
   - [ ] Daily delta (1 day default)
@@ -59,11 +60,17 @@
     - [x] Add logout
     - [x] Add register
   - [ ] Add seeding, for default configuration
-  - [ ] Sync
-    - [ ] When signing, transfer all current public content to the new signed in user
-  - [ ] Encode config & content per-user (signed in only?)
-  - [ ] Periodically delete content/config of public users from kv
+  - [x] Sync
+    - [x] When signing, transfer all current public content to the new signed in user
+  - [x] Encode config & content per-user (signed in only?)
+  - [x] Periodically delete content/config of public users from kv
   - [ ] Add an admin account (set in env)
+  - [x] Errors
+    - [x] On callback reload `OAuth session not found at getAndDeleteOAuthSession (https://jsr.io/@deno/kv-oauth/0.11.0/lib/_kv.ts:34:11)`
+    - [x] Session ended (TTL expired) when signed in (redirect to specific page to re-connect. Do not bother with refresh token)
+  - [ ] Admin page
+    - [ ] Export datas
+    - [ ] Check logs ?
 - Stats
   - [ ] Think about stats
 - Deployment

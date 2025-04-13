@@ -19,3 +19,6 @@ export const APP_EXPORT_CSV_NOTFOUND = "#N/F";
 
 /** Cookie key to store the current public user */
 export const PUBLIC_USER_ID = "ccv_public_user";
+
+/** Recovery keys */
+export const KV_AUTH_RECOVERY = "ccv_auth_rk"

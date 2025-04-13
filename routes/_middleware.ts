@@ -1,41 +1,54 @@
 import { FreshContext } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
-import { createPublicUser, getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
+import { cleanupSession, createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
-import { DateTime } from "luxon";
 
 // List of routes to not check for user authorization
 const authorizedRoutes = [
-  "/styles.css",
-  "/favicon.ico",
+  "/",
+  "/app/recover",
+  "/signin",
+  "/callback",
+  "/signout",
 ];
 
 export async function handler(req: Request, ctx: FreshContext) {
   const { url } = req;
   const route = new URL(url).pathname;
 
-  if (!authorizedRoutes.includes(route)) {
-    const user = await getUserBySession({ req });
+  let response = await ctx.next();
 
+  if (ctx.destination === "route" && !authorizedRoutes.includes(route)) {
     // If no user (or bad id), create a public user and redirect to "hello" page
-    if (!user) {
-      const resp = getHelloPageRedirect();
+    if (!await isAuthorized(req)) {
+      // API route just returns 401 Unauthorized
+      if (route.startsWith("/api")) return new Response("Unauthorized", { status: 401 });
+
+      // Had a session, but expired or invalid. Redirect to signin
+      if (await isSessionExpired(req)) {
+        return new Response(response?.body ?? "", {
+          status: 303,
+          // Do NOT reuse headers, to wipe existing cookies
+          headers: {
+            Location: `/signin?redirectTo=${encodeURIComponent(route)}`,
+          },
+        });
+      }
+
+      response = cleanupSession(getHelloPageRedirect(undefined, response));
 
       const newUser = await createPublicUser();
       console.log("Creating public user", newUser.id);
 
-      const expires = DateTime.now().plus({ days: 7 }).toJSDate();
-      setCookie(resp.headers, {
+      setCookie(response.headers, {
         name: PUBLIC_USER_ID,
-        value: encodeURIComponent(JSON.stringify({ ...newUser, expires })),
+        value: encodeURIComponent(JSON.stringify(newUser)),
         path: "/",
         httpOnly: true,
-        expires,
+        expires: newUser.expires,
       });
-
-      return resp;
     }
   }
 
-  return await ctx.next();
+  return response;
 }
