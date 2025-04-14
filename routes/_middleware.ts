@@ -1,5 +1,5 @@
 import { FreshContext } from "$fresh/server.ts";
-import { setCookie } from "$std/http/cookie.ts";
+import { setCookie } from "@std/http/cookie";
 import { cleanupSession, createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
 

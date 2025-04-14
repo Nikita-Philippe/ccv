@@ -1,4 +1,4 @@
-import { deleteCookie, getCookies, setCookie } from "$std/http/cookie.ts";
+import { deleteCookie, getCookies, setCookie } from "@std/http/cookie";
 import { PartialBy } from "@models/Common.ts";
 import { IAuthenticatedUser, IPublicUser, ISessionUser } from "@models/User.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
