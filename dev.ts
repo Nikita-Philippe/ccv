@@ -6,8 +6,13 @@ import config from "./fresh.config.ts";
 import "$std/dotenv/load.ts";
 
 if (!Deno.args.includes("build")) {
-    const cron = await import("./cron.ts");
-    await cron.default();
+  // Run cron jobs
+  const cron = await import("./cron.ts");
+  await cron.default();
+
+  // Run queues listener
+  const queuesListener = await import("./queuesListener.ts");
+  await queuesListener.default();
 }
 
 import autoprefixer from "autoprefixer";

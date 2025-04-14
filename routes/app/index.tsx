@@ -1,19 +1,15 @@
-import { Handlers, RouteContext } from "$fresh/server.ts";
+import { Handlers } from "$fresh/server.ts";
 import Field from "@islands/Field/index.tsx";
 import SaveButton from "@islands/SaveDailyButton.tsx";
 import Card from "@islands/UI/Card.tsx";
-import ToasterWrapper from "@islands/UI/Toast/ToasterWrapper.tsx";
+import { IDefaultPageHandler } from "@models/App.ts";
 import { TField } from "@models/Content.ts";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import { requestTransaction } from "@utils/database.ts";
 import { parseEntry, stringifyEntryValue } from "@utils/entries.ts";
 import { capitalize, difference } from "lodash";
 
-type HandlerType = {
-  message?: string;
-};
-
-export const handler: Handlers<HandlerType | null> = {
+export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
     const form = await req.formData();
 
@@ -48,7 +44,7 @@ export const handler: Handlers<HandlerType | null> = {
   },
 };
 
-export default async function Home(req: Request, { data }: RouteContext<HandlerType>) {
+export default async function Home(req: Request) {
   const content = await requestTransaction(req, { action: "getContent" });
   const lastDay = await requestTransaction(req, { action: "getEntry" });
   const missingDays = await requestTransaction(req, {
@@ -103,7 +99,6 @@ export default async function Home(req: Request, { data }: RouteContext<HandlerT
               </Card>
             ))}
           <SaveButton missingDays={missingDays as string[]} daysChecked={APP_DAYS_MISS_CHECK} />
-          {data?.message && <ToasterWrapper content={{ id: "1", description: data.message }} />}
         </form>
       </>
     );

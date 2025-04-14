@@ -69,17 +69,6 @@ export interface IPartialContent {
   fields: PartialBy<TField, "id">[];
 }
 
-/** This is the settings, containing the app settings. */
-export interface ISettings {
-  id: string;
-  saving_hour: number;
-  saving_delta: number;
-  theme: string;
-  notifications: {
-    discord: boolean;
-  }
-}
-
 /** This is the entry created daily, to store the user's data. */
 export interface IDailyEntry {
   /** Use the at date as the primary key. The date is the day of the entry. */

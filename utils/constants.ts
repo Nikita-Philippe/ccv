@@ -4,6 +4,7 @@ export const KV_CONTENT_PUBLIC = "public_"
 export const KV_SINGLE_FIELD = "ccv_single_field";
 export const KV_DAILY_ENTRY = "ccv_daily_entry";
 export const KV_SETTINGS = "ccv_settings";
+export const KV_SETTINGS_NOTIFICATIONS = "ccv_settings_notifications";
 
 /** KV store key for the user. */
 export const KV_USER = "ccv_user";

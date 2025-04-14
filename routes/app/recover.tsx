@@ -1,16 +1,15 @@
 import { Handlers, RouteContext } from "$fresh/server.ts";
 import Card from "@islands/UI/Card.tsx";
 import FileDownloader from "@islands/UI/FileDownloader.tsx";
-import ToasterWrapper from "@islands/UI/Toast/ToasterWrapper.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { ERROR_MESSAGE } from "@models/Errors.ts";
 import { recoverUserAccount } from "@utils/crypto.ts";
 import { getUserBySession } from "@utils/auth.ts";
 import { getSessionId } from "../../plugins/kv_oauth.ts";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
+import { IDefaultPageHandler } from "@models/App.ts";
 
-type HandlerType = {
-  message?: string;
+type HandlerType = IDefaultPageHandler & {
   recovered?: {
     configs: {
       filename: string;
@@ -125,7 +124,6 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
             </form>
           </Card>
         )}
-      {data?.message && <ToasterWrapper content={{ id: "1", description: data.message }} />}
     </>
   );
 }

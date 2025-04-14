@@ -5,17 +5,56 @@ import LongPressButton from "@islands/UI/LongPressButton.tsx";
 import { getHelloPageRedirect, getPublicUser, getUserBySession } from "@utils/auth.ts";
 import { requestTransaction, wipeUser } from "@utils/database.ts";
 import { DateTime } from "luxon";
+import { IDefaultPageHandler, ISettings } from "@models/App.ts";
+import { getSettings, setSettings } from "@utils/settings.ts";
 
-export const handler: Handlers<null> = {
+export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
     const form = await req.formData();
 
-    const { action, ..._ } = Object.fromEntries(form);
+    const { action, settings, ...restForm } = Object.fromEntries(form);
 
     if (action === "delete_account") {
       const user = await getUserBySession(req, true);
       if (!user?.isAuthenticated) return await ctx.render();
       await wipeUser(user);
+    }
+
+    // Updating settings
+    if (settings) {
+      const user = await getUserBySession(req, true);
+      if (!user?.isAuthenticated) return await ctx.render();
+
+      const userSettings = await getSettings(user.id);
+
+      // Verify data before processing them
+      switch (settings) {
+        case "notifications": {
+          const { reminder_start, reminder_end, notif_discord_webhook } = restForm;
+          const start = DateTime.fromFormat(reminder_start as string, "HH:mm", { zone: "local" });
+          const end = DateTime.fromFormat(reminder_end as string, "HH:mm", { zone: "local" });
+          if (!start.isValid || !end.isValid) return await ctx.render({ message: "Time format are invalid" });
+          if (start.hour === 0 && start.minute < 10) {
+            return await ctx.render({ message: "Start time must be after 00:10" });
+          }
+          if (end.hour === 23 && end.minute > 50) return await ctx.render({ message: "End time must be before 23:50" });
+          if (start > end) return await ctx.render({ message: "Start time must be before end time" });
+          if (!userSettings?.notifications?.discord_webhook && !notif_discord_webhook) {
+            return await ctx.render({ message: "Please provide a notification method" });
+          }
+          break;
+        }
+        default:
+          break;
+      }
+
+      await setSettings(user.id, settings as keyof ISettings, {
+        start: restForm.reminder_start as string,
+        end: restForm.reminder_end as string,
+        discord_webhook: restForm.notif_discord_webhook as string,
+      });
+
+      return await ctx.render({ message: "Settings updated" });
     }
 
     return await ctx.render();
@@ -31,6 +70,8 @@ export default async function Settings(req: Request) {
   const publicSession = getPublicUser(req);
 
   const isSignedIn = user.isAuthenticated;
+
+  const userSettings = isSignedIn ? await getSettings(user.id) : null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,7 +93,8 @@ export default async function Settings(req: Request) {
               <p>Your are currently not logged in.</p>
               <p>
                 As a public user, your <a className={"link"} href="/app/config">configuration</a>{" "}
-                and daily entries will expire {DateTime.fromJSDate(publicSession!.expires).setLocale("en").toRelative()}.
+                and daily entries will expire{" "}
+                {DateTime.fromJSDate(publicSession!.expires).setLocale("en").toRelative()}.
               </p>
               <p>
                 <button class={"btn w-fit h-fit py-0.5"}>
@@ -75,6 +117,55 @@ export default async function Settings(req: Request) {
             </>
           )}
       </Card>
+      {isSignedIn && (
+        <Card title="Notifications" sx={{ content: "p-4 flex-col no-wrap" }}>
+          <p>Each day, you can configure up to two notifications, sent to remind you to fill your daily entry !</p>
+          <div className={"alert alert-info"}>
+            <p className={"italic"}>Please note that notifications will only be sent if no entry has been filled.</p>
+          </div>
+          <form method="POST">
+            <input type="hidden" name="settings" value="notifications" />
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">First reminder</legend>
+              <input
+                type="time"
+                class="input"
+                name="reminder_start"
+                defaultValue={userSettings?.notifications?.start}
+              />
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">Last reminder</legend>
+              <input type="time" class="input" name="reminder_end" defaultValue={userSettings?.notifications?.end} />
+            </fieldset>
+            <Card title="Methods" sx={{ content: "p-4 flex-col no-wrap" }}>
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend pt-0">Discord webhook</legend>
+                <input
+                  type="text"
+                  name="notif_discord_webhook"
+                  class="input"
+                  placeholder="Discord webhook URL"
+                  defaultValue={userSettings?.notifications?.discord_webhook}
+                />
+                <p class="fieldset-label">
+                  Webhook are server based notification.{" "}
+                  <a
+                    className="link"
+                    href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks"
+                    target="_blank"
+                  >
+                    Learn more
+                  </a>
+                </p>
+              </fieldset>
+            </Card>
+            <button class={"btn w-fit mt-2"} type={"submit"}>
+              Save notifications settings
+            </button>
+          </form>
+        </Card>
+      )}
       <Card
         title={"Danger zone"}
         sx={{ content: "border-2 border-error border-dashed p-4 flex-col no-wrap relative", title: "text-error" }}

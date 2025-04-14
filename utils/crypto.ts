@@ -65,8 +65,8 @@ export const hashUserId = async (userId: string): Promise<string> => {
 /* ======= USER DATA ENCRYPTION ======= */
 
 /** Key used to encrypt/decrypt/derive user data */
-const cypto_data_derive_salt = Deno.env.get("CRYPTO__DATA_DERIVE_SALT") || "default_secret";
-const cypto_data_derive_iterations = parseInt(Deno.env.get("CRYPTO__DATA_DERIVE_ITERATIONS") || "600000");
+const cypto_data_derive_salt = Deno.env.get("CRYPTO_DATA_DERIVE_SALT") || "default_secret";
+const cypto_data_derive_iterations = parseInt(Deno.env.get("CRYPTO_DATA_DERIVE_ITERATIONS") || "600000");
 
 /** Get the crypto key used to encrypt/decrypt user data
  *

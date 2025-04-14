@@ -1,15 +1,39 @@
-import { checkForDailyAnswer } from "@utils/reminder.ts";
+import { unique } from "@kitsonk/kv-toolbox/keys";
+import { KV_SETTINGS } from "@utils/constants.ts";
+import { enqueueReminder, IReminder, RemindType } from "@utils/reminder.ts";
+import { getSettings } from "@utils/settings.ts";
 
 export default function () {
-  // Each day at 8 AM UTC
-  Deno.cron("Send 8am daily reminder", "0 8 * * *", () => {
+  // Each day at 00h00
+  Deno.cron("Check for reminder to send troughout the day", "0 0 * * *", async () => {
     console.log("Checking for daily answer");
-    checkForDailyAnswer();
-  });
 
-  // Each day at 8 PM UTC
-  Deno.cron("Send 8pm daily reminder", "0 20 * * *", () => {
-    console.log("Checking for daily answer");
-    checkForDailyAnswer();
+    const kv = await Deno.openKv();
+
+    const allSettings = await unique(kv, [KV_SETTINGS]);
+
+    const usersToSendReminder: IReminder[] = [];
+    for (const users of allSettings) {
+      const userKey = (users as string[]).pop();
+      if (!userKey) continue;
+      const settings = await getSettings(userKey, true);
+      if (settings?.notifications) usersToSendReminder.push({ user: userKey, notifications: settings.notifications });
+    }
+
+    console.log(`Found ${usersToSendReminder.length} users to send reminder`);
+
+    for (const { user, notifications } of usersToSendReminder) {
+      let type: RemindType | null = null;
+      if (notifications.discord_webhook) type = { type: "discord", query: notifications.discord_webhook };
+
+      if (!type) continue;
+
+      if (notifications.start) await enqueueReminder(kv, { user, at: notifications.start, use: type });
+      if (notifications.end) await enqueueReminder(kv, { user, at: notifications.end, use: type });
+
+      console.log(`Enqueued reminder for user ${user} at ${notifications.start} and ${notifications.end}`);
+    }
+
+    kv.close();
   });
 }
