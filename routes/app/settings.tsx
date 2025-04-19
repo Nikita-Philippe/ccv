@@ -7,6 +7,7 @@ import { requestTransaction, wipeUser } from "@utils/database.ts";
 import { DateTime } from "luxon";
 import { IDefaultPageHandler, ISettings } from "@models/App.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
+import ImportButton from "@islands/Settings/ImportButton.tsx";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -75,7 +76,12 @@ export default async function Settings(req: Request) {
 
   return (
     <div className="flex flex-col gap-4">
-      {content && <ExportButtons content={content} />}
+      {content && (
+        <>
+          <ExportButtons content={content} />
+          <ImportButton />
+        </>
+      )}
       <Card title={"Sync"} sx={{ content: "p-4 flex-col no-wrap relative" }}>
         {isSignedIn
           ? (
