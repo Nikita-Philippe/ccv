@@ -2,6 +2,7 @@
 FROM denoland/deno:latest AS builder
 
 WORKDIR /app
+COPY .env.piknik .env
 COPY . .
 
 # Install necessary dependencies
@@ -9,7 +10,7 @@ RUN deno cache main.ts dev.ts
 
 # Build with full permissions and proper environment variables
 # This will generate the Tailwind CSS output
-RUN deno task build --allow-all --allow-env --allow-read
+RUN deno task build --allow-env --allow-read
 
 # Production stage
 FROM denoland/deno:latest
