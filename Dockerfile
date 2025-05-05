@@ -1,8 +1,8 @@
 # Build stage
 FROM denoland/deno:latest AS builder
 
-WORKDIR /app
 COPY .env.piknik .env
+WORKDIR /app
 COPY . .
 
 # Install necessary dependencies
