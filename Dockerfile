@@ -1,8 +1,14 @@
 # Build stage
 FROM denoland/deno:latest AS builder
 
-COPY .env.piknik .env
 WORKDIR /app
+
+# set default envs, to let deno build. These are not sensitive and can be hardcoded.
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+
 COPY . .
 
 # Install necessary dependencies
