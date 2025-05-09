@@ -3,11 +3,11 @@ FROM denoland/deno:latest AS builder
 
 WORKDIR /app
 
-# set default envs, to let deno build. These are not sensitive and can be hardcoded.
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+# TODO: was here. en gros les .env sont pas transférés par le rsync je crois, donc deja
+# le build de docker y arrive pas, et quand on lance l'app évidemment non plus. 
+# a voir aussi si on peut pas : compresser et transferer OU transferer uniquement certaines parties (pas
+# sûr vu qu'on doit build)
+# voir aussi les ahead of time build de fresh
 
 COPY . .
 
