@@ -14,14 +14,20 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
       "f-partial": "/app",
     },
     {
+      name: "stats",
+      label: "Stats",
+      href: "/app/stats",
+      "f-partial": "/app/stats",
+    },
+    {
       name: "config",
-      label: "config",
+      label: "Config",
       href: "/app/config",
       "f-partial": "/app/config",
     },
     {
       name: "settings",
-      label: "settings",
+      label: "Settings",
       href: "/app/settings",
       "f-partial": "/app/settings",
     },

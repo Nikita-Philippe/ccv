@@ -49,6 +49,7 @@
     "tailwind-merge": "https://esm.sh/tailwind-merge@1.14.0",
     "pikaday": "npm:pikaday@^1.8",
     "@icons": "npm:@tabler/icons-preact@^3",
+    "apexcharts": "https://esm.sh/apexcharts@^4",
 
     "class-variance-authority": "https://esm.sh/class-variance-authority@0.7.0",
     "@radix-ui/react-toast": "https://esm.sh/*@radix-ui/react-toast@1.1.5?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat",
@@ -104,7 +105,8 @@
   },
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "jsxImportSource": "preact",
+    "types": ["./models/apexcharts.d.ts"]
   },
   "nodeModulesDir": "auto",
   "fmt": {

@@ -8,6 +8,7 @@ import { getContent, setContent } from "@utils/content.ts";
 import { getCryptoKey, getUserEncryptionKey, hashUserId } from "@utils/crypto.ts";
 import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/entries.ts";
 import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
+import { getStats, setStats } from "@utils/stats.ts";
 
 export type TKv = CryptoKv;
 
@@ -47,6 +48,8 @@ const availableActions = {
   "getUserById": getUserById,
   "createUser": createUser,
   "setUserSession": setUserSession,
+  "getStats": getStats,
+  "setStats": setStats,
 };
 
 // deno-lint-ignore no-explicit-any

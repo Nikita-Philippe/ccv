@@ -8,6 +8,7 @@ export default function App({ Component }: PageProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ccv</title>
         <link rel="stylesheet" href="/styles.css" />
+        <script src="/loader.js" defer></script>
       </head>
       <body class="min-h-screen">
         <Component />

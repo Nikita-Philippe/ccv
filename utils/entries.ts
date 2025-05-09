@@ -172,7 +172,9 @@ export const exportEntries = async (
   const kvKeyId = await hashUserId(user.id);
   const entries = await listInKv<IDailyEntry>(kv, { prefix: [KV_DAILY_ENTRY, kvKeyId] }, {
     // Get the number of days between from and to, to limit the number of entries
-    limit: Math.abs(getDateTime(from).diff(getDateTime(to), "days").days),
+    // FIXME: not working properly (because it staret from the beginning, and no from the 'from')
+    // limit: Math.abs(getDateTime(from).diff(getDateTime(to), "days").days),
+    limit: 5000,
     reverse: true,
   });
   const contents = [];

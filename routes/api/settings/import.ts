@@ -155,6 +155,8 @@ export const handler: Handlers<TImportResponse> = {
       // Keep track of errors, when parsing did not worked, or some other issues.
       const processRes: string[] = [];
 
+      console.log("Saving at content", userContent.id)
+
       // Format all the rows to match the IDailyEntry format.
       const formattedRows: IDailyEntry[] = parsedContent.slice(1).map((row) => {
         const at = getDailyEntryKey(DateTime.fromISO(row[0]));

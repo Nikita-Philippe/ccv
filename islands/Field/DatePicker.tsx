@@ -12,6 +12,8 @@ type DatePickerProps = {
   className?: string;
   /** Manually set the date */
   customDate?: string;
+  min?: string;
+  max?: string;
 };
 
 export default function DatePicker({
@@ -19,6 +21,8 @@ export default function DatePicker({
   onChange,
   className,
   customDate,
+  min,
+  max,
 }: DatePickerProps) {
   const [date, setDate] = useState(defaultValue);
   useEffect(() => setDate(customDate || defaultValue), [customDate]);
@@ -39,6 +43,8 @@ export default function DatePicker({
         const picker = new Pikaday({
           field: inputRef.current,
           onSelect: handleDateChange,
+          ...(min ? { minDate: new Date(min) } : {}),
+          ...(max ? { maxDate: new Date(max) } : {}),
         });
         return () => picker.destroy();
       })

@@ -71,8 +71,23 @@
   - [ ] Admin page
     - [ ] Export datas
     - [ ] Check logs ?
+  - [ ] App base path as env (/app)
 - Stats
-  - [ ] Think about stats
+  - [ ] Create stats page
+    - [ ] Have a view mode, and an edit mode to create a stats "dashboard"
+    - [ ] From-to time range
+      - [ ] On edit mode it is fixed to like 2 months
+      - [ ] On view mode global on top of page
+    - [ ] On graph inspection, on entry click it should show the full entry (human readable?)
+    - [ ] Graphs
+      - [ ] One-time panel
+        - [ ] Average FIELD on X time
+        - [ ] last FIELD
+      - [ ] Full graphs
+        - [ ] Lines/area - for number
+            - [ ] Should be able to add multiple fields
+        - [ ] heatmap - for number/boolean/has string?
+        - [ ] bubble? for 3 pers of the day
 - Deployment
   - [ ] Add landing fully public page
   - [ ] Add terms
