@@ -4,8 +4,8 @@ import { enqueueReminder, IReminder, RemindType } from "@utils/reminder.ts";
 import { getSettings } from "@utils/settings.ts";
 
 export default function () {
-  // Check for daily answer every 3 hours
-  Deno.cron("Check for reminder to send troughout the day", "0 */3 * * *", async () => {
+  // Check for daily answer at 00:01
+  Deno.cron("Check for reminder to send troughout the day", "0 1 * * *", async () => {
     console.log("Checking for daily answer");
 
     const kv = await Deno.openKv();
