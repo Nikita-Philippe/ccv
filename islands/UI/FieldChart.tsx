@@ -136,7 +136,7 @@ const initChart = ({ field, options, datas, asOnlyChart }: FieldChartProps): Ape
     { series: dataset },
     baseOptions,
     options,
-    (!asOnlyChart ? {} : {}),
+    !asOnlyChart ? {} : {},
     // chartType === "heatmap" ? getHeatMapColor(dataset as heatmapData) : {},
   ) as ApexCharts.ApexOptions;
 };
@@ -159,5 +159,11 @@ export default function FieldChart({ options: defaultOptions, field, datas, sx, 
     JSON.stringify(datas.length),
   ]);
 
-  return options ? <Chart sx={cn(sx)} options={options} getChart={setChart} /> : null;
+  if (isReady && options && options.chart?.type !== "metric") {
+    return <Chart sx={cn(sx)} options={options} getChart={setChart} />;
+  } else if (isReady && options && options.chart?.type === "metric") {
+    return <></>;
+  } else {
+    return null;
+  }
 }

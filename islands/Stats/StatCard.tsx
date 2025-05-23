@@ -1,5 +1,5 @@
 import Card from "@islands/UI/Card.tsx";
-import { chartsForFieldType, IPartialStat, IStat, MChartConfig, MChartLabel } from "@models/Stats.ts";
+import { chartsForFieldType, IPartialStat, IStat, MChartConfig, MChartLabel, metricChartTypes } from "@models/Stats.ts";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { EConfigCardType, IContent, IDailyEntry } from "@models/Content.ts";
 import { ChangeEvent } from "preact/compat";
@@ -47,6 +47,8 @@ export default function StatCard(
     console.log("chart Config", { path: target.name, value: foundConfig });
     setConfig((p) => ({ ...set(p, target.name, foundConfig) }));
   }
+
+  // function handleMetricType
 
   // Reset chart if filed changes
   useEffect(() => {
@@ -120,6 +122,28 @@ export default function StatCard(
           </fieldset>
         </div>
       )}
+      {
+        /* {(currentField && config.chart.chart?.type && config.chart.chart.type === "metric") && (
+        <div className={flexRow}>
+          <fieldset className="fieldset">
+            <legend htmlFor="label" className="fieldset-legend">Chart</legend>
+            <select
+              defaultValue="Pick a chart type"
+              className="select"
+              value={config.chart?.chart?.type}
+              onChange={handleSelectChart}
+              name="chart"
+              required
+            >
+              <option disabled>Pick a metric type</option>
+              {Object.entries(metricChartTypes).map(([type, label]) => (
+                <option key={type} value={type}>{label}</option>
+              ))}
+            </select>
+          </fieldset>
+        </div>
+      )} */
+      }
       {config.chart.chart?.type && currentField &&
         (
           <FieldChart

@@ -22,31 +22,39 @@ interface IStatChart {
   chart: ApexCharts.ApexOptions;
   // Custom fields, instead of the chart
   customContent?: {
-    type: EConfigCardType.textarea
-  }
+    type: EConfigCardType.textarea;
+  };
 }
 
-type TAllCharts = Required<Required<ApexCharts.ApexOptions>['chart']>['type'];
+type TAllCharts = Required<Required<ApexCharts.ApexOptions>["chart"]>["type"];
 
 /** Here a configured the CCV-available */
-export type TAvailableCharts = Extract<TAllCharts, 'line' | 'area' | 'heatmap' | 'treemap'>;
+export type TAvailableCharts = Extract<TAllCharts, "line" | "area" | "heatmap" | "treemap" | "metric">;
 
 /** Label for each chart type. */
 export const MChartLabel: Record<TAvailableCharts, string> = {
-  'line': 'Line',
-  'area': 'Area',
-  'heatmap': 'Heatmap',
-  'treemap': "Treemap"
+  "line": "Line",
+  "area": "Area",
+  "heatmap": "Heatmap",
+  "treemap": "Treemap",
+  "metric": "Metric",
 };
 
 /* Available chart types for each field type. */
 export const chartsForFieldType: Record<EConfigCardType, TAvailableCharts[]> = {
-  [EConfigCardType.boolean]: ["heatmap"],
-  [EConfigCardType.int]: ["line", "area", "heatmap"],
-  [EConfigCardType.string]: ['treemap'],
+  [EConfigCardType.boolean]: ["heatmap", "metric"],
+  [EConfigCardType.int]: ["line", "area", "heatmap", "metric"],
+  [EConfigCardType.string]: ["treemap", "metric"],
   [EConfigCardType.textarea]: [],
-  [EConfigCardType.multistring]: ['treemap'],
+  [EConfigCardType.multistring]: ["treemap", "metric"],
 };
+
+export const metricChartTypes: Record<string, string> = {
+  "last": "Last value",
+  "average": "Average",
+  "count": "Count",
+};
+
 
 const baseChartConfig: ApexCharts.ApexOptions = {
   theme: {
@@ -56,84 +64,85 @@ const baseChartConfig: ApexCharts.ApexOptions = {
     //   shadeTo: 'light',
     //   shadeIntensity: 0.65
     // }
-    palette: "palette1"
-  }
-}
+    palette: "palette1",
+  },
+};
 
 /** Chart options. For now fixed. */
 export const MChartConfig: Record<TAvailableCharts, ApexCharts.ApexOptions> = {
-  'line': {
+  "line": {
     ...baseChartConfig,
     chart: {
-      type: 'line',
+      type: "line",
       height: 350,
       zoom: {
         enabled: false,
       },
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
     },
     tooltip: {
       x: {
-        format: 'dd/MM/yy',
+        format: "dd/MM/yy",
       },
     },
   },
-  'area': {
+  "area": {
     ...baseChartConfig,
     chart: {
-      type: 'area',
+      type: "area",
       height: 350,
       zoom: {
         enabled: false,
       },
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
     },
     tooltip: {
       x: {
-        format: 'dd/MM/yy HH:mm',
+        format: "dd/MM/yy HH:mm",
       },
     },
   },
-  'heatmap': {
+  "heatmap": {
     ...baseChartConfig,
     chart: {
-      type: 'heatmap',
+      type: "heatmap",
       height: 300,
       zoom: {
         enabled: false,
       },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
-      width: 1
+      width: 1,
     },
   },
-  'treemap': {
+  "treemap": {
     ...baseChartConfig,
     chart: {
-      type: 'treemap',
+      type: "treemap",
       height: 300,
       zoom: {
         enabled: false,
       },
     },
     dataLabels: {
-      enabled: true
+      enabled: true,
     },
     legend: {
-      show: false
-    }
+      show: false,
+    },
   },
+  "metric": {},
 };

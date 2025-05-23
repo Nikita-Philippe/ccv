@@ -117,6 +117,7 @@ type ApexChart = {
   | 'rangeBar'
   | 'rangeArea'
   | 'treemap'
+  | 'metric' // Custom CCV chart type for metrics
   foreColor?: string
   fontFamily?: string
   background?: string
