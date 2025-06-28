@@ -99,9 +99,7 @@ export default function ConfigCollection({ content: defaultContent }: {
 
   return (
     <>
-      {content?.id && content?.fields.length > 0 && (
-        <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
-      )}
+      <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
       {/* 2 items per line (if space available), gap of 2 */}
       <div className="grid gap-4 grid-cols-2">
         {content?.fields.map((field, index) => (

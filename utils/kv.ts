@@ -1,5 +1,6 @@
 import { CryptoKv } from "@kitsonk/kv-toolbox/crypto";
 import { unique } from "@kitsonk/kv-toolbox/keys";
+import { KV_PATH } from "@utils/constants.ts";
 
 /** Convert the data to a blob, to be used by the KV store
  *
@@ -44,7 +45,7 @@ export const deblobifyData = <T>(data: Uint8Array): T | null => {
  * @experimental
  */
 export const getLastKey = async (key: Deno.KvKey): Promise<string | undefined> => {
-  const kv = await Deno.openKv();
+  const kv = await Deno.openKv(KV_PATH);
   const keys = await unique(kv, key, { limit: 1, reverse: true });
   kv.close();
   return ((keys as unknown as string[][])[0] ?? []).pop();
@@ -96,7 +97,7 @@ export const listInKv = async <T>(
 ): Promise<Deno.KvEntryMaybe<T>[]> => {
   // @ts-expect-error - Prefix and/or start-end
   const prefix = (selector.prefix ?? [selector.start, selector.end]) as Deno.KvKey;
-  const defaultKv = await Deno.openKv();
+  const defaultKv = await Deno.openKv(KV_PATH);
   const keys = await unique(defaultKv, prefix, options);
   defaultKv.close();
   if (!keys) return [];

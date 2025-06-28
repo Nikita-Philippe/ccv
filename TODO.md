@@ -41,6 +41,7 @@
 - Settings:
   - [ ] Daily delta (1 day default)
   - [ ] Notifications when/how
+    - [ ] Test discord webhook
   - [ ] Multi string delimiter (default: '|||')
   - [ ] Custom data backups
 - System:
@@ -81,6 +82,9 @@
 - Deployment
   - [ ] Add landing fully public page
   - [ ] Add terms
+  - [ ] Easier deploy
+    - [ ] Srcipt run to check env/paths/etc
+    - [ ] env example & generator
 - Ideas
   - [ ] Can datas be cleanup automatically, server side ?
   - [ ] Version/deploy version in the app about

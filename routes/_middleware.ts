@@ -1,6 +1,6 @@
 import { FreshContext } from "$fresh/server.ts";
 import { setCookie } from "@std/http/cookie";
-import { cleanupSession, createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
+import { createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
 
 // List of routes to not check for user authorization
@@ -16,8 +16,6 @@ export async function handler(req: Request, ctx: FreshContext) {
   const { url } = req;
   const route = new URL(url).pathname;
 
-  let response = await ctx.next();
-
   if (ctx.destination === "route" && !authorizedRoutes.includes(route)) {
     // If no user (or bad id), create a public user and redirect to "hello" page
     if (!await isAuthorized(req)) {
@@ -26,16 +24,16 @@ export async function handler(req: Request, ctx: FreshContext) {
 
       // Had a session, but expired or invalid. Redirect to signin
       if (await isSessionExpired(req)) {
-        return new Response(response?.body ?? "", {
-          status: 303,
-          // Do NOT reuse headers, to wipe existing cookies
+        // Do NOT reuse headers, to wipe existing cookies
+        return new Response("", {
+          status: 301,
           headers: {
             Location: `/signin?redirectTo=${encodeURIComponent(route)}`,
           },
         });
       }
 
-      response = cleanupSession(getHelloPageRedirect(undefined, response));
+      const response = getHelloPageRedirect();
 
       const newUser = await createPublicUser();
       console.log("Creating public user", newUser.id);
@@ -47,8 +45,10 @@ export async function handler(req: Request, ctx: FreshContext) {
         httpOnly: true,
         expires: newUser.expires,
       });
+
+      return response;
     }
   }
 
-  return response;
+  return await ctx.next();
 }

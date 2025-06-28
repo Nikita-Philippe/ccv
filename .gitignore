@@ -1,14 +1,7 @@
 # dotenv environment variable files
 .env
 .env.*
-
-# Fresh build directory
 _fresh/
-# npm dependencies
 node_modules/
-
-# Ignore generated Fresh config file
 fresh.gen.ts
-
-# Ignore tailwind generated css styles
 static/styles.css

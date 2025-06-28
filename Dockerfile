@@ -10,7 +10,7 @@ RUN deno cache main.ts dev.ts
 
 # Build with full permissions and proper environment variables
 # This will generate the Tailwind CSS output
-RUN deno task build --allow-env --allow-read
+RUN deno task build
 
 # Production stage
 FROM denoland/deno:latest
@@ -19,4 +19,4 @@ WORKDIR /app
 COPY --from=builder /app .
 
 # Run with necessary permissions
-CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "main.ts"]
+CMD ["deno", "run", "-A", "main.ts"]

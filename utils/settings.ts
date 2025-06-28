@@ -3,7 +3,7 @@ import { ISettings } from "@models/App.ts";
 import { IAuthenticatedUser } from "@models/User.ts";
 import { getCryptoKey, hashUserId } from "@utils/crypto.ts";
 import { getInKv, setInKv } from "@utils/kv.ts";
-import { KV_SETTINGS, KV_SETTINGS_NOTIFICATIONS } from "./constants.ts";
+import { KV_PATH, KV_SETTINGS, KV_SETTINGS_NOTIFICATIONS } from "./constants.ts";
 
 /** Here are all the settings entries available */
 const settingsEntries: Record<keyof ISettings, string> = {
@@ -19,7 +19,7 @@ const getSettingsCryptoKv = async () => {
   const SEK = Deno.env.get("CRYPTO_SEK") || "default_settings_secret";
   const cryptoKey = await getCryptoKey(SEK);
   const key = await crypto.subtle.exportKey("raw", cryptoKey);
-  const kv = await Deno.openKv();
+  const kv = await Deno.openKv(KV_PATH);
   return await new CryptoKv(kv, new Uint8Array(key));
 };
 

@@ -10,7 +10,7 @@ import ky from "ky";
 
 const { signIn, handleCallback, signOut, getSessionId: defaultGetSessionId } = createHelpers(
   createGoogleOAuthConfig({
-    redirectUri: Deno.env.get("OAUTH_REDIRECTURI") || "http://localhost:3000/callback",
+    redirectUri: Deno.env.get("OAUTH_REDIRECTURI") ?? "http://localhost:3000/callback",
     scope: Deno.env.get("GOOGLE_OAUTH_SCOPE") || "email openid profile",
   }),
 );

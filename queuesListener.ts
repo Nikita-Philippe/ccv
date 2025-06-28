@@ -1,4 +1,4 @@
-import { KV_DAILY_ENTRY } from "@utils/constants.ts";
+import { KV_DAILY_ENTRY, KV_PATH } from "@utils/constants.ts";
 import { getLastKey } from "@utils/kv.ts";
 import { sendDiscordPushNotification } from "@utils/notifications.ts";
 import { DateTime } from "luxon";
@@ -35,7 +35,6 @@ function isReminderMessage(message: unknown): message is IReminderMessage {
  * @returns {Promise<void>} - A promise that resolves when the reminder has been handled.
  */
 const handleReminder = async (message: IReminderMessage) => {
-  console.log("Handling reminder message:", message);
   const hasMissDay = await checkForDailyAnswer(message.user);
   if (!hasMissDay) {
     console.log(`User ${message.user} has already answered the daily question today. Skipping reminder.`);
@@ -44,10 +43,13 @@ const handleReminder = async (message: IReminderMessage) => {
 
   if (message.use.type === "discord") {
     console.log(`Sending reminder to ${message.user} via Discord`);
-    const res = await sendDiscordPushNotification({ content: "TESTING ENQUEUES" }, message.use.query);
+    const res = await sendDiscordPushNotification({
+      content: Deno.env.get("CRON_REMINDERS_MESSAGE") ?? "CCV - reminder",
+    }, message.use.query);
     if (!res) {
       console.error(`Failed to send reminder to ${message.user}`);
     }
+    return;
   }
   console.log(`Sent reminder to ${message.user}`);
 };
@@ -70,19 +72,16 @@ const checkForDailyAnswer = async (userKey: string) => {
   return lastEntryDate < currentEntryDate;
 };
 
-const kv = await Deno.openKv();
-
 export default function () {
-  // Get a reference to a KV database
-
-  // Listen for messages in the queue
-  kv.listenQueue(async (msg: unknown) => {
-    try {
-      console.log("Received message:", msg);
-      if (isReminderMessage(msg)) await handleReminder(msg);
-      else console.error("Unknown message received:", msg);
-    } catch (error) {
-      console.error("Error handling message:", error);
-    }
-  });
+  try {
+    // Get a reference to a KV database
+    Deno.openKv(KV_PATH).then((kv) =>
+      kv.listenQueue(async (msg: unknown) => {
+        console.log("Received message:", msg);
+        if (isReminderMessage(msg)) await handleReminder(msg);
+      })
+    );
+  } catch (error) {
+    console.error("Error in queues listener:", error);
+  }
 }

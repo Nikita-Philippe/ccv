@@ -12,7 +12,7 @@ import manifest from "./fresh.gen.ts";
 import config from "./fresh.config.ts";
 
 
-const cron = await import("./cron.ts");
-await cron.default();
+import("./cron.ts").then(cron => cron.default());
+import("./queuesListener.ts").then(queues => queues.default());
 
 await start(manifest, config);

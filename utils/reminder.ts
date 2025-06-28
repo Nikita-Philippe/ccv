@@ -1,7 +1,5 @@
 import { INotifications } from "@models/App.ts";
-import { KV_DAILY_ENTRY } from "@utils/constants.ts";
-import { getLastKey } from "@utils/kv.ts";
-import { sendDiscordPushNotification } from "@utils/notifications.ts";
+import { KV_NOTIFICATIONS_REMINDERS } from "@utils/constants.ts";
 import { DateTime } from "luxon";
 
 /** Interface for a reminder entry.
@@ -38,7 +36,7 @@ export const enqueueReminder = async (kv: Deno.Kv, remind: { user: string; at: s
   const now = DateTime.now();
   const toTime = DateTime.fromISO(remind.at);
   if (!toTime.isValid || now > toTime) {
-    console.log("Invalid time for reminder", {
+    console.error("Invalid time for reminder", {
       now: now.toISO(),
       toTime: toTime.toISO(),
       remind,
@@ -52,55 +50,8 @@ export const enqueueReminder = async (kv: Deno.Kv, remind: { user: string; at: s
     user: remind.user,
     use: remind.use,
   };
-  await kv.enqueue(message, { delay });
-};
-
-/** Utility function to check if a message is a reminder message.
- * @param {unknown} message - The message to check.
- * @return {boolean} - True if the message is a reminder message, false otherwise.
- */
-export function isReminderMessage(message: unknown): message is IReminderMessage {
-  return (
-    typeof message === "object" &&
-    message !== null &&
-    "user" in message &&
-    "use" in message &&
-    typeof (message as IReminderMessage).user === "string" &&
-    typeof (message as IReminderMessage).use === "object"
-  );
-}
-
-/** Handle a reminder message.
- * @param {IReminderMessage} message - The reminder message to handle.
- * @returns {Promise<void>} - A promise that resolves when the reminder has been handled.
- */
-export const handleReminder = async (message: IReminderMessage) => {
-  const hasMissDay = await checkForDailyAnswer(message.user);
-  if (!hasMissDay) return;
-
-  if (message.use.type === "discord") {
-    const res = await sendDiscordPushNotification({ content: "TESTING ENQUEUES" }, message.use.query);
-    if (!res) {
-      console.error(`Failed to send reminder to ${message.user}`);
-    }
-  }
-  console.log(`Sent reminder to ${message.user}`);
-};
-
-/** Check if the user has already answered the daily question today.
- *
- * Note: This function is based on the last key (which is entry 'at' date) and not the actual answer. The
- * actual answer is user-based encrypted, so we cannot check it directly.
- *
- * @param {string} userKey - The user key to check.
- * @returns {Promise<boolean>} - A promise that resolves to true if the user has already answered, false otherwise.
- */
-export const checkForDailyAnswer = async (userKey: string) => {
-  // Base our check on the last key (which is entry 'at' date)
-  const lastKey = await getLastKey([KV_DAILY_ENTRY, userKey]);
-
-  // Compare if last entry is before current one, by DAY
-  const lastEntryDate = DateTime.fromISO(lastKey ?? "1970-01-01").startOf("day");
-  const currentEntryDate = DateTime.now().minus({ days: 1 }).startOf("day");
-  return lastEntryDate < currentEntryDate;
+  await kv.enqueue(message, {
+    delay,
+    keysIfUndelivered: [[KV_NOTIFICATIONS_REMINDERS], [remind.user], [remind.at.toString()]],
+  });
 };

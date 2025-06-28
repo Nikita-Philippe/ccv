@@ -4,6 +4,6 @@ import kv_oauth from "./plugins/kv_oauth.ts";
 export default defineConfig({
   plugins: [kv_oauth],
   server: {
-    port: 3000,
+    port: Deno.env.get("APP_PORT") ? parseInt(Deno.env.get("APP_PORT")!) : 3000,
   }
 });
