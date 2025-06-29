@@ -8,6 +8,7 @@ import { getContent, setContent } from "@utils/content.ts";
 import { getCryptoKey, getUserEncryptionKey, hashUserId } from "@utils/crypto.ts";
 import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/entries.ts";
 import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
+import { isDebug } from "./common.ts";
 
 export type TKv = CryptoKv;
 
@@ -80,10 +81,12 @@ export const requestTransaction = async <K extends keyof typeof availableActions
   const user = specialActions ? transaction.args?.[0] as TUser : await getUserBySession(req, getFullUser);
 
   if (!user) {
-    console.error("requestTransaction - User not found", {
-      action: transaction.action,
-      args: transaction.args,
-    });
+    if (isDebug()) {
+      console.error("requestTransaction - User not found", {
+        action: transaction.action,
+        args: transaction.args,
+      });
+    }
     return null;
   }
 

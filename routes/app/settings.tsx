@@ -208,6 +208,10 @@ export default async function Settings(req: Request) {
           </Card>
         )}
       </Card>
+
+      <p className="absolute bottom-0 right-0 text-xs text-gray-500">
+        APP Version: {Deno.env.get("DENO_DEPLOYMENT_ID") || "local"} - Deno Version: {Deno.version.deno}
+      </p>
     </div>
   );
 }

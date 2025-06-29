@@ -1,22 +1,15 @@
-# Build stage
-FROM denoland/deno:latest AS builder
+
+FROM denoland/deno:alpine
+
+ARG BUILD_REVISION
+ENV DENO_DEPLOYMENT_ID=${BUILD_REVISION}
 
 WORKDIR /app
 
 COPY . .
 
-# Install necessary dependencies
-RUN deno cache main.ts dev.ts
-
-# Build with full permissions and proper environment variables
-# This will generate the Tailwind CSS output
+# [Ahead-of-time Builds](https://fresh.deno.dev/docs/concepts/ahead-of-time-builds)
 RUN deno task build
-
-# Production stage
-FROM denoland/deno:latest
-
-WORKDIR /app
-COPY --from=builder /app .
 
 # Run with necessary permissions
 CMD ["deno", "run", "-A", "main.ts"]

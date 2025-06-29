@@ -7,7 +7,7 @@ import { openUserKv, requestTransaction } from "@utils/database.ts";
 import { getUserBySessionId } from "@utils/user.ts";
 import { OAUTH_COOKIE_NAME, SITE_COOKIE_NAME } from "https://jsr.io/@deno/kv-oauth/0.11.0/lib/_http.ts";
 import { getSessionId } from "../plugins/kv_oauth.ts";
-import { getDailyEntryKey } from "@utils/common.ts";
+import { getDailyEntryKey, isDebug } from "@utils/common.ts";
 import { DateTime } from "luxon";
 import { setContent } from "@utils/content.ts";
 import { saveEntries } from "@utils/entries.ts";
@@ -23,7 +23,7 @@ export const isAuthorized = async (req: Request) => {
 };
 
 /** Checks if the current user is signed in but his session has expired.
- * 
+ *
  * @param {Request} req The request to check
  * @returns {Promise<boolean>} True if the session is expired, false otherwise. Returns null if the user is not signed in.
  */
@@ -55,7 +55,17 @@ export async function getUserBySession(
   const user = foundSession ? await getUserBySessionId(foundSession) : getPublicUser(req);
 
   if (!user) {
-    console.warn("getUserBySession - User not found", foundSession);
+    if (isDebug()) {
+      console.warn("getUserBySession - User not found", { 
+        foundSession, 
+        cookies: getCookies(req.headers),
+        reqInfos: {
+          url: req.url,
+          method: req.method,
+          headers: Object.fromEntries(req.headers.entries()),
+        } 
+      });
+    }
     return null;
   }
   const isUserValid = await verifyData(user.id, user.token);

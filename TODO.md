@@ -63,7 +63,7 @@
   - [ ] Add seeding, for default configuration
   - [x] Sync
     - [x] When signing, transfer all current public content to the new signed in user
-    - [ ] Is sync doable not env dependent?
+    - [ ] Is sync doable not env dependent (yes, with same db using path)?
   - [x] Encode config & content per-user (signed in only?)
   - [x] Periodically delete content/config of public users from kv
   - [ ] Add an admin account (set in env)
@@ -74,9 +74,10 @@
     - [ ] Export datas
     - [ ] Check logs ?
   - [ ] Deploy
-    - [ ] Add image tagging and versioning (maybe app based), so I can reclaim disk space of old images
-    - [ ] Add cleanup scripts for old version
+    - [x] Add image tagging and versioning (maybe app based), so I can reclaim disk space of old images
+    - [x] Add cleanup scripts for old version
     - [ ] Check why is it so slow on server
+  - [ ] Host dbs on server, to easier management (check deno kv rust cargo about the kv server)
 - Stats
   - [ ] Think about stats
 - Deployment

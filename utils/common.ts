@@ -21,3 +21,5 @@ export const getDateTime = (date: TDailyEntryKey): DateTime => {
   else if (date instanceof Date) return DateTime.fromJSDate(date);
   else return date;
 };
+
+export const isDebug = () => Deno.env.get("DEBUG") === "true";
