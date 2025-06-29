@@ -6,6 +6,7 @@ import { difference } from "lodash";
 import { cn } from "@utils/cn.ts";
 import DatePicker, { DateToFR } from "@islands/Field/DatePicker.tsx";
 import Card from "@islands/UI/Card.tsx";
+import Chart from "@islands/UI/Chart.tsx";
 
 type Props = {
   missingDays: string[];
@@ -62,6 +63,29 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
           ))}
         </Card>
       )}
+      <Chart
+        sx="h-32 w-full"
+        options={{
+          chart: {
+            type: 'line'
+          },
+          series: [{
+            name: 'sales',
+            data: [30,40,35,50,49,60,70,91,125]
+          }],
+          xaxis: {
+            categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+          }
+        }}
+        // getChart={(chart) => {
+        //   chart.updateSeries([
+        //     {
+        //       name: "Missing entries",
+        //       data: missingDays.map((day) => (alreadySavedDays.includes(day) ? 1 : 0)),
+        //     },
+        //   ]);
+        // }}
+      />
     </>
   );
 }

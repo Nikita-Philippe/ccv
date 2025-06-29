@@ -1,7 +1,7 @@
 import { CryptoKv, generateKey } from "@kitsonk/kv-toolbox/crypto";
 import { IAuthenticatedUser, IGoogleUser, IRecoverEntry } from "@models/User.ts";
 import { getDailyEntryKey } from "@utils/common.ts";
-import { KV_AUTH_RECOVERY, KV_PATH } from "@utils/constants.ts";
+import { KV_AUTH_RECOVERY } from "@utils/constants.ts";
 import { getContent } from "@utils/content.ts";
 import { openUserKv, wipeUser } from "@utils/database.ts";
 import { exportEntries } from "@utils/entries.ts";
@@ -117,7 +117,7 @@ export const createUserRecoveryKey = async (user: IGoogleUser): Promise<string> 
   const rawRecoveryKey = generateKey();
   const entryKey = await signData(rawRecoveryKey);
 
-  const kv = await Deno.openKv(KV_PATH);
+  const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
   const cryptoKv = new CryptoKv(kv, rawRecoveryKey);
 
   await setInKv(cryptoKv, [KV_AUTH_RECOVERY, entryKey], {
@@ -144,7 +144,7 @@ export const createUserRecoveryKey = async (user: IGoogleUser): Promise<string> 
 export const recoverUserAccount = async (recoveryKey: string, email: string, sessionId: string) => {
   const entryKey = await signData(recoveryKey);
 
-  const kv = await Deno.openKv(KV_PATH);
+  const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
   const recoveryKv = new CryptoKv(kv, recoveryKey);
   const recoveryEntry: Deno.KvKey = [KV_AUTH_RECOVERY, entryKey];
 

@@ -234,10 +234,10 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
       </div>
 
       <div className="flex gap-2 mt-2 justify-end">
-        <button className="btn" onClick={duplicateConfig}>
+        <button type="button" className="btn" onClick={duplicateConfig}>
           <Copy size={20} />
         </button>
-        <button className="btn btn-error" onClick={remove}>
+        <button type="button" className="btn btn-error" onClick={remove}>
           <Trash size={20} />
         </button>
       </div>

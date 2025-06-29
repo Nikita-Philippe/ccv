@@ -18,6 +18,7 @@
   - [x] Cannot change name. Can only add or delete entries if already used
   - [x] Cannot save if validation error
   - [ ] Delete avant last entry not working (entry index not correct)
+  - [ ] Add value unit (hour, /per day, etc)
 - Dailentry
   - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible
   - [ ] Style entries
@@ -31,6 +32,8 @@
   - [x] Add toast
   - [ ] Add loader
   - [ ] Themes
+    - [ ] Add premade theme toggle https://daisyui.com/components/theme-controller/
+    - [ ] Add main color changer, mainly for the stats
   - [ ] Pages
     - [ ] No content on index
     - [ ] Hello page
@@ -78,8 +81,28 @@
     - [x] Add cleanup scripts for old version
     - [ ] Check why is it so slow on server
   - [ ] Host dbs on server, to easier management (check deno kv rust cargo about the kv server)
+  - [ ] App base path as env (/app)
+    - [ ] Better kv path management
+  - [ ] Bots are hitting the app. Find a way to secure/block.
 - Stats
-  - [ ] Think about stats
+  - [ ] Create stats page
+    - [x] Have a view mode, and an edit mode to create a stats "dashboard"
+      - [ ] Styling on edit mode (move bricks, resize etc like in Grafana)
+    - [x] From-to time range
+      - [x] On edit mode it is fixed to like 2 months
+      - [x] On view mode global on top of page
+    - [ ] On graph inspection, on entry click it should show the full entry (human readable?)
+    - [ ] Graphs
+      - [x] One-time panel
+        - [x] Average FIELD on X time
+        - [x] last FIELD
+      - [ ] Full graphs
+        - [x] Lines/area - for number
+            - [ ] Should be able to add multiple fields
+        - [x] heatmap - for number/boolean/has string?
+        - [ ] bubble? for 3 pers of the day
+        - [x] "textarea"
+          - [ ] Have sort of a timeline to select the texts from (even sort of a tooltip with content on hover)
 - Deployment
   - [ ] Add landing fully public page
   - [ ] Add terms

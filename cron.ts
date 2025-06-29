@@ -1,5 +1,5 @@
 import { unique } from "@kitsonk/kv-toolbox/keys";
-import { KV_PATH, KV_SETTINGS } from "@utils/constants.ts";
+import { KV_SETTINGS } from "@utils/constants.ts";
 import { enqueueReminder, IReminder, RemindType } from "@utils/reminder.ts";
 import { getSettings } from "@utils/settings.ts";
 
@@ -11,7 +11,7 @@ export default function () {
     async () => {
       console.log("Checking for daily answer. Using cron job", Deno.env.get("CRON_REMINDERS_TIME"));
 
-      const kv = await Deno.openKv(KV_PATH);
+      const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
 
       const allSettings = await unique(kv, [KV_SETTINGS]);
 

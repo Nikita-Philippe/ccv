@@ -1,7 +1,7 @@
 // Heavily inspired by https://github.com/cdoremus/deno-fresh-oauth
 
 import { IAuthenticatedUser, IPublicUser, ISessionUser } from "@models/User.ts";
-import { KV_PATH, KV_USER, KV_USER_SESSION } from "@utils/constants.ts";
+import { KV_USER, KV_USER_SESSION } from "@utils/constants.ts";
 import { PartialBy } from "@models/Common.ts";
 import { tokenizeUser } from "@utils/auth.ts";
 import { hashUserId } from "@utils/crypto.ts";
@@ -10,7 +10,7 @@ import { getInKv, setInKv } from "@utils/kv.ts";
 import { remove } from "@kitsonk/kv-toolbox/blob";
 import { DateTime } from "luxon";
 
-const defaultKv = await Deno.openKv(KV_PATH);
+const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
 const SESSION_TIMEOUT = 1000 * 60 * 60 * 24 * 7; // Keep active signedin session for 7 days
 
 /** Create a new user in the KV store.

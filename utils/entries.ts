@@ -1,7 +1,7 @@
 import { TDailyEntryKey } from "@models/Common.ts";
 import { EConfigCardType, IContent, IDailyEntry, IEntry } from "@models/Content.ts";
 import { TUser } from "@models/User.ts";
-import { getDailyEntryKey, getDateTime } from "@utils/common.ts";
+import { compareDate, getDailyEntryKey, getDateTime } from "@utils/common.ts";
 import { FIELD_MULTISTRING_DELIMITER, KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { hashUserId } from "@utils/crypto.ts";
 import { TKv } from "@utils/database.ts";
@@ -74,7 +74,7 @@ export const parseEntry = (entry: IEntry, content: IContent): IEntry => {
   const { name, value } = entry;
   let newValue = value;
   const field = content.fields.find((f) => f.name === name);
-  if (!field) return entry;
+  if (!field || !value) return entry;
 
   try {
     switch (field.type) {
@@ -82,14 +82,14 @@ export const parseEntry = (entry: IEntry, content: IContent): IEntry => {
         newValue = value === "true" || value === "on";
         break;
       case EConfigCardType.int:
-        newValue = parseInt(value);
+        newValue = parseInt(value as string);
         break;
       case EConfigCardType.multistring:
-        newValue = value.split(FIELD_MULTISTRING_DELIMITER);
+        newValue = (value as string).split(FIELD_MULTISTRING_DELIMITER);
         break;
       case EConfigCardType.textarea:
       case EConfigCardType.string:
-        newValue = encodeString(value);
+        newValue = encodeString(value as string);
         break;
       default:
     }
@@ -104,17 +104,17 @@ export const parseEntry = (entry: IEntry, content: IContent): IEntry => {
 export const stringifyEntryValue = (entry: IEntry, content: IContent): IEntry["value"] => {
   const { name, value } = entry;
   const field = content.fields.find((f) => f.name === name);
-  if (!field) return value;
+  if (!field || !value) return value;
 
   try {
     switch (field.type) {
       case EConfigCardType.int:
         return value.toString();
       case EConfigCardType.multistring:
-        return value.join(FIELD_MULTISTRING_DELIMITER);
+        return (value as string[]).join(FIELD_MULTISTRING_DELIMITER);
       case EConfigCardType.textarea:
       case EConfigCardType.string:
-        return decodeString(value);
+        return decodeString(value as string);
       default:
         return value;
     }
@@ -169,18 +169,34 @@ export const exportEntries = async (
   user: TUser,
   { contentId, from, to }: { contentId: IContent["id"]; from: TDailyEntryKey; to: TDailyEntryKey },
 ) => {
+  // TODO: this can be improved. For now the dataset is not huge so it is enough, but potential performance issues
+  // can arise with a lot of entries.
+  //before 600 days: export - Listinkv: 383ms export: 472ms
+  //before 6000 days: export - Listinkv: 399ms export: 510ms
+
+  //after 600 days: export - Listinkv: 11.1ms export: 188ms
+  //after 6000 days: export - Listinkv: 45.7ms export: 999ms
+  
+  const compared = compareDate(from, to);
+  
+  if (compared.isAfter) {
+    console.warn("Start key is greater than end key. Cannot process export.", { from, to });
+    return [];
+  }
+  
   const kvKeyId = await hashUserId(user.id);
-  const entries = await listInKv<IDailyEntry>(kv, { prefix: [KV_DAILY_ENTRY, kvKeyId] }, {
-    // Get the number of days between from and to, to limit the number of entries
-    limit: Math.abs(getDateTime(from).diff(getDateTime(to), "days").days),
-    reverse: true,
-  });
+  const dateTimeFrom = getDateTime(from);
+
+  const applicableKeys = Array.from({ length: Math.abs(compared.diff.days) + 1 }).map((_, i) => ([
+    KV_DAILY_ENTRY,
+    kvKeyId,
+    getDailyEntryKey(dateTimeFrom.plus({ day: i })),
+  ] as Deno.KvKey));
+
   const contents = [];
-  for await (const entry of entries) {
-    if (!entry.value) continue;
-    if (entry.value.content === contentId && entry.value.at >= from && entry.value.at <= to) {
-      contents.push(entry.value);
-    }
+  for (const key of applicableKeys) {
+    const entry = await getInKv<IDailyEntry>(kv, key);
+    if (entry.value?.content === contentId) contents.push(entry.value);
   }
   return contents;
 };

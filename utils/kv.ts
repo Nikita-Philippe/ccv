@@ -1,6 +1,5 @@
 import { CryptoKv } from "@kitsonk/kv-toolbox/crypto";
 import { unique } from "@kitsonk/kv-toolbox/keys";
-import { KV_PATH } from "@utils/constants.ts";
 
 /** Convert the data to a blob, to be used by the KV store
  *
@@ -45,7 +44,7 @@ export const deblobifyData = <T>(data: Uint8Array): T | null => {
  * @experimental
  */
 export const getLastKey = async (key: Deno.KvKey): Promise<string | undefined> => {
-  const kv = await Deno.openKv(KV_PATH);
+  const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
   const keys = await unique(kv, key, { limit: 1, reverse: true });
   kv.close();
   return ((keys as unknown as string[][])[0] ?? []).pop();
@@ -88,16 +87,17 @@ export const setInKv = async (
  *
  * Based on the Deno.Kv.list method.
  *
- * @experimental
+ * @experimental - For now selector start/end does not work
  */
 export const listInKv = async <T>(
   kv: CryptoKv,
   selector: Deno.KvListSelector,
   options?: Deno.KvListOptions,
 ): Promise<Deno.KvEntryMaybe<T>[]> => {
+  // FIXME: Implement start/end based on code research
   // @ts-expect-error - Prefix and/or start-end
-  const prefix = (selector.prefix ?? [selector.start, selector.end]) as Deno.KvKey;
-  const defaultKv = await Deno.openKv(KV_PATH);
+  const prefix = (selector.prefix ?? selector.start ?? selector.end) as Deno.KvKey;
+  const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
   const keys = await unique(defaultKv, prefix, options);
   defaultKv.close();
   if (!keys) return [];
@@ -109,3 +109,26 @@ export const listInKv = async <T>(
   }
   return entries;
 };
+// export const listInKv = async <T>(
+//   kv: CryptoKv,
+//   selector: Deno.KvListSelector,
+//   options?: Deno.KvListOptions,
+// ): Promise<Deno.KvEntryMaybe<T>[]> => {
+//   const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
+//   const keys = await unique(query(defaultKv, selector, options));
+//   console.log("test", keys)
+//   console.log("listInKv - Found keys:", keys);
+//   if (!keys) return [];
+
+//   const entries: Deno.KvEntryMaybe<T>[] = [];
+//   let index = 0;
+//   for await (const key of keys) {
+//     index++
+//     if (index < 10) console.log("element:", key);
+//     continue
+//     const entry = await getInKv<T>(kv, key);
+//     entries.push(entry);
+//   }
+//   defaultKv.close();
+//   return entries;
+// };

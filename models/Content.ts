@@ -80,7 +80,7 @@ export interface IDailyEntry {
 /** This is a single key-value entry. */
 export interface IEntry {
   name: string;
-  value: any;
+  value: null | string | number | boolean | string[];
 }
 
 export const ICONS_LIST_LS_KEY = "ccv_ls_icons";

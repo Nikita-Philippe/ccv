@@ -3,14 +3,17 @@ import { CryptoKv } from "@kitsonk/kv-toolbox/crypto";
 import { unique } from "@kitsonk/kv-toolbox/keys";
 import { IAuthenticatedUser, IGoogleUser, TUser } from "@models/User.ts";
 import { getUserBySession } from "@utils/auth.ts";
-import { KV_CONTENT, KV_DAILY_ENTRY, KV_PATH } from "@utils/constants.ts";
+import { KV_CONTENT, KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { getContent, setContent } from "@utils/content.ts";
 import { getCryptoKey, getUserEncryptionKey, hashUserId } from "@utils/crypto.ts";
 import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/entries.ts";
 import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
 import { isDebug } from "./common.ts";
+import { getStats, setStats } from "@utils/stats.ts";
 
 export type TKv = CryptoKv;
+
+const KV_PATH = Deno.env.get("KV_PATH");
 
 /** Open the encrypted KV store with the provided key
  *
@@ -48,6 +51,8 @@ const availableActions = {
   "getUserById": getUserById,
   "createUser": createUser,
   "setUserSession": setUserSession,
+  "getStats": getStats,
+  "setStats": setStats,
 };
 
 // deno-lint-ignore no-explicit-any
@@ -64,7 +69,7 @@ type RestParameters<T extends unknown[]> = T extends [any, any, ...infer U] ? U 
  * @param transaction.args The arguments to pass to the function. Should be an array of arguments of the available function.
  * @returns The result of the transaction. The type is inferred from the function.
  */
-export const requestTransaction = async <K extends keyof typeof availableActions, T extends boolean>(
+export const requestTransaction = async <K extends keyof typeof availableActions>(
   req: Request,
   transaction: {
     action: K;

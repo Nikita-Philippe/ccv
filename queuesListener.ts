@@ -1,4 +1,4 @@
-import { KV_DAILY_ENTRY, KV_PATH } from "@utils/constants.ts";
+import { KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { getLastKey } from "@utils/kv.ts";
 import { sendDiscordPushNotification } from "@utils/notifications.ts";
 import { DateTime } from "luxon";
@@ -75,7 +75,7 @@ const checkForDailyAnswer = async (userKey: string) => {
 export default function () {
   try {
     // Get a reference to a KV database
-    Deno.openKv(KV_PATH).then((kv) =>
+    Deno.openKv(Deno.env.get("KV_PATH")).then((kv) =>
       kv.listenQueue(async (msg: unknown) => {
         console.log("Received message:", msg);
         if (isReminderMessage(msg)) await handleReminder(msg);
