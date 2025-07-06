@@ -1,5 +1,4 @@
-
-FROM denoland/deno:alpine
+FROM denoland/deno:latest
 
 ARG BUILD_REVISION
 ENV DENO_DEPLOYMENT_ID=${BUILD_REVISION}
