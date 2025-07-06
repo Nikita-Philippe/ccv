@@ -23,8 +23,11 @@ const methodColors: Record<string, string> = {
 };
 
 export async function handler(req: Request, ctx: FreshContext) {
+  const hitTime = new Date();
+
   const { url } = req;
   const route = new URL(url).pathname;
+
 
   if (isDebug() || ctx.destination === "route") {
     const color = methodColors[req.method] || "black";
@@ -35,7 +38,7 @@ export async function handler(req: Request, ctx: FreshContext) {
         state: ctx.state,
         data: ctx.data,
         error: ctx.error,
-        hitTime: new Date().toISOString(),
+        hitTime: hitTime.toISOString(),
       });
     }
   }
@@ -74,5 +77,18 @@ export async function handler(req: Request, ctx: FreshContext) {
     }
   }
 
-  return await ctx.next();
+  const res = await ctx.next();
+
+  if (isDebug()) {
+    console.log("Debug request info - AFTER:", {
+      headers: Object.fromEntries(req.headers.entries()),
+      state: ctx.state,
+      data: ctx.data,
+      error: ctx.error,
+      hitTime: new Date().toISOString(),
+      responseTime: new Date().getTime() - hitTime.getTime(),
+    });
+  }
+
+  return res;
 }
