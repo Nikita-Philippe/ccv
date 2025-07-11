@@ -47,6 +47,7 @@
     - [ ] Test discord webhook
   - [ ] Multi string delimiter (default: '|||')
   - [ ] Custom data backups
+  - [ ] Support [TZ](https://gist.github.com/aviflax/a4093965be1cd008f172?permalink_comment_id=4079362#gistcomment-4079362)
 - System:
   - [ ] Backups/export
     - [ ] Find ways to save the data (gdrive ?)

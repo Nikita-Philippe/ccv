@@ -32,8 +32,8 @@ export const handler: Handlers<IDefaultPageHandler> = {
       switch (settings) {
         case "notifications": {
           const { reminder_start, reminder_end, notif_discord_webhook } = restForm;
-          const start = DateTime.fromFormat(reminder_start as string, "HH:mm", { zone: "local" });
-          const end = DateTime.fromFormat(reminder_end as string, "HH:mm", { zone: "local" });
+          const start = DateTime.fromFormat(reminder_start as string, "HH:mm", { zone: "utc" });
+          const end = DateTime.fromFormat(reminder_end as string, "HH:mm", { zone: "utc" });
           if (!start.isValid || !end.isValid) return await ctx.render({ message: "Time format are invalid" });
           if (start.hour === 0 && start.minute < 10) {
             return await ctx.render({ message: "Start time must be after 00:10" });
@@ -126,13 +126,16 @@ export default async function Settings(req: Request) {
       {isSignedIn && (
         <Card title="Notifications" sx={{ content: "p-4 flex-col no-wrap" }}>
           <p>Each day, you can configure up to two notifications, sent to remind you to fill your daily entry !</p>
-          <div className={"alert alert-info"}>
-            <p className={"italic"}>Please note that notifications will only be sent if no entry has been filled.</p>
+          <div className="alert alert-info">
+            <p className="italic">
+              Please allow for +/- {Deno.env.get("CRON_REMINDERS_DELAY") ?? 10}{" "}
+              minutes of variation. Notifications will only be sent if no entry has been filled at the time.
+            </p>
           </div>
           <form method="POST">
             <input type="hidden" name="settings" value="notifications" />
             <fieldset class="fieldset">
-              <legend class="fieldset-legend">First reminder</legend>
+              <legend class="fieldset-legend">First reminder (UTC)</legend>
               <input
                 type="time"
                 class="input"
@@ -141,7 +144,7 @@ export default async function Settings(req: Request) {
               />
             </fieldset>
             <fieldset class="fieldset">
-              <legend class="fieldset-legend">Last reminder</legend>
+              <legend class="fieldset-legend">Last reminder (UTC)</legend>
               <input type="time" class="input" name="reminder_end" defaultValue={userSettings?.notifications?.end} />
             </fieldset>
             <Card title="Methods" sx={{ content: "p-4 flex-col no-wrap" }}>

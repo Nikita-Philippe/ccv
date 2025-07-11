@@ -13,6 +13,5 @@ import config from "./fresh.config.ts";
 
 
 import("./cron.ts").then(cron => cron.default());
-import("./queuesListener.ts").then(queues => queues.default());
 
 await start(manifest, config);

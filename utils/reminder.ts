@@ -1,16 +1,8 @@
-import { INotifications } from "@models/App.ts";
-import { KV_NOTIFICATIONS_REMINDERS } from "@utils/constants.ts";
+import { KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { DateTime } from "luxon";
-
-/** Interface for a reminder entry.
- * @interface IReminder
- * @property {string} user - The user to remind.
- * @property {INotifications} notifications - The notifications settings for the user.
- */
-export interface IReminder {
-  user: string;
-  notifications: INotifications;
-}
+import { isDebug } from "./common.ts";
+import { getLastKey } from "./kv.ts";
+import { sendDiscordPushNotification } from "./notifications.ts";
 
 /** Types of reminders available. */
 export type RemindType = {
@@ -18,40 +10,46 @@ export type RemindType = {
   query: string;
 };
 
-/** Reminder message interface. */
-interface IReminderMessage {
+/** Handle a reminder message.
+ * @param {IReminderMessage} message - The reminder message to handle.
+ * @returns {Promise<void>} - A promise that resolves when the reminder has been handled.
+ */
+export const handleReminder = async (message: {
   user: string;
   use: RemindType;
-}
-
-/** Enqueue an entry reminder, for the user to be notified at a specific time.
- *
- * @param {Deno.Kv} kv - The Deno.KV instance to use for the reminder.
- * @param {string} remind.user - The user to remind. Must be its user key.
- * @param {string} remind.at - The time to remind the user. Must be a valid ISO time string.
- * @param {RemindType} remind.use - The type of reminder to use.
- * @returns
- */
-export const enqueueReminder = async (kv: Deno.Kv, remind: { user: string; at: string; use: RemindType }) => {
-  const now = DateTime.now();
-  const toTime = DateTime.fromISO(remind.at);
-  if (!toTime.isValid || now > toTime) {
-    console.error("Invalid time for reminder", {
-      now: now.toISO(),
-      toTime: toTime.toISO(),
-      remind,
-    });
+}) => {
+  const hasMissDay = await checkForDailyAnswer(message.user);
+  if (!hasMissDay) {
+    if (isDebug()) {
+      console.log(`User ${message.user} has already answered the daily question today. Skipping reminder.`);
+    }
     return;
   }
 
-  // Calc time diff in ms
-  const delay = toTime.diff(now, ["milliseconds"]).milliseconds;
-  const message: IReminderMessage = {
-    user: remind.user,
-    use: remind.use,
-  };
-  await kv.enqueue(message, {
-    delay,
-    keysIfUndelivered: [[KV_NOTIFICATIONS_REMINDERS], [remind.user], [remind.at.toString()]],
-  });
+  if (message.use.type === "discord") {
+    if (isDebug()) console.log(`Sending reminder to ${message.user} via Discord`);
+    const res = await sendDiscordPushNotification({
+      content: Deno.env.get("CRON_REMINDERS_MESSAGE") ?? "CCV - reminder",
+    }, message.use.query);
+    if (!res && isDebug()) console.error(`Failed to send reminder to ${message.user}`);
+    return;
+  }
+};
+
+/** Check if the user has already answered the daily question today.
+ *
+ * Note: This function is based on the last key (which is entry 'at' date) and not the actual answer. The
+ * actual answer is user-based encrypted, so we cannot check it directly.
+ *
+ * @param {string} userKey - The user key to check.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the user has already answered, false otherwise.
+ */
+const checkForDailyAnswer = async (userKey: string) => {
+  // Base our check on the last key (which is entry 'at' date)
+  const lastKey = await getLastKey([KV_DAILY_ENTRY, userKey]);
+
+  // Compare if last entry is before current one, by DAY
+  const lastEntryDate = DateTime.fromISO(lastKey ?? "1970-01-01").startOf("day");
+  const currentEntryDate = DateTime.now().minus({ days: 1 }).startOf("day");
+  return lastEntryDate < currentEntryDate;
 };

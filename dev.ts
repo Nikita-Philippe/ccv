@@ -7,7 +7,6 @@ import "@std/dotenv/load";
 
 if (!Deno.args.includes("build")) {
   import("./cron.ts").then(cron => cron.default());
-  import("./queuesListener.ts").then(queues => queues.default());
 }
 
 import autoprefixer from "autoprefixer";
