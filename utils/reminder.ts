@@ -1,6 +1,6 @@
 import { KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { DateTime } from "luxon";
-import { isDebug } from "./common.ts";
+import { Debug } from "./debug.ts";
 import { getLastKey } from "./kv.ts";
 import { sendDiscordPushNotification } from "./notifications.ts";
 
@@ -20,18 +20,18 @@ export const handleReminder = async (message: {
 }) => {
   const hasMissDay = await checkForDailyAnswer(message.user);
   if (!hasMissDay) {
-    if (isDebug()) {
+    if (Debug.get("reminders")) {
       console.log(`User ${message.user} has already answered the daily question today. Skipping reminder.`);
     }
     return;
   }
 
   if (message.use.type === "discord") {
-    if (isDebug()) console.log(`Sending reminder to ${message.user} via Discord`);
+    if (Debug.get("reminders")) console.log(`Sending reminder to ${message.user} via Discord`);
     const res = await sendDiscordPushNotification({
       content: Deno.env.get("CRON_REMINDERS_MESSAGE") ?? "CCV - reminder",
     }, message.use.query);
-    if (!res && isDebug()) console.error(`Failed to send reminder to ${message.user}`);
+    if (!res && Debug.get("reminders")) console.error(`Failed to send reminder to ${message.user}`);
     return;
   }
 };

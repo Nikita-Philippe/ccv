@@ -7,10 +7,11 @@ import { openUserKv, requestTransaction } from "@utils/database.ts";
 import { getUserBySessionId } from "@utils/user.ts";
 import { OAUTH_COOKIE_NAME, SITE_COOKIE_NAME } from "https://jsr.io/@deno/kv-oauth/0.11.0/lib/_http.ts";
 import { getSessionId } from "../plugins/kv_oauth.ts";
-import { getDailyEntryKey, isDebug } from "@utils/common.ts";
+import { getDailyEntryKey } from "@utils/common.ts";
 import { DateTime } from "luxon";
 import { setContent } from "@utils/content.ts";
 import { saveEntries } from "@utils/entries.ts";
+import { Debug } from "./debug.ts";
 
 /** Checks that the current user is authorized and verified
  *
@@ -55,7 +56,7 @@ export async function getUserBySession(
   const user = foundSession ? await getUserBySessionId(foundSession) : getPublicUser(req);
 
   if (!user) {
-    if (isDebug()) {
+    if (Debug.get("user")) {
       console.warn("getUserBySession - User not found", { 
         foundSession, 
         cookies: getCookies(req.headers),

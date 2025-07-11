@@ -7,9 +7,9 @@ import { KV_CONTENT, KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { getContent, setContent } from "@utils/content.ts";
 import { getCryptoKey, getUserEncryptionKey, hashUserId } from "@utils/crypto.ts";
 import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/entries.ts";
-import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
-import { isDebug } from "./common.ts";
 import { getStats, setStats } from "@utils/stats.ts";
+import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
+import { Debug } from "./debug.ts";
 
 export type TKv = CryptoKv;
 
@@ -76,6 +76,7 @@ export const requestTransaction = async <K extends keyof typeof availableActions
     args?: RestParameters<Parameters<typeof availableActions[K]>>;
   },
 ): Promise<(ReturnType<typeof availableActions[K]> | null)> => {
+  if (Debug.get("perf_kv")) console.time(`kv:${transaction.action}`);
   /** Get user from the request. Disable for some actions that can trigger a recursive call. */
   const getFullUser = !["getUserById"].includes(transaction.action);
 
@@ -86,7 +87,7 @@ export const requestTransaction = async <K extends keyof typeof availableActions
   const user = specialActions ? transaction.args?.[0] as TUser : await getUserBySession(req, getFullUser);
 
   if (!user) {
-    if (isDebug()) {
+    if (Debug.get("kv")) {
       console.error("requestTransaction - User not found", {
         action: transaction.action,
         args: transaction.args,
@@ -96,11 +97,13 @@ export const requestTransaction = async <K extends keyof typeof availableActions
   }
 
   let kv: TKv;
+  if (Debug.get("perf_crypto")) console.time(`opening-crypto:${transaction.action}`);
   if (user.isAuthenticated) {
     kv = await openUserKv(user);
   } else {
     kv = await openPublicKv();
   }
+  if (Debug.get("perf_crypto")) console.timeEnd(`opening-crypto:${transaction.action}`);
 
   // Execute transaction with the correct typing
   const actionFunction = availableActions[transaction.action];
@@ -113,6 +116,7 @@ export const requestTransaction = async <K extends keyof typeof availableActions
   );
 
   await closeKv(kv);
+  if (Debug.get("perf_kv")) console.timeEnd(`kv:${transaction.action}`);
   return res;
 };
 
@@ -140,7 +144,7 @@ export const wipeUser = async (user: IAuthenticatedUser, recoveryEntry?: Deno.Kv
   for await (const key of [...configKey, ...entryKey]) {
     await remove(kv, key);
   }
-  console.log(`Wiping user ${user.id}`, { user, key });
+  if (Debug.get("user")) console.log(`Wiping user ${user.id}`, { user, key });
   if (recoveryEntry) await remove(kv, recoveryEntry);
   await deleteUser(user);
   kv.close();

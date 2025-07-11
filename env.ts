@@ -24,7 +24,8 @@ export default function () {
   });
 
   // Check KV_PATH
-  if (!loadedEnvs.KV_PATH) logAndQuit("KV_PATH is not set.");
+  if (loadedEnvs.KV_PATH && loadedEnvs.DENO_DEPLOYMENT_ID) logAndQuit("KV_PATH should not be set in Deno deploy.")
+  if (!loadedEnvs.KV_PATH && !loadedEnvs.DENO_DEPLOYMENT_ID) logAndQuit("KV_PATH is not set. Please set it, for data stability.");
 
   // General purpose envs
   ["OAUTH_REDIRECTURI"].map((key) => !loadedEnvs[key] ? logAndQuit(`${key} is not set or size is < 32.`) : "");

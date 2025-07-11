@@ -2,7 +2,7 @@ import { FreshContext } from "$fresh/server.ts";
 import { setCookie } from "@std/http/cookie";
 import { createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
 import { PUBLIC_USER_ID } from "@utils/constants.ts";
-import { isDebug } from "@utils/common.ts";
+import { Debug } from "@utils/debug.ts";
 
 // List of routes to not check for user authorization
 const authorizedRoutes = [
@@ -28,11 +28,10 @@ export async function handler(req: Request, ctx: FreshContext) {
   const { url } = req;
   const route = new URL(url).pathname;
 
-
-  if (isDebug() || ctx.destination === "route") {
+  if (Debug.get("http") || ctx.destination === "route") {
     const color = methodColors[req.method] || "black";
     console.log(`%c${req.method} (${ctx.destination}) ${req.url}`, `color: ${color}`);
-    if (isDebug()) {
+    if (Debug.get("http") && ctx.destination === "route") {
       console.log("Debug request info:", {
         headers: Object.fromEntries(req.headers.entries()),
         state: ctx.state,
@@ -63,7 +62,7 @@ export async function handler(req: Request, ctx: FreshContext) {
       const response = getHelloPageRedirect();
 
       const newUser = await createPublicUser();
-      console.log("Creating public user", newUser.id);
+      if (Debug.get("user")) console.log("Creating public user", newUser.id);
 
       setCookie(response.headers, {
         name: PUBLIC_USER_ID,
@@ -79,15 +78,24 @@ export async function handler(req: Request, ctx: FreshContext) {
 
   const res = await ctx.next();
 
-  if (isDebug()) {
+  if (Debug.get("http") && ctx.destination === "route") {
     console.log("Debug request info - AFTER:", {
       headers: Object.fromEntries(req.headers.entries()),
       state: ctx.state,
       data: ctx.data,
       error: ctx.error,
       hitTime: new Date().toISOString(),
-      responseTime: new Date().getTime() - hitTime.getTime(),
     });
+  }
+
+  if (Debug.get("perf_http") && ctx.destination === "route") {
+    const duration = new Date().getTime() - hitTime.getTime();
+    console.log(`%cHTTP request to %c${route} %ctook %c${duration}ms`, 
+      "color: white", 
+      `color: cyan; font-weight: bold`,
+      "color: white", 
+      `color: orange; font-weight: bold`,
+    );
   }
 
   return res;

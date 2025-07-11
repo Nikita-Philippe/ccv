@@ -1,9 +1,9 @@
 import { unique } from "@kitsonk/kv-toolbox/keys";
 import { KV_SETTINGS } from "@utils/constants.ts";
+import { Debug } from "@utils/debug.ts";
 import { handleReminder, RemindType } from "@utils/reminder.ts";
 import { getSettings } from "@utils/settings.ts";
 import { DateTime } from "luxon";
-import { isDebug } from "@utils/common.ts";
 
 const parseTimeToday = (timeString: string | undefined): DateTime => {
   if (!timeString) return DateTime.invalid("no time");
@@ -18,7 +18,7 @@ export default function () {
     "Check for reminder to send troughout the day",
     { minute: { every: parseInt(Deno.env.get("CRON_REMINDERS_DELAY") ?? "10") } },
     async () => {
-      console.time("cron:reminders");
+      if (Debug.get("perf_cron")) console.time("cron:reminders");
       const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
       try {
         const allSettings = await unique(kv, [KV_SETTINGS]);
@@ -37,45 +37,19 @@ export default function () {
           }
         }
 
-        if (isDebug()) console.log(`Found ${usersToSendReminder.length} users to send reminder`);
+        if (Debug.get("cron")) console.log(`Found ${usersToSendReminder.length} users to send reminder`);
 
         const now = DateTime.now().setZone("utc");
         const nextCheck = now.plus({ minutes: parseInt(Deno.env.get("CRON_REMINDERS_DELAY") ?? "10") });
 
         for (const { user, notifications } of usersToSendReminder) {
           let sendNotification = false;
-          console.log(`Checking reminders for user: ${user}`, notifications);
 
           const start = parseTimeToday(notifications.start);
           const end = parseTimeToday(notifications.end);
 
-          if (isDebug()) {
-            console.log(`Checking reminders for user :`, {
-              user,
-              start: start.toISO(),
-              end: end.toISO(),
-              now: now.toISO(),
-              nextCheck: nextCheck.toISO(),
-              startNum: +start,
-              endNum: +end,
-              nowNum: +now,
-              nextCheckNum: +nextCheck,
-              isStartCheck: start.isValid && start >= now && start < nextCheck,
-              isEndCheck: end.isValid && end >= now && end < nextCheck,
-            });
-          }
-
-          // Check if we should send start reminder (current time is at or past start time, and start time is within this check window)
-          if (start.isValid && start >= now && start < nextCheck) {
-            sendNotification = true;
-            if (isDebug()) console.log("Sending START reminder");
-          }
-
-          // Check if we should send end reminder (current time is at or past end time, and end time is within this check window)
-          if (!sendNotification && end.isValid && end >= now && end < nextCheck) {
-            sendNotification = true;
-            if (isDebug()) console.log("Sending END reminder");
-          }
+          if (start.isValid && start >= now && start < nextCheck) sendNotification = true;
+          if (!sendNotification && end.isValid && end >= now && end < nextCheck) sendNotification = true;
 
           if (!sendNotification) continue;
 
@@ -89,7 +63,7 @@ export default function () {
         console.error("Error in cron reminders:", error);
       } finally {
         kv.close();
-        console.timeEnd("cron:reminders");
+        if (Debug.get("perf_cron")) console.timeEnd("cron:reminders");
       }
     },
   );

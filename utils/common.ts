@@ -46,5 +46,3 @@ export const compareDate = (current: TDailyEntryKey, last: TDailyEntryKey) => {
     diff: currentDate.diff(lastDate, ["days", "hours", "minutes", "seconds"]),
   };
 };
-
-export const isDebug = () => Deno.env.get("DEBUG") === "true";
