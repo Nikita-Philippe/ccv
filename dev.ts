@@ -1,9 +1,11 @@
 #!/usr/bin/env -S deno run -A --watch=static/,routes/
 
+import "@std/dotenv/load";
+
+import("./env.ts").then(env => env.default());
+
 import dev from "$fresh/dev.ts";
 import config from "./fresh.config.ts";
-
-import "@std/dotenv/load";
 
 if (!Deno.args.includes("build")) {
   import("./cron.ts").then(cron => cron.default());
