@@ -134,20 +134,35 @@ export default async function Settings(req: Request) {
             </p>
           </div>
           <form method="POST">
-            <input type="hidden" name="settings" value="notifications" />
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">First reminder (UTC)</legend>
-              <input
-                type="time"
-                class="input"
-                name="reminder_start"
-                defaultValue={userSettings?.notifications?.start}
-              />
-            </fieldset>
-            <fieldset class="fieldset">
-              <legend class="fieldset-legend">Last reminder (UTC)</legend>
-              <input type="time" class="input" name="reminder_end" defaultValue={userSettings?.notifications?.end} />
-            </fieldset>
+            <div className="flex flex-col items-center gap-1 mb-2">
+              <div className="w-full flex items-start gap-2">
+                <input type="hidden" name="settings" value="notifications" />
+                <fieldset class="fieldset grow max-w-40">
+                  <legend class="fieldset-legend">First reminder</legend>
+                  <input
+                    type="time"
+                    class="input"
+                    name="reminder_start"
+                    defaultValue={userSettings?.notifications?.start}
+                  />
+                </fieldset>
+                <fieldset class="fieldset grow max-w-40">
+                  <legend class="fieldset-legend">Last reminder</legend>
+                  <input
+                    type="time"
+                    class="input"
+                    name="reminder_end"
+                    defaultValue={userSettings?.notifications?.end}
+                  />
+                </fieldset>
+              </div>
+              {(userSettings?.notifications?.start || userSettings?.notifications?.end) && (
+                <p className="text-sm text-gray-500 italic">
+                  You will receive a notification (if no entry has been filled) everyday at{" "}
+                  {userSettings?.notifications?.start} UTC and {userSettings?.notifications?.end} UTC.
+                </p>
+              )}
+            </div>
             <Card title="Methods" sx={{ content: "p-4 flex-col no-wrap" }}>
               <PushButton user={user} settings={userSettings} />
               <fieldset class="fieldset">
