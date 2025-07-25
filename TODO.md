@@ -23,6 +23,10 @@
   - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible
   - [ ] Style entries
     - [ ] Add icons support
+    - [ ] Add form variant
+      - [ ] Default (field by field)
+      - [ ] by rows
+      - [ ] by masonry ?
   - [ ] Make them dynamic using previous values
     - [ ] Use previous values
     - [ ] Propose in dropdown previous/mains values
@@ -115,3 +119,5 @@
   - [ ] Version/deploy version in the app about
   - [ ] Normalize CCV terms, and fix pages texts
   - [ ] Add fake "pricing" page
+  - [ ] Add Goals
+  - [ ] Add reminders in field ("specifically remind me every 3 day to fill this field")

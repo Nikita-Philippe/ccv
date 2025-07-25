@@ -11,6 +11,7 @@ const DebugFlag = {
   perf_crypto: "perf_crypto",
   perf_user: "perf_user",
   perf_cron: "perf_cron",
+  perf_reminders: "perf_reminders",
 } as const;
 
 const isClientSide = () => globalThis?.document !== undefined;

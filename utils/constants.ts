@@ -23,5 +23,8 @@ export const APP_EXPORT_CSV_NOTFOUND = "#N/F";
 /** Cookie key to store the current public user */
 export const PUBLIC_USER_ID = "ccv_public_user";
 
+/** Cookie to save the onesignal external id */
+export const ONESIGNAL_EXTERNAL_ID = "ccv_onesignal_id";
+
 /** Recovery keys */
 export const KV_AUTH_RECOVERY = "ccv_auth_rk"

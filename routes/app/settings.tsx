@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 import { IDefaultPageHandler, ISettings } from "@models/App.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
 import ImportButton from "@islands/Settings/ImportButton.tsx";
+import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -148,6 +149,7 @@ export default async function Settings(req: Request) {
               <input type="time" class="input" name="reminder_end" defaultValue={userSettings?.notifications?.end} />
             </fieldset>
             <Card title="Methods" sx={{ content: "p-4 flex-col no-wrap" }}>
+              <PushButton user={user} settings={userSettings} />
               <fieldset class="fieldset">
                 <legend class="fieldset-legend pt-0">Discord webhook</legend>
                 <input
