@@ -1,7 +1,5 @@
 import { IconPlus as Plus } from "@icons";
 import Card from "@islands/UI/Card.tsx";
-import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
-import { useToast } from "@islands/UI/Toast/useToast.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { HTTPError } from "@models/Errors.ts";
 import { IPartialStat, IStat } from "@models/Stats.ts";
@@ -11,6 +9,7 @@ import { DateTime } from "luxon";
 import { useCallback, useMemo, useState } from "preact/hooks";
 import MetricCardEditor from "./Editor/MetricCard.tsx";
 import StatCardEditor from "./Editor/StatCard.tsx";
+import useToast from "@hooks/useToast.tsx";
 
 const getNewEntryKey = (key: "metrics" | "charts") => `${key}-${DateTime.now().toUnixInteger()}`;
 
@@ -19,7 +18,7 @@ export default function StatsCollectionEditor({ stats: defaultStats, content, en
   content: IContent;
   entriesExtract: IDailyEntry[] | null;
 }) {
-  const { toast } = useToast();
+  const { notif } = useToast();
   const [submitState, setSubmitState] = useState<"idle" | "loading">("idle");
   const [stats, setStats] = useState<IPartialStat | null>(cloneDeep(defaultStats ?? null));
   const isModified = useMemo(() => !isEqual(defaultStats, stats), [
@@ -94,16 +93,14 @@ export default function StatsCollectionEditor({ stats: defaultStats, content, en
       .json<IStat | null>()
       .then((res) => {
         setStats((p) => res ?? p);
-        toast({
-          description: "Your content has been saved.",
-        });
+        notif?.open({ type: "success", message: "Your stats have been saved." });
         setSubmitState("idle");
       })
       .catch(async (e) => {
         const errorBody: HTTPError = await e.response?.json();
-        toast({
-          title: errorBody?.error?.message ?? "Error",
-          description: errorBody?.error?.details?.join("\n"),
+        notif?.open({
+          type: "error",
+          message: errorBody?.error?.message ?? "An error occurred while saving your stats." + errorBody?.error?.details?.join("\n"),
         });
         setSubmitState("idle");
       });
@@ -171,7 +168,6 @@ export default function StatsCollectionEditor({ stats: defaultStats, content, en
           </button>
         )}
       </div>
-      <Toaster />
     </>
   );
 }

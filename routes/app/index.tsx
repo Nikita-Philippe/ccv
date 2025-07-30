@@ -15,17 +15,17 @@ export const handler: Handlers<IDefaultPageHandler> = {
 
     const { id: contentId, date, ...formData } = Object.fromEntries(form);
 
-    if (!contentId) return await ctx.render({ message: "No content id provided" });
+    if (!contentId) return await ctx.render({ message: { type: "error", message: "No content id provided" } });
 
     const content = await requestTransaction(req, { action: "getContent" });
-    if (!content) return await ctx.render({ message: "No content found" });
+    if (!content) return await ctx.render({ message: { type: "error", message: "Content not found" } });
 
     // Check that form match the content
     const allFields = content.fields.map((f) => f.name);
     const differenceFields = difference(Object.keys(formData), allFields);
     if (differenceFields.length > 0) {
       console.error("Some keys are missing in sended form:", differenceFields);
-      return await ctx.render({ message: "Some keys are missing in sended form" });
+      return await ctx.render({ message: { type: "error", message: `Some keys are missing in sended form` } });
     }
 
     // Format and parse entries to be saved
@@ -39,8 +39,12 @@ export const handler: Handlers<IDefaultPageHandler> = {
       args: [{ contentId: contentId.toString(), entries, at: date.toString() }],
     });
 
-    if (!res?.at) return await ctx.render({ message: "An error occured while saving. Please try again." });
-    return await ctx.render({ message: "Data saved successfully" });
+    if (!res) {
+      return await ctx.render({
+        message: { type: "error", message: "An error occurred while saving. Please try again." },
+      });
+    }
+    return await ctx.render({ message: { type: "success", message: "Data saved successfully" } });
   },
 };
 

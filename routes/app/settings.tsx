@@ -35,14 +35,14 @@ export const handler: Handlers<IDefaultPageHandler> = {
           const { reminder_start, reminder_end, notif_discord_webhook } = restForm;
           const start = DateTime.fromFormat(reminder_start as string, "HH:mm", { zone: "utc" });
           const end = DateTime.fromFormat(reminder_end as string, "HH:mm", { zone: "utc" });
-          if (!start.isValid || !end.isValid) return await ctx.render({ message: "Time format are invalid" });
+          if (!start.isValid || !end.isValid) return await ctx.render({ message: { type: "error", message: "Time format are invalid" } });
           if (start.hour === 0 && start.minute < 10) {
-            return await ctx.render({ message: "Start time must be after 00:10" });
+            return await ctx.render({ message: { type: "error", message: "Start time must be after 00:10" } });
           }
-          if (end.hour === 23 && end.minute > 50) return await ctx.render({ message: "End time must be before 23:50" });
-          if (start > end) return await ctx.render({ message: "Start time must be before end time" });
+          if (end.hour === 23 && end.minute > 50) return await ctx.render({ message: { type: "error", message: "End time must be before 23:50" } });
+          if (start > end) return await ctx.render({ message: { type: "error", message: "Start time must be before end time" } });
           if (!userSettings?.notifications?.discord_webhook && !notif_discord_webhook) {
-            return await ctx.render({ message: "Please provide a notification method" });
+            return await ctx.render({ message: { type: "error", message: "Please provide a notification method" } });
           }
           break;
         }
@@ -56,7 +56,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
         discord_webhook: restForm.notif_discord_webhook as string,
       });
 
-      return await ctx.render({ message: "Settings updated" });
+      return await ctx.render({ message: { type: "success", message: "Settings updated" } });
     }
 
     return await ctx.render();

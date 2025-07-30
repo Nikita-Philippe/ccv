@@ -1,7 +1,7 @@
 import { RouteContext } from "$fresh/server.ts";
 import { getUserBySession } from "@utils/auth.ts";
-import ToasterWrapper from "@islands/UI/Toast/ToasterWrapper.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
+import Toast from "@islands/UI/Toast.tsx";
 
 export default async function Layout(req: Request, ctx: RouteContext<IDefaultPageHandler>) {
   const user = await getUserBySession(req, true);
@@ -64,7 +64,8 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
           <ctx.Component />
         </div>
       </div>
-      {ctx.data?.message && <ToasterWrapper content={{ id: "1", description: ctx.data.message }} />}
+      {/* {ctx.data?.message && <ToasterWrapper content={{ id: "1", description: ctx.data.message }} />} */}
+      {ctx.data?.message && (<Toast toast={ctx.data.message} />)}
     </>
   );
 }

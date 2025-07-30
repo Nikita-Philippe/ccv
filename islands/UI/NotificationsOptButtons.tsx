@@ -3,6 +3,7 @@ import { ISettings } from "@models/App.ts";
 import { IAuthenticatedUser } from "@models/User.ts";
 import ky from "ky";
 import { useEffect, useState } from "preact/hooks";
+import useToast from "@hooks/useToast.tsx";
 
 /** Push/Email notification settings component.
  *
@@ -12,12 +13,12 @@ import { useEffect, useState } from "preact/hooks";
 export default function PushButton(
   { user, settings: defaultSettings }: { user: IAuthenticatedUser; settings: ISettings | null },
 ) {
+  const { notif } = useToast();
   const [isPushSupported, setIsPushSupported] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState<ISettings>(defaultSettings ?? {});
   // New form values. Used to know when the email is set, unset for the current render.
   const [newValues, setNewValue] = useState<{ email?: string }>({ email: defaultSettings?.notifications?.email });
-  const [pushState, setPushState] = useState<{ message: string; color: string }>();
 
   useEffect(() => {
     if (!globalThis?.OneSignalDeferred) globalThis.OneSignalDeferred = [];
@@ -34,10 +35,7 @@ export default function PushButton(
       type === "email" && newValues.email &&
       !newValues.email.match(/^[a-zA-Z0-9_.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9.\-]+$/)
     ) {
-      setPushState({
-        message: "Please enter a valid email address.",
-        color: "error",
-      });
+      notif?.open({ type: "error", message: "Please enter a valid email address." });
       return;
     }
 
@@ -70,11 +68,11 @@ export default function PushButton(
           .then((res) => {
             if (!res) throw new Error("Failed to update settings");
             setSettings(res);
-            setPushState({ message: "Settings updated successfully.", color: "success" });
+            notif?.open({ type: "success", message: "Settings updated successfully." });
           })
           .catch((error) => {
             console.error("Error updating settings:", error);
-            setPushState({ message: "Failed to update settings.", color: "error" });
+            notif?.open({ type: "error", message: "Failed to update settings." });
           })
           .finally(() => setIsLoading(false));
       } else if (type === "push") {
@@ -140,11 +138,6 @@ export default function PushButton(
             </fieldset>
           )}
         </div>
-        {pushState && (
-          <p class={`fieldset-label mt-2 text-${pushState.color}`}>
-            {pushState.message}
-          </p>
-        )}
       </>
     )
     : null;

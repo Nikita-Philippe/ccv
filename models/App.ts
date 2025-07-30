@@ -21,5 +21,5 @@ export interface INotifications {
 /** App-global page handler response */
 export interface IDefaultPageHandler {
   // Message displayed in a toast
-  message?: string;
+  message?: { type: "info" | "success" | "warning" | "error"; message: string };
 }

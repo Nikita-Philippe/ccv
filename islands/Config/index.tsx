@@ -2,8 +2,7 @@ import { IconPlus as Plus } from "@icons";
 import ConfigCard from "@islands/Config/card.tsx";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
 import Card from "@islands/UI/Card.tsx";
-import { Toaster } from "@islands/UI/Toast/Toaster.tsx";
-import { useToast } from "@islands/UI/Toast/useToast.tsx";
+import useToast from "@hooks/useToast.tsx";
 import { PartialBy } from "@models/Common.ts";
 import { EConfigCardType, IContent, IPartialContent } from "@models/Content.ts";
 import { HTTPError } from "@models/Errors.ts";
@@ -18,7 +17,7 @@ const baseContent: IPartialContent = {
 export default function ConfigCollection({ content: defaultContent }: {
   content: IContent | null;
 }) {
-  const { toast } = useToast();
+  const { notif } = useToast();
   const [submitState, setSubmitState] = useState<"idle" | "loading">("idle");
   const [content, setContent] = useState<IPartialContent>(defaultContent ?? baseContent);
 
@@ -72,16 +71,14 @@ export default function ConfigCollection({ content: defaultContent }: {
       .json<IContent | null>()
       .then((res) => {
         setContent((p) => res ?? p);
-        toast({
-          description: "Your content has been saved.",
-        });
+        notif?.open({ type: "success", message: "Your content has been saved." });
         setSubmitState("idle");
       })
       .catch(async (e) => {
         const errorBody: HTTPError = await e.response?.json();
-        toast({
-          title: errorBody?.error?.message ?? "Error",
-          description: errorBody?.error?.details?.join("\n"),
+        notif?.open({
+          type: "error",
+          message: errorBody?.error?.message ?? "An error occurred while saving your content." + errorBody?.error?.details?.join("\n"),
         });
         setSubmitState("idle");
       });
@@ -129,7 +126,6 @@ export default function ConfigCollection({ content: defaultContent }: {
           {submitState === "loading" ? "Saving..." : "Save"}
         </button>
       )}
-      <Toaster />
     </>
   );
 }

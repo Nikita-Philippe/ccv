@@ -33,14 +33,14 @@ export const handler: Handlers<HandlerType | null> = {
       const recoveryKey = formData.recovery_key as string;
       const recoveryEmail = formData.recovery_email as string;
 
-      if (!recoveryKey) return await ctx.render({ message: ERROR_MESSAGE.RECOVER_MISSING_KEY });
-      if (!recoveryEmail) return await ctx.render({ message: ERROR_MESSAGE.RECOVER_MISSING_EMAIL });
+      if (!recoveryKey) return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_KEY } });
+      if (!recoveryEmail) return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_EMAIL } });
 
       const sessionId = await getSessionId(req!);
       const res = await recoverUserAccount(recoveryKey, recoveryEmail, sessionId ?? "");
-      if (!res) return await ctx.render({ message: ERROR_MESSAGE.RECOVER_NOT_FOUND });
+      if (!res) return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_NOT_FOUND } });
       return await ctx.render({
-        message: "Your datas have been recovered. You can download the file below.",
+        message: { type: "success", message: "Your datas have been recovered. You can download the files below." },
         recovered: res,
       });
     }

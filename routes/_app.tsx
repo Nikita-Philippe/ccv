@@ -5,7 +5,6 @@ import { PushCheck } from "@islands/PushCheck.tsx";
 
 // deno-lint-ignore require-await
 export default async function App(req: Request, { Component }: FreshContext) {
-  
   const userOSId = getCookies(req.headers)[ONESIGNAL_EXTERNAL_ID];
 
   return (
@@ -28,6 +27,7 @@ export default async function App(req: Request, { Component }: FreshContext) {
           defer
         />
 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
         <link rel="stylesheet" href="/styles.css" />
         <script src="/loader.js" defer></script>
       </head>
