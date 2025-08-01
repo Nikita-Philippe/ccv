@@ -8,7 +8,8 @@
     "start": "deno run -A --watch=routes,cron.ts,tailwind.config.ts,static/app.css dev.ts",
     "build": "deno run -A dev.ts build",
     "preview": "deno run -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "update": "deno run -A -r https://fresh.deno.dev/update .",
+    "deploy": "deno task build && deployctl deploy --env-file=.env.deploy --exclude=.env,.env.piknik,.env.production.local --project=ccv --entrypoint=main.ts --prod"
   },
   "lint": {
     "rules": {
@@ -29,14 +30,12 @@
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    
     "daisyui": "npm:daisyui@^5",
     "tailwindcss": "npm:tailwindcss@^4",
     "@tailwindcss/postcss": "npm:@tailwindcss/postcss@^4",
     "autoprefixer": "npm:autoprefixer@^10.4.20",
     "postcss": "npm:postcss@^8.5.3",
     "postcss-nested": "npm:postcss-nested@^7.0.2",
-
     "@std/dotenv": "jsr:@std/dotenv",
     "@std/http": "jsr:@std/http",
     "@models/": "./models/",
@@ -61,8 +60,11 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "types": ["./models/apexcharts.d.ts", "./models/onesignal.d.ts"],
-    "noUncheckedIndexedAccess": true 
+    "types": [
+      "./models/apexcharts.d.ts",
+      "./models/onesignal.d.ts"
+    ],
+    "noUncheckedIndexedAccess": true
   },
   "nodeModulesDir": "auto",
   "fmt": {
@@ -73,5 +75,15 @@
   "unstable": [
     "cron",
     "kv"
-  ]
+  ],
+  "deploy": {
+    "project": "a84c2c04-be8e-40fc-9f3a-8a07227d4b50",
+    "exclude": [
+      ".env",
+      ".env.*",
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.ts"
+  }
 }
