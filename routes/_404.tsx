@@ -1,5 +1,6 @@
 import { Head } from "$fresh/runtime.ts";
 import { RouteConfig } from "$fresh/server.ts";
+import Button from "@islands/UI/Button.tsx";
 
 export const config: RouteConfig = {
   skipInheritedLayouts: true, // Skip already inherited layouts
@@ -21,18 +22,18 @@ export default function Error404(req: Request) {
         {redirectTo
           ? (
             <p>
-              <button class={"btn w-fit"}>
+              <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
                 <a href={redirectTo.startsWith("/") ? redirectTo : `/${redirectTo}`}>
                   Go back
                 </a>
-              </button>
+              </Button>
             </p>
           )
           : (
             <p>
-              <button class={"btn w-fit"}>
+              <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
                 <a href="/">Go to homepage</a>
-              </button>
+              </Button>
             </p>
           )}
       </div>

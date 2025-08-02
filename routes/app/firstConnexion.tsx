@@ -1,6 +1,7 @@
 import RecoveryKeySaver from "@islands/Auth/RecoveryKeySaver.tsx";
 import Card from "@islands/UI/Card.tsx";
 import { RouteConfig } from "$fresh/server.ts";
+import Button from "@islands/UI/Button.tsx";
 
 export const config: RouteConfig = {
   skipInheritedLayouts: true,
@@ -39,9 +40,9 @@ export default function FirstConnexion(req: Request) {
       <h2 class="text-xl font-semibold">What's Next?</h2>
       <p class="mb-4">
         Create your first{" "}
-        <button class="btn w-fit h-fit py-0.5">
+        <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
           <a href="/app/config">configuration</a>
-        </button>{" "}
+        </Button>{" "}
         and start tracking your habits.
       </p>
     </div>

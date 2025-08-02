@@ -6,6 +6,7 @@ import { difference } from "lodash";
 import { DateTime } from "luxon";
 import { JSX } from "preact";
 import { useCallback, useState } from "preact/hooks";
+import Button from "@islands/UI/Button.tsx";
 
 type Props = {
   missingDays: string[];
@@ -36,9 +37,9 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <button type="submit" class="btn btn-primary grow" onClick={handleClick}>
+        <Button type="submit" class="btn btn-primary grow" onClick={handleClick}>
           Save
-        </button>
+        </Button>
         <label className={"input max-w-[220px]"}>
           <span className={"label"}>Entry date</span>
           <DatePicker defaultValue={chosenDate} onChange={(date) => setChosenDate(date)} customDate={chosenDate} />

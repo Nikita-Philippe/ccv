@@ -9,6 +9,7 @@ import { IDefaultPageHandler, ISettings } from "@models/App.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
 import ImportButton from "@islands/Settings/ImportButton.tsx";
 import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
+import Button from "@islands/UI/Button.tsx";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -90,9 +91,9 @@ export default async function Settings(req: Request) {
               <p>Welcome back {user.name} !</p>
               <p>Your datas are currently synced.</p>
               <p>Your are signed in using Google with {user.email}.</p>
-              <button class={"btn w-fit h-fit py-0.5"}>
+              <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
                 <a href="/signout?success_url=/app/settings">Sign Out</a>
-              </button>
+              </Button>
             </>
           )
           : (
@@ -104,9 +105,9 @@ export default async function Settings(req: Request) {
                 {DateTime.fromJSDate(publicSession!.expires).setLocale("en").toRelative()}.
               </p>
               <p>
-                <button class={"btn w-fit h-fit py-0.5"}>
+                <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
                   <a href="/signin">Sign In</a>
-                </button>{" "}
+                </Button>{" "}
                 to keep your current datas, and to sync your data across devices !
               </p>
               {content?.id && (
@@ -186,9 +187,9 @@ export default async function Settings(req: Request) {
                 </p>
               </fieldset>
             </Card>
-            <button class={"btn w-fit mt-2"} type={"submit"}>
+            <Button class="btn w-fit mt-2" type="submit">
               Save notifications settings
-            </button>
+            </Button>
           </form>
         </Card>
       )}
@@ -198,11 +199,11 @@ export default async function Settings(req: Request) {
       >
         <Card sx={{ content: "p-4 flex-col no-wrap" }}>
           <p>If you lost access to your account, recover your daily entries and your configs using the recovery key.</p>
-          <button class={"btn w-fit"}>
+          <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
             <a href="/app/recover">
               Recover account
             </a>
-          </button>
+          </Button>
         </Card>
         {user.isAuthenticated && (
           <Card sx={{ content: "p-4 flex-col no-wrap" }}>

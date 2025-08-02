@@ -8,6 +8,7 @@ import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import { requestTransaction } from "@utils/database.ts";
 import { parseEntry, stringifyEntryValue } from "@utils/entries.ts";
 import { capitalize, difference } from "lodash";
+import Button from "@islands/UI/Button.tsx";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -71,9 +72,9 @@ export default async function Home(req: Request) {
           You don't have any content configured yet.
         </h3>
         <p>
-          <button class={"btn w-fit h-fit py-0.5"}>
+          <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
             <a href="/app/config">Configure</a>
-          </button>{" "}
+          </Button>{" "}
           now your first form, and start tracking your habits !
         </p>
       </Card>

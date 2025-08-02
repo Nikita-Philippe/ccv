@@ -8,6 +8,7 @@ import { getUserBySession } from "@utils/auth.ts";
 import { getSessionId } from "../../plugins/kv_oauth.ts";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
+import Button from "@islands/UI/Button.tsx";
 
 type HandlerType = IDefaultPageHandler & {
   recovered?: {
@@ -79,9 +80,9 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
                 />
               )}
             </div>
-            <button type="submit" className="btn w-fit mt-4 self-start">
+            <Button type="submit" className="btn w-fit mt-4 self-start" spinnerProps={{ class: "loading-dots" }}>
               <a href="/app">Go back to the home page</a>
-            </button>
+            </Button>
           </div>
         )
         : (
