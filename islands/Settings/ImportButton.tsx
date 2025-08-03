@@ -1,4 +1,4 @@
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import ky from "ky";
 import { useState } from "preact/hooks";
 import { JSX } from "preact/jsx-runtime";

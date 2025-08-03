@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { getDailyEntryKey } from "@utils/common.ts";
 import { IconCircleCheck as ClipboardCheck, IconClipboard as Clipboard, IconFileText as FileDL } from "@icons";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 
 /** Component displaying the recovery key and allowing to copy it to clipboard or download it as a file. */
 export default function RecoveryKeySaver({ recoveryKey }: { recoveryKey: string }) {

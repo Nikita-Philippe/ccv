@@ -4,7 +4,7 @@ import { EConfigCardType, IIntField, IMultistringField, IntFieldVariants, IParti
 import { debounce } from "lodash";
 import { IconCopy as Copy, IconTrash as Trash } from "@icons";
 import { cn } from "@utils/cn.ts";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 
 type Config = IPartialContent["fields"][0];
 

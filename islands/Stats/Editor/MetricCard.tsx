@@ -1,5 +1,5 @@
 import { IconCopy as Copy, IconTrash as Trash } from "@icons";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../../components/UI/Card.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { IPartialStat, StatMetricType } from "@models/Stats.ts";
 import { cn } from "@utils/cn.ts";

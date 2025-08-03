@@ -3,7 +3,7 @@ import { IContent } from "@models/Content.ts";
 import ky from "ky";
 import { DateTime } from "luxon";
 import { useState } from "preact/hooks";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 
 type ExportButtonsProps = {
   content: IContent;

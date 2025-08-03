@@ -1,4 +1,4 @@
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../../components/UI/Card.tsx";
 import FieldChart from "@islands/UI/FieldChart.tsx";
 import TextAreaChart from "@islands/UI/TextAreaChart.tsx";
 import { EConfigCardType, IDailyEntry, TField } from "@models/Content.ts";

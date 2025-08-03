@@ -1,4 +1,4 @@
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import { IDailyEntry, ITextareaField } from "@models/Content.ts";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "preact/hooks";

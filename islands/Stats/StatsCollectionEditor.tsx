@@ -1,5 +1,5 @@
 import { IconPlus as Plus } from "@icons";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { HTTPError } from "@models/Errors.ts";
 import { IPartialStat, IStat } from "@models/Stats.ts";

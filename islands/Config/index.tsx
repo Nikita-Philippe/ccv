@@ -1,7 +1,7 @@
 import { IconPlus as Plus } from "@icons";
 import ConfigCard from "@islands/Config/card.tsx";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import useToast from "@hooks/useToast.tsx";
 import { PartialBy } from "@models/Common.ts";
 import { EConfigCardType, IContent, IPartialContent } from "@models/Content.ts";

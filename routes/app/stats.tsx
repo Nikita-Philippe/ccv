@@ -1,6 +1,6 @@
 import StatsCollection from "@islands/Stats/StatsCollection.tsx";
 import StatsCollectionEditor from "@islands/Stats/StatsCollectionEditor.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import { requestTransaction } from "@utils/database.ts";
 import { DateTime } from "luxon";
 import Button from "@islands/UI/Button.tsx";

@@ -1,7 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import Field from "@islands/Field/index.tsx";
 import SaveButton from "@islands/SaveDailyButton.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
 import { TField } from "@models/Content.ts";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";

@@ -1,5 +1,5 @@
 import { Handlers, RouteContext } from "$fresh/server.ts";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import FileDownloader from "@islands/UI/FileDownloader.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { ERROR_MESSAGE } from "@models/Errors.ts";

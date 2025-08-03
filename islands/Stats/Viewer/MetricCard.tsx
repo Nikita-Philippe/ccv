@@ -1,4 +1,4 @@
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../../components/UI/Card.tsx";
 import { IDailyEntry, TField } from "@models/Content.ts";
 import { IPartialStat } from "@models/Stats.ts";
 import { parseValueForChart } from "@utils/statsParser.ts";

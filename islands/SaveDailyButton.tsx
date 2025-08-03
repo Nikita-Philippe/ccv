@@ -1,5 +1,5 @@
 import DatePicker, { DateToFR } from "@islands/Field/DatePicker.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../components/UI/Card.tsx";
 import { cn } from "@utils/cn.ts";
 import { getDailyEntryKey } from "@utils/common.ts";
 import { difference } from "lodash";

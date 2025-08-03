@@ -1,5 +1,5 @@
 import { IconCopy as Copy, IconTrash as Trash } from "@icons";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../../components/UI/Card.tsx";
 import Chart from "@islands/UI/Chart.tsx";
 import { IContent, IDailyEntry } from "@models/Content.ts";
 import { chartsForFieldType, IPartialStat, MChartConfig, MChartLabel } from "@models/Stats.ts";

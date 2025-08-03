@@ -1,5 +1,5 @@
 import RecoveryKeySaver from "@islands/Auth/RecoveryKeySaver.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import { RouteConfig } from "$fresh/server.ts";
 import Button from "@islands/UI/Button.tsx";
 

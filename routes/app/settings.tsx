@@ -1,6 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 import ExportButtons from "@islands/Settings/ExportButtons.tsx";
-import Card from "@islands/UI/Card.tsx";
+import Card from "../../components/UI/Card.tsx";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
 import { getHelloPageRedirect, getPublicUser, getUserBySession } from "@utils/auth.ts";
 import { requestTransaction, wipeUser } from "@utils/database.ts";
