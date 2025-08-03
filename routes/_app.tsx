@@ -5,6 +5,9 @@ import { PushCheck } from "@islands/PushCheck.tsx";
 
 // deno-lint-ignore require-await
 export default async function App(req: Request, { Component }: FreshContext) {
+  // Only instantiate OneSignal in-app
+  const fetchOneSignal = new URL(req.url).pathname.startsWith("/app");
+
   const userOSId = getCookies(req.headers)[ONESIGNAL_EXTERNAL_ID];
 
   return (
@@ -19,13 +22,17 @@ export default async function App(req: Request, { Component }: FreshContext) {
         <link rel="manifest" href="/logo/site.webmanifest" />
 
         {/* One signal init script */}
-        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-        <script
-          src={`/onesignal-init.js?appId=${encodeURIComponent(Deno.env.get("ONESIGNAL_APP_ID")!)}&safariWebId=${
-            encodeURIComponent(Deno.env.get("ONESIGNAL_APP_SAFARI_ID") || "")
-          }&isLocal=${Deno.env.get("ENVIRONMENT") === "local"}${userOSId ? `&userId=${userOSId}` : ""}`}
-          defer
-        />
+        {fetchOneSignal && (
+          <>
+            <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+            <script
+              src={`/onesignal-init.js?appId=${encodeURIComponent(Deno.env.get("ONESIGNAL_APP_ID")!)}&safariWebId=${
+                encodeURIComponent(Deno.env.get("ONESIGNAL_APP_SAFARI_ID") || "")
+              }&isLocal=${Deno.env.get("ENVIRONMENT") === "local"}${userOSId ? `&userId=${userOSId}` : ""}`}
+              defer
+            />
+          </>
+        )}
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
         <link rel="stylesheet" href="/styles.css" />
@@ -33,7 +40,7 @@ export default async function App(req: Request, { Component }: FreshContext) {
       </head>
       <body class="min-h-screen">
         <Component />
-        <PushCheck />
+        {fetchOneSignal && <PushCheck />}
       </body>
     </html>
   );
