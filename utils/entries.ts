@@ -9,6 +9,7 @@ import { getInKv, getLastKey, setInKv } from "@utils/kv.ts";
 import { decodeString, encodeString } from "@utils/string.ts";
 import { DateTime } from "luxon";
 import { getUserDatasExpiry } from "@utils/user.ts";
+import { Debug } from "./debug.ts";
 
 const getEntryKey = async (userId: string, dailyKey: string): Promise<Deno.KvKey> => {
   const kvKeyId = await hashUserId(userId);
@@ -56,7 +57,7 @@ export const getEntry = async (
   at?: TDailyEntryKey,
 ): Promise<IDailyEntry | null> => {
   const kvKeyId = await hashUserId(user.id);
-
+  
   let lastEntryKey = at ? getDailyEntryKey(at) : null;
   if (!lastEntryKey) {
     const lastKey = await getLastKey([KV_DAILY_ENTRY, kvKeyId]);
@@ -66,6 +67,13 @@ export const getEntry = async (
 
   const key = await getEntryKey(user.id, lastEntryKey);
   const entry = await getInKv<IDailyEntry>(kv, key);
+  if (Debug.get("entries")) {
+    console.log('Getting values at', {
+      lastEntryKey,
+      key,
+      entry
+    })
+  }
   return entry.value;
 };
 
