@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>privacy-policy.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ccv-privacy-policy">CCV Privacy Policy</h1>
+<p>Effective Date: 2025-08-19</p>
+<p>Last Updated: 2025-08-19</p>
+<p>This Privacy Policy explains how CCV (&quot;we&quot;, &quot;us&quot;, &quot;the Service&quot;) collects, uses, stores, protects, and discloses information when you use the application. CCV is a habit / routine tracking application designed around data minimization, user control, portability, and encryption. By using CCV you agree to this Policy.</p>
+<p>If you do not agree, do not use the Service.</p>
+<h2 id="1-summary-plain-language">1. Summary (Plain Language)</h2>
+<ul>
+<li>We collect the minimum data needed for accounts, habit configuration, daily entries, and optional notifications.</li>
+<li>Your personal habit data is encrypted at rest with keys derived from environment secrets; we do not sell or share it for advertising.</li>
+<li>You can export or delete your data at any time.</li>
+<li>Anonymous / guest sessions expire automatically if you do not sign in.</li>
+<li>We use Google (OAuth) for authentication and (optionally) OneSignal for notifications; Discord webhooks are optional and user-provided.</li>
+<li>No third‑party analytics, ad networks, or behavioral tracking pixels are embedded.</li>
+</ul>
+<h2 id="2-scope--applicability">2. Scope &amp; Applicability</h2>
+<p>This Policy applies to all users of the CCV web application, including anonymous (public / guest) users and authenticated users who sign in via Google OAuth.</p>
+<h2 id="3-data-categories-we-process">3. Data Categories We Process</h2>
+<h3 id="31-account--session-data">3.1 Account &amp; Session Data</h3>
+<ul>
+<li>User ID (internal identifier)</li>
+<li>Session token (used to validate your session)</li>
+<li>Authentication status (guest vs authenticated)</li>
+<li>Name &amp; email (only after Google sign‑in; email may be optional if not returned or you revoke it)</li>
+<li>Session expiry timestamps (for guests)</li>
+</ul>
+<h3 id="32-habit-configuration-%22content%22">3.2 Habit Configuration (&quot;Content&quot;)</h3>
+<ul>
+<li>Field definitions you create (label, type, icon, constraints)</li>
+<li>Version history of configuration (older versions retained to maintain historical integrity of daily entries)</li>
+</ul>
+<h3 id="33-daily-entries">3.3 Daily Entries</h3>
+<ul>
+<li>Date key (ISO date for each day tracked)</li>
+<li>Per-field values (boolean, number, string, textarea content, array of strings) — all encrypted at rest</li>
+</ul>
+<h3 id="34-settings--preferences">3.4 Settings &amp; Preferences</h3>
+<ul>
+<li>Notification window (start / end)</li>
+<li>Notification channels &amp; opt-ins (push, email, Discord webhook URL, OneSignal external ID)</li>
+</ul>
+<h3 id="35-notifications-metadata">3.5 Notifications Metadata</h3>
+<ul>
+<li>Template identifiers or static fallback content (server-side)</li>
+<li>Delivery attempts (logged success/failure internally; minimal technical logs)</li>
+</ul>
+<h3 id="36-recovery--account-support">3.6 Recovery / Account Support</h3>
+<ul>
+<li>Recovery entries (ID + email) for account access flows you explicitly trigger</li>
+</ul>
+<h3 id="37-technical--operational-logs-minimal">3.7 Technical &amp; Operational Logs (Minimal)</h3>
+<ul>
+<li>Transient HTTP request metadata (IP address, user-agent) kept only in short‑term server/access logs</li>
+<li>Timestamped server errors (stack traces)</li>
+<li>Performance debug flags (only if you enable or we temporarily enable for diagnostics)
+We do not log your decrypted habit values.</li>
+</ul>
+<h3 id="38-optional-user-supplied-integrations">3.8 Optional User-Supplied Integrations</h3>
+<ul>
+<li>Discord webhook URL (stored only if you add it; used strictly for sending messages you requested)</li>
+</ul>
+<h2 id="4-what-we-deliberately-do-not-collect">4. What We Deliberately Do NOT Collect</h2>
+<ul>
+<li>No advertising identifiers</li>
+<li>No third‑party analytics trackers (Google Analytics, etc.)</li>
+<li>No behavioral profiling data</li>
+<li>No keystroke logging</li>
+<li>No background location data</li>
+</ul>
+<h2 id="5-legal-bases-if-applicable-under-your-jurisdiction">5. Legal Bases (If Applicable Under Your Jurisdiction)</h2>
+<p>Where required (e.g., GDPR):</p>
+<ul>
+<li>Contract (to provide the Service features you request)</li>
+<li>Legitimate interests (security, anti-abuse, service reliability)</li>
+<li>Consent (optional notifications, Discord webhook, email delivery)
+You may withdraw consent for optional channels at any time by disabling them in settings.</li>
+</ul>
+<h2 id="6-how-we-use-data">6. How We Use Data</h2>
+<ul>
+<li>Provide core habit tracking functionality</li>
+<li>Render your historical metrics &amp; statistics</li>
+<li>Deliver reminders or test notifications you explicitly request</li>
+<li>Maintain session continuity and prevent unauthorized access</li>
+<li>Support export/import features for portability</li>
+<li>Diagnose performance or reliability issues (aggregate technical logs)</li>
+<li>Respond to contact form submissions (admin email dispatch)</li>
+</ul>
+<h2 id="7-encryption--security">7. Encryption &amp; Security</h2>
+<ul>
+<li>Habit configuration and daily entries are encrypted at rest using keys derived from server-side secrets.</li>
+<li>At sign-in you are redirected to <code>/app/firstconnexion</code> to save your personal encryption key. The key is displayed once; after completing that step the page cannot be revisited to retrieve it. We never store a copy capable of recovering your data. If you lose it, we cannot recover it.</li>
+<li>Environment secrets are not exposed client-side.</li>
+<li>Transport uses HTTPS (TLS) when deployed.</li>
+<li>Access controls restrict internal operations to the minimal code paths; there is no broad administrative dashboard exposing decrypted content.
+No system is perfectly secure; we encourage exporting your data periodically.</li>
+</ul>
+<h2 id="8-data-portability--export">8. Data Portability &amp; Export</h2>
+<p>You can export your data (e.g., JSON / CSV) through in-app export features. Exports are generated on-demand; we do not pre-build external data sets of your habits.</p>
+<h2 id="9-data-retention">9. Data Retention</h2>
+<table>
+<thead>
+<tr>
+<th>Data Type</th>
+<th>Retention Policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Guest (public) session data</td>
+<td>Expires automatically after its defined lifetime or inactivity; may be purged sooner for storage optimization</td>
+</tr>
+<tr>
+<td>Authenticated user habit data</td>
+<td>Retained until you delete your account data</td>
+</tr>
+<tr>
+<td>Configuration versions</td>
+<td>Retained to preserve historical integrity until associated entries are deleted</td>
+</tr>
+<tr>
+<td>Notifications logs (technical)</td>
+<td>Short-term (rolling window, currently ≤30 days) for troubleshooting, then pruned</td>
+</tr>
+<tr>
+<td>Server/access logs (IP, user-agent)</td>
+<td>Short-term (currently ≤30 days) then automatically pruned</td>
+</tr>
+<tr>
+<td>Recovery entries</td>
+<td>Removed after completion or expiration of the recovery window</td>
+</tr>
+<tr>
+<td>Contact form emails (admin email system)</td>
+<td>Stored in the recipient mailbox per their retention policies</td>
+</tr>
+</tbody>
+</table>
+<p>When you delete habit data, associated encrypted records are removed from the primary store. We currently do not maintain long-term cold backups of decrypted content.</p>
+<h2 id="10-data-deletion">10. Data Deletion</h2>
+<p>You may:</p>
+<ul>
+<li>Remove or reconfigure fields (new version created; you may delete old versions if no entries depend on them)</li>
+<li>Delete notification settings / revoke webhooks / disable channels</li>
+<li>Request full account data deletion (removes all user configuration &amp; entries; some logs may persist briefly in aggregated form without personal identifiers)</li>
+</ul>
+<h2 id="11-cookies--local-storage">11. Cookies &amp; Local Storage</h2>
+<ul>
+<li>Session token / authentication cookie: required for maintaining your signed-in session</li>
+<li>Local storage: may cache icons, UI state, or ephemeral flags to improve performance; does not store decrypted habit history
+No cross-site tracking cookies are used.</li>
+</ul>
+<h2 id="12-third-party-services">12. Third-Party Services</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Purpose</th>
+<th>Data Shared</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google OAuth</td>
+<td>Authentication</td>
+<td>Name, email (as returned), profile ID for sign-in</td>
+</tr>
+<tr>
+<td>OneSignal (optional)</td>
+<td>Push &amp; email notifications</td>
+<td>External user ID (mapped to your alias), template IDs, notification metadata</td>
+</tr>
+<tr>
+<td>Discord Webhook (optional)</td>
+<td>User-requested channel for reminders</td>
+<td>Webhook URL (user supplied) + message content</td>
+</tr>
+</tbody>
+</table>
+<p>We do not permit these providers to use your data for independent advertising profiling within CCV.</p>
+<h2 id="13-international-data-transfers">13. International Data Transfers</h2>
+<p>Your data may be processed in regions where our hosting provider (at 2025-08-19 this is <a href="https://deno.com/deploy">Deno Deploy</a>) and notification/auth providers (Google, OneSignal, Discord) operate (including the EU and United States). By using the Service you consent to such processing. We apply encryption at rest for habit content to reduce risk if storage locality differs from your region. Providers rely on their own safeguards (e.g., standard contractual clauses) for cross-border transfers.</p>
+<h2 id="14-automated-decision-making--profiling">14. Automated Decision-Making / Profiling</h2>
+<p>We do not perform automated decision-making producing legal or similarly significant effects. No ad targeting or behavioral scoring is performed.</p>
+<h2 id="15-your-rights-where-applicable">15. Your Rights (Where Applicable)</h2>
+<p>Depending on your jurisdiction you may have rights to access, rectify, export, delete, restrict processing, or object to processing. Use in-app export / deletion features or contact us (see Section 20). We will verify your identity using session or email information before acting.</p>
+<h2 id="16-breach-notification">16. Breach Notification</h2>
+<p>If we become aware of a data breach likely to result in a high risk to your rights, we will notify affected users consistent with applicable law and describe mitigation steps.</p>
+<h2 id="17-changes-to-this-policy">17. Changes to This Policy</h2>
+<p>We may update this Policy. Material changes will be indicated by updating the &quot;Last Updated&quot; date and, where feasible, providing an in-app notice. Continued use after changes constitutes acceptance.</p>
+<h2 id="18-contact">18. Contact</h2>
+<p>Data Controller: (Individual project owner) – contact: nikita.philippe1@gmail.com</p>
+<p>For privacy inquiries or data subject requests, use the above email. EU/UK users may also contact their local data protection authority if concerns remain unresolved.</p>
+<h2 id="19-disclaimer">19. Disclaimer</h2>
+<p>This document is provided for transparency and user trust. It is not certified legal advice. Jurisdiction-specific obligations (e.g., GDPR/CCPA) may impose additional requirements; we intend to honor applicable rights upon verifiable request.</p>
+<h2 id="20-version-history">20. Version History</h2>
+<ul>
+<li>2025-08-19: Initial comprehensive version committed.</li>
+</ul>
+<hr>
+<p>If you have suggestions to improve clarity or protection, please reach out using the contact method above.</p>
+
+</body>
+</html>

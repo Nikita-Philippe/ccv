@@ -307,6 +307,8 @@ export interface NotificationBody {
    * Target specific users by aliases assigned via API. An alias can be an external_id, onesignal_id, or a custom alias. Accepts an object where keys are alias labels and values are arrays of alias IDs to include Example usage: { \"external_id\": [\"exId1\", \"extId2\"], \"internal_label\": [\"id1\", \"id2\"] } Not compatible with any other targeting parameters. REQUIRED: REST API Key Authentication Limit of 2,000 entries per REST API call Note: If targeting push, email, or sms subscribers with same ids, use with target_channel to indicate you are sending a push or email or sms.
    */
   "include_aliases"?: { [key: string]: Array<string> };
+  "email_to"?: string[];
+  "email_reply_to_address"?: string;
   "target_channel"?: NotificationTargetChannelEnum;
   "id"?: string;
   "value"?: number;

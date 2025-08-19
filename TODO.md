@@ -1,6 +1,6 @@
 # TODOs:
 
-- Content:
+- Configs:
   - [x] Add validation/sanitize on each content field (name, etc)
   - [ ] Add types
     - [ ] Add date picker
@@ -19,7 +19,8 @@
   - [x] Cannot save if validation error
   - [ ] Delete avant last entry not working (entry index not correct)
   - [ ] Add value unit (hour, /per day, etc)
-- Dailentry
+  - [ ] Does deleting a config field will impact the entries "linked" to that field ?
+- Entries
   - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible
   - [ ] Style entries
     - [ ] Add icons support
@@ -34,7 +35,7 @@
 - UI:
   - [ ] Create the main app layout
   - [x] Add toast
-  - [ ] Add loader
+  - [x] Fix/Better loader
   - [ ] Themes
     - [ ] Add premade theme toggle https://daisyui.com/components/theme-controller/
     - [ ] Add main color changer, mainly for the stats
@@ -47,11 +48,12 @@
     - [ ] Landing page
 - Settings:
   - [ ] Daily delta (1 day default)
-  - [ ] Notifications when/how
-    - [ ] Test discord webhook
   - [ ] Multi string delimiter (default: '|||')
   - [ ] Custom data backups
   - [ ] Support [TZ](https://gist.github.com/aviflax/a4093965be1cd008f172?permalink_comment_id=4079362#gistcomment-4079362)
+- Reminders/Notifications:
+  - [ ] Notifications when/how
+  - [ ] Test notifications  discord webhook
 - System:
   - [ ] Backups/export
     - [ ] Find ways to save the data (gdrive ?)
@@ -75,6 +77,9 @@
   - [x] Encode config & content per-user (signed in only?)
   - [x] Periodically delete content/config of public users from kv
   - [ ] Add an admin account (set in env)
+    - [ ] Can see created users
+    - [ ] Receive notif on created users ?
+    - [ ] Not need google account ?
   - [x] Errors
     - [x] On callback reload `OAuth session not found at getAndDeleteOAuthSession (https://jsr.io/@deno/kv-oauth/0.11.0/lib/_kv.ts:34:11)`
     - [x] Session ended (TTL expired) when signed in (redirect to specific page to re-connect. Do not bother with refresh token)
@@ -109,6 +114,7 @@
         - [ ] bubble? for 3 pers of the day
         - [x] "textarea"
           - [ ] Have sort of a timeline to select the texts from (even sort of a tooltip with content on hover)
+  - [ ] Add data export on stats, based on time range
 - Deployment
   - [ ] Add landing fully public page
   - [ ] Add terms
@@ -122,3 +128,9 @@
   - [ ] Add fake "pricing" page
   - [ ] Add Goals
   - [ ] Add reminders in field ("specifically remind me every 3 day to fill this field")
+  - [ ] Offline mode. Is it possible to access page only cached ? Content can still be 'saved', when internet is back it really saves it.
+  - [ ] Redo the whole config/entries view. Use a drag and drop system to create the entries form, with popover to customize the fields
+  - [ ] Localization
+- Bugs
+  - [ ] On main page, the "missed" days seems to be stuck to 5 days. Aftere 5 days they are always considered missing.
+  - [ ] Header layout on mobile / overflow with import/export on config page

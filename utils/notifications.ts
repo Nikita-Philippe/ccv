@@ -11,7 +11,9 @@ type NotifEvent =
   /** Main event, for daily reminders and habit tracking. */
   | "reminder"
   /** Public test event, for letting the user test the notification system. */
-  | "public_test";
+  | "public_test"
+  /** Contact form to admin */
+  | "contact";
 
 // The template object sent for each NotifEvent. It will use the template_id by default. If not set, will fallback on the defined content.
 type NotifTemplate = {
@@ -240,10 +242,56 @@ export class NotificationService {
 
     return !!userExists;
   }
+
+  /** Sends an email to the admin with the given event and email body.
+   * 
+   * The admin should be set in the environment variable ADMIN_EMAIL, and exists as a valid OneSignal user.
+   * 
+   * @param {NotifEvent} event - The event type for the notification.
+   * @param {Object} email - The email object containing the from address and body.
+   * @returns {Promise<CreateNotificationSuccessResponse | undefined>} - The response from OneSignal API or undefined if failed.
+   */
+  public static sendAdminEmail = async ({ event, email: { from, body: emailBody } }: { event: NotifEvent; email: { from: string, body: string } }) => {
+    this.check();
+
+    const adminEmail = Deno.env.get("ADMIN_EMAIL");
+
+    if (!adminEmail) {
+      console.error("ADMIN_EMAIL env is not set. Could not create the sendAdminEmail", { from, emailBody })
+      return;
+    }
+
+    if (Debug.get("perf_reminders")) console.time(`onesignal:admin-email:${event}`);
+
+    try {
+      const body: NotificationBody = {
+        app_id: this.APP_ID!,
+        target_channel: "email",
+        email_to: [adminEmail],
+        email_subject: `[${event}] New message from ${from}`,
+        email_reply_to_address: from,
+        email_body: emailBody,
+      };
+
+      const response = await ky.post(`${this.API_ENDPOINT}/notifications?c=email`, {
+        headers: { Authorization: this.API_KEY, "Content-Type": "application/json" },
+        json: body,
+      }).json<CreateNotificationSuccessResponse>();
+
+      if (!response.id) throw new Error("Notification could not be created");
+
+      return response;
+    } catch (e) {
+      console.error(`Admin email error: `, e);
+      return;
+    } finally {
+      if (Debug.get("perf_reminders")) console.timeEnd(`onesignal:admin-email:${event}`);
+    }
+  };
 }
 
 /** Builds the notification template based on the type and event.
- * 
+ *
  * @param {T} type - The notification type (push, email, discord_webhook).
  * @param {NotifEvent} event - The event type for the notification.
  * @returns {NotifTemplate[T] | null} - The notification template or null if not found.
@@ -309,7 +357,8 @@ const buildTemplate = <T extends NotifType>(type: T, event: NotifEvent): NotifTe
           embeds: [
             {
               title: "CCV Reminder",
-              description: "You did not filled yet your yesterday's habits... Log in to CCV to track your routine now !",
+              description:
+                "You did not filled yet your yesterday's habits... Log in to CCV to track your routine now !",
               color: 0xff0000,
             },
           ],
