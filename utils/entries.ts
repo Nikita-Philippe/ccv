@@ -5,7 +5,7 @@ import { compareDate, getDailyEntryKey, getDateTime } from "@utils/common.ts";
 import { FIELD_MULTISTRING_DELIMITER, KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { hashUserId } from "@utils/crypto.ts";
 import { TKv } from "@utils/database.ts";
-import { getInKv, getLastKey, listInKv, setInKv } from "@utils/kv.ts";
+import { getInKv, getLastKey, setInKv } from "@utils/kv.ts";
 import { decodeString, encodeString } from "@utils/string.ts";
 import { DateTime } from "luxon";
 import { getUserDatasExpiry } from "@utils/user.ts";
@@ -132,22 +132,24 @@ export const stringifyEntryValue = (entry: IEntry, content: IContent): IEntry["v
  * @returns The list of missing entries, as an array of `TDailyEntryKey`.
  */
 export const missingEntries = async (kv: TKv, user: TUser, { days }: { days: number }) => {
-  const allDays = Array.from({ length: days }, (_, i) => i).map((i) =>
-    getDailyEntryKey(DateTime.now().minus({ days: i + 1 }))
-  );
+
   const kvKeyId = await hashUserId(user.id);
-  const entries = await listInKv<IDailyEntry>(kv, { prefix: [KV_DAILY_ENTRY, kvKeyId] }, {
-    limit: days,
-    reverse: true,
-  });
-  for await (const entry of entries) {
-    if (!entry.value) continue;
-    const date = getDailyEntryKey(entry.value.at);
-    if (date && allDays.includes(date)) {
-      allDays.splice(allDays.indexOf(date), 1);
-    }
+  // Minus 1 day, because we save habit of the previous day, not the current one
+  const dateTimeFrom = getDateTime(DateTime.now().minus({ day: 1 }));
+
+  const applicableKeys = Array.from({ length: days }).map((_, i) => ([
+    KV_DAILY_ENTRY,
+    kvKeyId,
+    getDailyEntryKey(dateTimeFrom.minus({ day: i })),
+  ] as Deno.KvKey));
+
+  const missedDays = [];
+  for (const key of applicableKeys) {
+    const entry = await getInKv<IDailyEntry>(kv, key);
+    if (!entry.value) missedDays.push(key[2]);
   }
-  return allDays;
+
+  return missedDays;
 };
 
 export const isTodayAlreadySaved = async (kv: TKv, user: TUser) => {

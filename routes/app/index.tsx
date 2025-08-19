@@ -3,7 +3,7 @@ import Field from "@islands/Field/index.tsx";
 import SaveButton from "@islands/SaveDailyButton.tsx";
 import Card from "../../components/UI/Card.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
-import { TField } from "@models/Content.ts";
+import { IEntry, TField } from "@models/Content.ts";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
 import { requestTransaction } from "@utils/database.ts";
 import { parseEntry, stringifyEntryValue } from "@utils/entries.ts";
@@ -17,6 +17,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
     const { id: contentId, date, ...formData } = Object.fromEntries(form);
 
     if (!contentId) return await ctx.render({ message: { type: "error", message: "No content id provided" } });
+    if (!date) return await ctx.render({ message: { type: "error", message: "No date provided" } });
 
     const content = await requestTransaction(req, { action: "getContent" });
     if (!content) return await ctx.render({ message: { type: "error", message: "Content not found" } });
@@ -30,7 +31,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
     }
 
     // Format and parse entries to be saved
-    const entries = Object.entries(formData).map(([name, value]) => ({ name, value })).map((entry) =>
+    const entries = Object.entries(formData).map(([name, value]) => ({ name, value: value as IEntry['value'] })).map((entry) =>
       parseEntry(entry, content)
     );
 

@@ -40,15 +40,15 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
         <Button type="submit" class="btn btn-primary grow" onClick={handleClick}>
           Save
         </Button>
-        <label className={"input max-w-[220px]"}>
-          <span className={"label"}>Entry date</span>
+        <label className="input max-w-[220px]">
+          <span className="label">Entry date</span>
           <DatePicker defaultValue={chosenDate} onChange={(date) => setChosenDate(date)} customDate={chosenDate} />
           <input type="hidden" name="date" value={chosenDate} />
         </label>
       </div>
       {(missingDays ?? []).length > 0 && (
         <Card
-          title="Missing entries"
+          title={`Missing entries (last ${daysChecked} days)`}
           sx={{ container: "h-fit", content: "grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))]" }}
         >
           {missingDays.map((day) => (
