@@ -23,3 +23,10 @@ export interface IDefaultPageHandler {
   // Message displayed in a toast
   message?: { type: "info" | "success" | "warning" | "error"; message: string };
 }
+
+/** Stats displayed on the super-admin page */
+export interface IAdminUserStat {
+  user: string;
+  content: string[];
+  entries: string[];
+}

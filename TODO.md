@@ -95,6 +95,9 @@
   - [ ] App base path as env (/app)
     - [ ] Better kv path management
   - [ ] Bots are hitting the app. Find a way to secure/block.
+  - [ ] Crypto
+    - [ ] Get an advisor to check the crypto implementation
+    - [ ] Secure the session infos on db
 - Stats
   - [ ] Create stats page
     - [x] Have a view mode, and an edit mode to create a stats "dashboard"
@@ -121,6 +124,11 @@
   - [ ] Easier deploy
     - [ ] Srcipt run to check env/paths/etc
     - [ ] env example & generator
+  - [ ] Implement releases
+    - [ ] Changelog
+    - [ ] Versioning
+  - [ ] Env-based deplpoy (prod/dev)
+    - [ ] Enable onesignal only on prod
 - Ideas
   - [ ] Can datas be cleanup automatically, server side ?
   - [ ] Version/deploy version in the app about

@@ -2,9 +2,11 @@ import { RouteContext } from "$fresh/server.ts";
 import { getUserBySession } from "@utils/auth.ts";
 import { IDefaultPageHandler } from "@models/App.ts";
 import Toast from "@islands/UI/Toast.tsx";
+import { isSuperAdmin } from "@utils/user.ts";
 
 export default async function Layout(req: Request, ctx: RouteContext<IDefaultPageHandler>) {
   const user = await getUserBySession(req, true);
+  const isSA = await isSuperAdmin(user);
 
   const navItems = [
     {
@@ -31,6 +33,14 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
       href: "/app/settings",
       "f-partial": "/app/settings",
     },
+    ...(isSA
+      ? [{
+        name: "admin",
+        label: "SAdmin",
+        href: "/app/admin",
+        "f-partial": "/app/admin",
+      }]
+      : []),
     !user?.isAuthenticated
       ? ({
         name: "signin",
@@ -65,7 +75,7 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
         </div>
       </div>
       {/* {ctx.data?.message && <ToasterWrapper content={{ id: "1", description: ctx.data.message }} />} */}
-      {ctx.data?.message && (<Toast toast={ctx.data.message} />)}
+      {ctx.data?.message && <Toast toast={ctx.data.message} />}
     </>
   );
 }

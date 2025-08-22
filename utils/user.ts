@@ -3,7 +3,7 @@
 import { IAuthenticatedUser, IPublicUser, ISessionUser } from "@models/User.ts";
 import { KV_USER, KV_USER_SESSION } from "@utils/constants.ts";
 import { PartialBy } from "@models/Common.ts";
-import { tokenizeUser } from "@utils/auth.ts";
+import { getUserBySession, tokenizeUser } from "@utils/auth.ts";
 import { hashUserId } from "@utils/crypto.ts";
 import { TKv } from "@utils/database.ts";
 import { getInKv, setInKv } from "@utils/kv.ts";
@@ -133,11 +133,11 @@ export async function setUserSession(
  * @param user The user to delete. If sessionId is provided, will also clean up the session store.
  * @throws Error if the user could not be deleted
  */
-export async function deleteUser(user: PartialBy<IAuthenticatedUser, "sessionId">) {
-  const kvKeyId = await hashUserId(user.id);
+export async function deleteUser(user: PartialBy<IAuthenticatedUser, "sessionId"> | string) {
+  const kvKeyId = typeof user === "string" ? user : await hashUserId(user.id);
   const usersKey = [KV_USER, kvKeyId];
   await remove(defaultKv, usersKey);
-  if (user.sessionId) await deleteUserBySession(user.sessionId);
+  if (typeof user !== "string" && user.sessionId) await deleteUserBySession(user.sessionId);
 }
 
 /** Delete a user, in the user session store, by the session id.
@@ -170,4 +170,12 @@ export const getUserDatasExpiry = (user: IAuthenticatedUser | IPublicUser) => {
   const now = DateTime.now().toMillis();
   const expiry = DateTime.fromJSDate(user.expires).toMillis();
   return expiry - now;
+}
+
+export const isSuperAdmin = async (data: Request | IAuthenticatedUser | IPublicUser | null) => {
+  let user;
+  if (data instanceof Request) user = await getUserBySession(data, true);
+  else user = data;
+
+  return user?.isAuthenticated && user.email && user.email === Deno.env.get("ADMIN_EMAIL");
 }

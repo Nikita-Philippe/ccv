@@ -10,6 +10,7 @@ import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/ent
 import { getStats, setStats } from "@utils/stats.ts";
 import { createUser, deleteUser, getUserById, setUserSession } from "@utils/user.ts";
 import { Debug } from "./debug.ts";
+import { getSAdminStats } from "./admin.ts";
 
 export type TKv = CryptoKv;
 
@@ -53,6 +54,7 @@ const availableActions = {
   "setUserSession": setUserSession,
   "getStats": getStats,
   "setStats": setStats,
+  "getSAdminStats": getSAdminStats
 };
 
 // deno-lint-ignore no-explicit-any
@@ -132,11 +134,13 @@ export const fetchSignedInUser = async (user: IGoogleUser): Promise<IAuthenticat
 
 /** Wipe out every user-related data from the KV store.
  *
- * @param user The user to wipe out. Must be a signed-in user (public ones are auto-deleted after x time).
+ * @param user The user to wipe out. Must be a signed-in user (public ones are auto-deleted after x time) or
+ * directly the hashed user id.
  * @param recoveryEntry Optional recovery key entry. Specify it if called from the recovery page.
  */
-export const wipeUser = async (user: IAuthenticatedUser, recoveryEntry?: Deno.KvKey) => {
-  const key = await hashUserId(user.id);
+export const wipeUser = async (user: IAuthenticatedUser | string, recoveryEntry?: Deno.KvKey) => {
+  const isUserId = typeof user === "string";
+  const key = isUserId ? user : await hashUserId(user.id);
   const kv = await Deno.openKv(KV_PATH);
   // Remove/delete does not delete deeply, so iterate over all keys
   const configKey = await unique(kv, [KV_CONTENT, key]);
@@ -144,7 +148,7 @@ export const wipeUser = async (user: IAuthenticatedUser, recoveryEntry?: Deno.Kv
   for await (const key of [...configKey, ...entryKey]) {
     await remove(kv, key);
   }
-  if (Debug.get("user")) console.log(`Wiping user ${user.id}`, { user, key });
+  if (Debug.get("user")) console.log(`Wiping user ${isUserId ? user : user.id}`, { user, key });
   if (recoveryEntry) await remove(kv, recoveryEntry);
   await deleteUser(user);
   kv.close();

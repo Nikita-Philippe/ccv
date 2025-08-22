@@ -10,6 +10,7 @@ import { getSettings, setSettings } from "@utils/settings.ts";
 import ImportButton from "@islands/Settings/ImportButton.tsx";
 import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
 import Button from "@islands/UI/Button.tsx";
+import { hashUserId } from "@utils/crypto.ts";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -91,6 +92,8 @@ export default async function Settings(req: Request) {
               <p>Welcome back {user.name} !</p>
               <p>Your datas are currently synced.</p>
               <p>Your are signed in using Google with {user.email}.</p>
+              {/* FIXME: */}
+              <p>{await hashUserId(user.id)}</p>
               <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
                 <a href="/signout?success_url=/app/settings">Sign Out</a>
               </Button>

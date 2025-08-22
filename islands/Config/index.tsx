@@ -67,7 +67,7 @@ export default function ConfigCollection({ content: defaultContent }: {
 
   const saveContent = useCallback((forceContent?: IPartialContent) => {
     setSubmitState("loading");
-    ky.put("/api/config", { json: { content: forceContent ?? content }, retry: 0 })
+    ky.put("/api/content", { json: { content: forceContent ?? content }, retry: 0 })
       .json<IContent | null>()
       .then((res) => {
         setContent((p) => res ?? p);
