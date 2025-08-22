@@ -141,4 +141,4 @@
   - [ ] Localization
 - Bugs
   - [ ] On main page, the "missed" days seems to be stuck to 5 days. Aftere 5 days they are always considered missing.
-  - [ ] Header layout on mobile / overflow with import/export on config page
+  - [x] Header layout on mobile / overflow with import/export on config page

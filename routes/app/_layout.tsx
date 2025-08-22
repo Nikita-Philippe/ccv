@@ -36,7 +36,7 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
     ...(isSA
       ? [{
         name: "admin",
-        label: "SAdmin",
+        label: "Admin",
         href: "/app/admin",
         "f-partial": "/app/admin",
       }]
@@ -63,7 +63,7 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
           {navItems.map(({ item, active }) => (
             <a
               role="tab"
-              className={`px-0 pr-8 tab ${active ? "tab-active" : ""}`}
+              className={`px-0 pr-[clamp(12px,6vw,32px)] last-of-type:pr-0 tab ${active ? "tab-active" : ""}`}
               href={item.href}
             >
               {item.label}

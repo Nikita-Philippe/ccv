@@ -35,7 +35,7 @@ export default function ExportConfig({ config, replaceConfig }: {
             replaceConfig(res as IPartialContent);
           }
         };
-        reader.readAsText(file);
+        reader.readAsText(file as Blob);
       } catch (e) {
         console.error("An error occured while trying to read file: ", e);
       }
@@ -43,20 +43,22 @@ export default function ExportConfig({ config, replaceConfig }: {
   };
 
   return (
-    <div className={"flex space-x-2 absolute top-6 right-6"}>
+    <div className="flex space-x-2 mb-4 justify-end">
       <div className="tooltip tooltip-bottom" data-tip="Exporter la config en JSON">
-        <button className={"btn"} onClick={exportConfig}>
+        <button type="button" className="btn" onClick={exportConfig}>
+          {/* @ts-ignore */}
           <FileExport />
         </button>
       </div>
       <div className="tooltip tooltip-bottom" data-tip="Importer une config en JSON">
         <input
           type="file"
-          className={"opacity-0 cursor-pointer absolute left-0 w-full top-0 bottom-0 z-10"}
+          className="opacity-0 cursor-pointer absolute left-0 w-full top-0 bottom-0 z-10"
           onChange={importConfig}
-          accept={"application/json"}
+          accept="application/json"
         />
-        <button className={"btn relative"}>
+        <button type="button" className="btn relative">
+          {/* @ts-ignore */}
           <FileImport />
         </button>
       </div>
