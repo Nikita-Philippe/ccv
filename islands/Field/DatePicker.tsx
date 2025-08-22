@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { DateTime } from "luxon";
 
-export const DateToFR = (date: string) => DateTime.fromISO(date).setLocale("FR").toLocaleString(DateTime.DATE_FULL);
+export const DateToLocale = (date: string) => DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL);
 
 type DatePickerProps = {
   /** Default date as an ISO string (YYYY-MM-DD) */
@@ -31,6 +31,7 @@ export default function DatePicker({
   // When date changes through the picker, update state and notify parent.
   const handleDateChange = (selectedDate: Date) => {
     const iso = selectedDate.toISOString().split("T")[0];
+    if (!iso) return;
     setDate(iso);
     if (onChange) onChange(iso);
   };
@@ -56,7 +57,7 @@ export default function DatePicker({
       type="text"
       ref={inputRef}
       className={className || "input pika-single p-0"}
-      value={DateToFR(date)}
+      value={DateToLocale(date)}
       readOnly
     />
   );

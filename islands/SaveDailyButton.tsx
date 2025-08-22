@@ -1,4 +1,4 @@
-import DatePicker, { DateToFR } from "@islands/Field/DatePicker.tsx";
+import DatePicker, { DateToLocale } from "@islands/Field/DatePicker.tsx";
 import Card from "../components/UI/Card.tsx";
 import { cn } from "@utils/cn.ts";
 import { getDailyEntryKey } from "@utils/common.ts";
@@ -58,7 +58,7 @@ export default function SaveButton({ missingDays, daysChecked }: Props) {
               onClick={() => setChosenDate(day)}
               key={day}
             >
-              {DateToFR(day)}
+              {DateToLocale(day)}
             </button>
           ))}
         </Card>

@@ -43,7 +43,7 @@ export default async function Stats(req: Request) {
     <div class="flex flex-col gap-4 relative">
       <a class="absolute top-0 right-0" href={`/app/stats${!isEditMode ? "?edit=true" : ""}`}>
         <Button type="button" class="btn" spinnerProps={{ class: "loading-dots" }}>
-          {isEditMode ? "Voir" : "Editer"}
+          {isEditMode ? "Back" : "Edit"}
         </Button>
       </a>
       {isEditMode
