@@ -43,7 +43,7 @@ export default function ExportConfig({ config, replaceConfig }: {
   };
 
   return (
-    <div className="flex space-x-2 mb-4 justify-end">
+    <div className="flex gap-2 items-center ml-auto w-fit order-first md:order-1">
       <div className="tooltip tooltip-bottom" data-tip="Exporter la config en JSON">
         <button type="button" className="btn" onClick={exportConfig}>
           {/* @ts-ignore */}

@@ -1,7 +1,7 @@
 import { IconPlus as Plus } from "@icons";
 import ConfigCard from "@islands/Config/card.tsx";
 import ExportConfig from "@islands/Config/ExportConfig.tsx";
-import Card from "../../components/UI/Card.tsx";
+import Card from "@components/UI/Card.tsx";
 import useToast from "@hooks/useToast.tsx";
 import { PartialBy } from "@models/Common.ts";
 import { EConfigCardType, IContent, IPartialContent } from "@models/Content.ts";
@@ -9,6 +9,7 @@ import { HTTPError } from "@models/Errors.ts";
 import ky from "ky";
 import { isEqual } from "lodash";
 import { useCallback, useMemo, useState } from "preact/hooks";
+import TemplatePicker from "@islands/TemplatePicker.tsx";
 
 const baseContent: IPartialContent = {
   fields: [],
@@ -44,6 +45,7 @@ export default function ConfigCollection({ content: defaultContent }: {
   const duplicateField = (index: number) => {
     setContent((prev) => {
       const fields = [...prev.fields];
+      if (!fields[index]) return prev;
       fields.splice(index, 0, { ...fields[index] });
       return { ...prev, fields };
     });
@@ -78,25 +80,31 @@ export default function ConfigCollection({ content: defaultContent }: {
         const errorBody: HTTPError = await e.response?.json();
         notif?.open({
           type: "error",
-          message: errorBody?.error?.message ?? "An error occurred while saving your content." + errorBody?.error?.details?.join("\n"),
+          message: errorBody?.error?.message ??
+            "An error occurred while saving your content." + errorBody?.error?.details?.join("\n"),
         });
         setSubmitState("idle");
       });
   }, [content]);
 
-  const replaceByImportedContent = (newContent: IPartialContent) => {
+  const replaceByImportedContent = (newContent: IPartialContent): boolean => {
     if (
       globalThis.confirm(
         "Are you sure you want to replace the whole config ? The current config will be entirely replaced",
       )
     ) {
       saveContent(newContent);
+      return true;
     }
+    return false;
   };
 
   return (
     <>
-      <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
+      <div class="flex gap-2 mb-4 items-center justify-between flex-col md:flex-row">
+        <TemplatePicker type="content" replaceConfig={replaceByImportedContent} />
+        <ExportConfig config={content} replaceConfig={replaceByImportedContent} />
+      </div>
       {/* 2 items per line (if space available), gap of 2 */}
       <div className="grid gap-4 grid-cols-2">
         {content?.fields.map((field, index) => (
@@ -110,16 +118,19 @@ export default function ConfigCollection({ content: defaultContent }: {
         ))}
         <Card>
           <button
-            className={"w-full h-full flex justify-center items-center cursor-pointer"}
+            type="button"
+            className="w-full h-full flex justify-center items-center cursor-pointer"
             onClick={addBlankEntry}
           >
+            {/* @ts-ignore */}
             <Plus size={42} />
           </button>
         </Card>
       </div>
       {isModified && (
         <button
-          className={"btn fixed bottom-2 right-2 min-w-32"}
+          type="button"
+          className="btn fixed bottom-2 right-2 min-w-32"
           onClick={() => saveContent()}
           disabled={submitState === "loading"}
         >

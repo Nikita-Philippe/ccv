@@ -1,0 +1,67 @@
+{
+    "type": "content",
+    "label": "Strength Training",
+    "description": {
+        "title": "Strength Training",
+        "description": "Log your gym sessions quickly. Capture duration, sets, and effort, plus the workout type. Add post‑workout notes for progression.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "strength_workout",
+                "label": "Strength workout",
+                "type": "boolean",
+                "icon": "",
+                "group": "Training"
+            },
+            {
+                "name": "workout_type",
+                "label": "Workout type",
+                "type": "string",
+                "icon": "",
+                "group": "Training"
+            },
+            {
+                "name": "duration_minutes",
+                "label": "Duration (minutes)",
+                "type": "int",
+                "icon": "",
+                "group": "Training",
+                "variant": "default",
+                "min": 0,
+                "max": 180,
+                "step": 1
+            },
+            {
+                "name": "sets_completed",
+                "label": "Sets completed",
+                "type": "int",
+                "icon": "",
+                "group": "Training",
+                "variant": "default",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "rpe",
+                "label": "Perceived exertion (RPE)",
+                "type": "int",
+                "icon": "",
+                "group": "Training",
+                "variant": "rating",
+                "min": 1,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "post_workout_notes",
+                "label": "Post‑workout notes",
+                "type": "textarea",
+                "icon": "",
+                "group": "Training"
+            }
+        ]
+    }
+}

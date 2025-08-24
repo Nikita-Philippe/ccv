@@ -1,0 +1,71 @@
+{
+    "type": "content",
+    "label": "Running",
+    "description": {
+        "title": "Running",
+        "description": "Track runs without spreadsheets. Record distance, time, effort, and optional heart rate. Don’t forget a quick stretch checkbox.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "run",
+                "label": "Run today",
+                "type": "boolean",
+                "icon": "",
+                "group": "Running"
+            },
+            {
+                "name": "distance_km",
+                "label": "Distance (km)",
+                "type": "int",
+                "icon": "",
+                "group": "Running",
+                "variant": "default",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "duration_minutes",
+                "label": "Duration (minutes)",
+                "type": "int",
+                "icon": "",
+                "group": "Running",
+                "variant": "default",
+                "min": 0,
+                "max": 300,
+                "step": 1
+            },
+            {
+                "name": "avg_heart_rate",
+                "label": "Average heart rate (bpm)",
+                "type": "int",
+                "icon": "",
+                "group": "Running",
+                "variant": "default",
+                "min": 40,
+                "max": 220,
+                "step": 1
+            },
+            {
+                "name": "rpe",
+                "label": "Effort (RPE)",
+                "type": "int",
+                "icon": "",
+                "group": "Running",
+                "variant": "rating",
+                "min": 1,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stretching",
+                "label": "Stretching done",
+                "type": "boolean",
+                "icon": "",
+                "group": "Running"
+            }
+        ]
+    }
+}

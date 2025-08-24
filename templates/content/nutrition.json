@@ -1,0 +1,67 @@
+{
+    "type": "content",
+    "label": "Nutrition & Weight Loss",
+    "description": {
+        "title": "Nutrition & Weight Loss",
+        "description": "Keep nutrition visible and simple. Track calories, protein, hydration, and whether you stayed within your eating window. Add quick notes for context.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "calories",
+                "label": "Calories",
+                "type": "int",
+                "icon": "",
+                "group": "Nutrition",
+                "variant": "default",
+                "min": 0,
+                "max": 8000,
+                "step": 1
+            },
+            {
+                "name": "protein_grams",
+                "label": "Protein (g)",
+                "type": "int",
+                "icon": "",
+                "group": "Nutrition",
+                "variant": "default",
+                "min": 0,
+                "max": 300,
+                "step": 1
+            },
+            {
+                "name": "water_glasses",
+                "label": "Glasses of water",
+                "type": "int",
+                "icon": "",
+                "group": "Nutrition",
+                "variant": "default",
+                "min": 0,
+                "max": 20,
+                "step": 1
+            },
+            {
+                "name": "within_eating_window",
+                "label": "Ate within target window",
+                "type": "boolean",
+                "icon": "",
+                "group": "Nutrition"
+            },
+            {
+                "name": "vegetables",
+                "label": "Ate vegetables",
+                "type": "boolean",
+                "icon": "",
+                "group": "Nutrition"
+            },
+            {
+                "name": "notes",
+                "label": "Notes",
+                "type": "textarea",
+                "icon": "",
+                "group": "Notes"
+            }
+        ]
+    }
+}

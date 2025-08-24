@@ -1,0 +1,175 @@
+{
+    "type": "content",
+    "label": "Daily - Overview",
+    "description": {
+        "title": "Life Balance Overview",
+        "description": "Covers a wider set of habits across health, productivity, home, and personal growth. Great for people wanting an overview of their lifestyle patterns. Provides both structure and flexibility.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "sleep_hours",
+                "label": "Sleep (hours)",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 14,
+                "step": 1
+            },
+            {
+                "name": "bedtime",
+                "label": "Went to bed on time",
+                "type": "boolean",
+                "icon": "",
+                "group": "Health"
+            },
+            {
+                "name": "exercise",
+                "label": "Exercise",
+                "type": "boolean",
+                "icon": "",
+                "group": "Health"
+            },
+            {
+                "name": "steps",
+                "label": "Steps walked",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 30000,
+                "step": 100
+            },
+            {
+                "name": "water_glasses",
+                "label": "Glasses of water",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 20,
+                "step": 1
+            },
+            {
+                "name": "healthy_meals",
+                "label": "Healthy meals",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 5,
+                "step": 1
+            },
+            {
+                "name": "caffeine",
+                "label": "Cups of caffeine",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "reading",
+                "label": "Reading (minutes)",
+                "type": "int",
+                "icon": "",
+                "group": "Growth",
+                "variant": "default",
+                "min": 0,
+                "max": 300,
+                "step": 10
+            },
+            {
+                "name": "learning",
+                "label": "Learning activity",
+                "type": "boolean",
+                "icon": "",
+                "group": "Growth"
+            },
+            {
+                "name": "worked",
+                "label": "Worked / Studied",
+                "type": "boolean",
+                "icon": "",
+                "group": "Work"
+            },
+            {
+                "name": "focus_minutes",
+                "label": "Focus minutes",
+                "type": "int",
+                "icon": "",
+                "group": "Work",
+                "variant": "default",
+                "min": 0,
+                "max": 600,
+                "step": 1
+            },
+            {
+                "name": "distractions",
+                "label": "Felt distracted",
+                "type": "boolean",
+                "icon": "",
+                "group": "Work"
+            },
+            {
+                "name": "chores_done",
+                "label": "Home chores done",
+                "type": "boolean",
+                "icon": "",
+                "group": "Home"
+            },
+            {
+                "name": "screen_time",
+                "label": "Screen time (hours)",
+                "type": "int",
+                "icon": "",
+                "group": "Lifestyle",
+                "variant": "default",
+                "min": 0,
+                "max": 16,
+                "step": 1
+            },
+            {
+                "name": "social",
+                "label": "Social connection",
+                "type": "boolean",
+                "icon": "",
+                "group": "Social"
+            },
+            {
+                "name": "gratitude",
+                "label": "Gratitude entry",
+                "type": "string",
+                "icon": "",
+                "group": "Wellbeing"
+            },
+            {
+                "name": "mood",
+                "label": "Mood",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "rating",
+                "min": 1,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "notes",
+                "label": "Notes",
+                "type": "textarea",
+                "icon": "",
+                "group": "Notes"
+            }
+        ]
+    }
+}

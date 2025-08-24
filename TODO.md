@@ -9,6 +9,8 @@
   - [ ] Add premade theme toggle https://daisyui.com/components/theme-controller/
   - [ ] Add main color changer, mainly for the stats
 - [ ] Style content
+  - [ ] Rating
+    - [ ] Add rating number (on hover/inside circles)
 - [ ] Style entries
   - [ ] Add icons support
   - [ ] Add form variant
@@ -143,8 +145,8 @@
 - [ ] [Localization](https://www.i18next.com/)
 
 ## To do before beta release
-- [ ] Add templating system
-  - [ ] Add config templates
+- [x] Add templating system
+  - [x] Add config templates
   - [ ] Add stats templates
 - [ ] Create a basic data backup system
 - [ ] Research on a key rotation strategy / admin key management

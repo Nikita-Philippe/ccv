@@ -41,4 +41,4 @@ const init = () => {
   });
 };
 
-init();
+// init();

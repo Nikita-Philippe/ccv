@@ -1,0 +1,92 @@
+{
+    "type": "content",
+    "label": "Daily - Essentials",
+    "description": {
+        "title": "Balanced Daily",
+        "description": "A simple all‑rounder for most days. Track work, health, home, and social in one place. Add quick notes for context.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "worked",
+                "label": "Worked",
+                "type": "boolean",
+                "icon": "",
+                "group": "Work"
+            },
+            {
+                "name": "focus_minutes",
+                "label": "Focus minutes",
+                "type": "int",
+                "icon": "",
+                "group": "Work",
+                "variant": "default",
+                "min": 0,
+                "max": 600,
+                "step": 1
+            },
+            {
+                "name": "exercise",
+                "label": "Exercise",
+                "type": "boolean",
+                "icon": "",
+                "group": "Health"
+            },
+            {
+                "name": "water_glasses",
+                "label": "Glasses of water",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 20,
+                "step": 1
+            },
+            {
+                "name": "sleep_hours",
+                "label": "Sleep (hours)",
+                "type": "int",
+                "icon": "",
+                "group": "Health",
+                "variant": "default",
+                "min": 0,
+                "max": 14,
+                "step": 1
+            },
+            {
+                "name": "home_chores",
+                "label": "Did home chores",
+                "type": "boolean",
+                "icon": "",
+                "group": "Home"
+            },
+            {
+                "name": "social",
+                "label": "Connected with someone",
+                "type": "boolean",
+                "icon": "",
+                "group": "Social"
+            },
+            {
+                "name": "mood",
+                "label": "Mood",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "notes",
+                "label": "Notes",
+                "type": "textarea",
+                "icon": "",
+                "group": "Notes"
+            }
+        ]
+    }
+}

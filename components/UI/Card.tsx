@@ -2,7 +2,7 @@ import { cn } from "@utils/cn.ts";
 
 type Props = {
   children: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode | string;
   sx?: {
     container?: string;
     content?: string;

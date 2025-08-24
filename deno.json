@@ -38,6 +38,7 @@
     "postcss-nested": "npm:postcss-nested@^7.0.2",
     "@std/dotenv": "jsr:@std/dotenv",
     "@std/http": "jsr:@std/http",
+    "@std/path": "jsr:@std/path",
     "@models/": "./models/",
     "@components/": "./components/",
     "@islands/": "./islands/",

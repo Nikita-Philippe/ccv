@@ -1,0 +1,67 @@
+{
+    "type": "content",
+    "label": "Study",
+    "description": {
+        "title": "Study",
+        "description": "Structure focused learning sessions. Track subject, focus time, pomodoros, and comprehension. Capture key takeaways to reinforce memory.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "study_session",
+                "label": "Study session",
+                "type": "boolean",
+                "icon": "",
+                "group": "Study"
+            },
+            {
+                "name": "subject",
+                "label": "Subject",
+                "type": "string",
+                "icon": "",
+                "group": "Study"
+            },
+            {
+                "name": "focus_minutes",
+                "label": "Focus minutes",
+                "type": "int",
+                "icon": "",
+                "group": "Study",
+                "variant": "default",
+                "min": 0,
+                "max": 360,
+                "step": 1
+            },
+            {
+                "name": "pomodoros",
+                "label": "Pomodoros",
+                "type": "int",
+                "icon": "",
+                "group": "Study",
+                "variant": "default",
+                "min": 0,
+                "max": 24,
+                "step": 1
+            },
+            {
+                "name": "comprehension",
+                "label": "Comprehension",
+                "type": "int",
+                "icon": "",
+                "group": "Study",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "key_takeaways",
+                "label": "Key takeaways",
+                "type": "textarea",
+                "icon": "",
+                "group": "Study"
+            }
+        ]
+    }
+}

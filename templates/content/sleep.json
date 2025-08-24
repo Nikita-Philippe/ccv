@@ -1,0 +1,67 @@
+{
+    "type": "content",
+    "label": "Sleep",
+    "description": {
+        "title": "Sleep",
+        "description": "Track duration and quality to improve rest. Log bedtime/wake time, awakenings, and caffeine after 2pm. Spot habits that affect recovery.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "bedtime",
+                "label": "Bedtime",
+                "type": "string",
+                "icon": "",
+                "group": "Sleep"
+            },
+            {
+                "name": "wake_time",
+                "label": "Wake time",
+                "type": "string",
+                "icon": "",
+                "group": "Sleep"
+            },
+            {
+                "name": "sleep_duration_hours",
+                "label": "Sleep duration (hours)",
+                "type": "int",
+                "icon": "",
+                "group": "Sleep",
+                "variant": "default",
+                "min": 0,
+                "max": 14,
+                "step": 1
+            },
+            {
+                "name": "sleep_quality",
+                "label": "Sleep quality",
+                "type": "int",
+                "icon": "",
+                "group": "Sleep",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "awakenings",
+                "label": "Night awakenings",
+                "type": "int",
+                "icon": "",
+                "group": "Sleep",
+                "variant": "default",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "caffeine_after_2pm",
+                "label": "Caffeine after 2pm",
+                "type": "boolean",
+                "icon": "",
+                "group": "Sleep"
+            }
+        ]
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "type": "content",
+    "label": "Mental Health",
+    "description": {
+        "title": "Mental Health",
+        "description": "A lightweight check-in for emotional health. Track mood, anxiety, stressors, and gratitude. Include medication adherence if relevant.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "mood",
+                "label": "Mood",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "anxiety",
+                "label": "Anxiety",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "gratitude",
+                "label": "Gratitude (3)",
+                "type": "multistring",
+                "icon": "",
+                "group": "Wellbeing",
+                "input_nb": 3
+            },
+            {
+                "name": "stressors",
+                "label": "Stressors",
+                "type": "multistring",
+                "icon": "",
+                "group": "Wellbeing",
+                "input_nb": 5
+            },
+            {
+                "name": "medication_taken",
+                "label": "Medication taken",
+                "type": "boolean",
+                "icon": "",
+                "group": "Wellbeing"
+            },
+            {
+                "name": "notes",
+                "label": "Notes",
+                "type": "textarea",
+                "icon": "",
+                "group": "Notes"
+            }
+        ]
+    }
+}

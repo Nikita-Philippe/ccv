@@ -1,0 +1,60 @@
+{
+    "type": "content",
+    "label": "Self-Care",
+    "description": {
+        "title": "Self-Care",
+        "description": "Simple daily practices to keep you grounded. Track meditation, reading, journaling, and social connection. Rate stress to spot trends.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "meditation_minutes",
+                "label": "Meditation (minutes)",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "default",
+                "min": 0,
+                "max": 120,
+                "step": 1
+            },
+            {
+                "name": "read_pages",
+                "label": "Read (pages)",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "default",
+                "min": 0,
+                "max": 200,
+                "step": 1
+            },
+            {
+                "name": "journaled",
+                "label": "Journaled",
+                "type": "boolean",
+                "icon": "",
+                "group": "Wellbeing"
+            },
+            {
+                "name": "social_connection",
+                "label": "Social connection",
+                "type": "boolean",
+                "icon": "",
+                "group": "Wellbeing"
+            },
+            {
+                "name": "stress_rating",
+                "label": "Stress rating",
+                "type": "int",
+                "icon": "",
+                "group": "Wellbeing",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            }
+        ]
+    }
+}

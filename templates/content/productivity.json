@@ -1,0 +1,61 @@
+{
+    "type": "content",
+    "label": "Productivity",
+    "description": {
+        "title": "Productivity",
+        "description": "Log focus and output without overthinking. Track completed tasks, deep work minutes, and distraction level. Plan the next day with top priorities.",
+        "image": ""
+    },
+    "content": {
+        "fields": [
+            {
+                "name": "tasks_completed",
+                "label": "Tasks completed",
+                "type": "int",
+                "icon": "",
+                "group": "Work",
+                "variant": "default",
+                "min": 0,
+                "max": 30,
+                "step": 1
+            },
+            {
+                "name": "focus_minutes",
+                "label": "Focus minutes",
+                "type": "int",
+                "icon": "",
+                "group": "Work",
+                "variant": "default",
+                "min": 0,
+                "max": 600,
+                "step": 1
+            },
+            {
+                "name": "distraction_level",
+                "label": "Distraction level",
+                "type": "int",
+                "icon": "",
+                "group": "Work",
+                "variant": "rating",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "planned_tomorrow",
+                "label": "Planned tomorrow",
+                "type": "boolean",
+                "icon": "",
+                "group": "Work"
+            },
+            {
+                "name": "top_priorities",
+                "label": "Top priorities",
+                "type": "multistring",
+                "icon": "",
+                "group": "Work",
+                "input_nb": 3
+            }
+        ]
+    }
+}
