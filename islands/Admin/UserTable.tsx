@@ -2,9 +2,10 @@ import { IAdminUserStat } from "@models/App.ts";
 import ky from "ky";
 import { capitalize, xor } from "lodash";
 import { useState } from "preact/hooks";
+import Card from "@components/UI/Card.tsx";
 
 /** Component displaying the recovery key and allowing to copy it to clipboard or download it as a file. */
-export default function UserTable({ users }: { users: IAdminUserStat[] }) {
+export default function UserTable({ users }: { users: IAdminUserStat["users"] }) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -35,30 +36,44 @@ export default function UserTable({ users }: { users: IAdminUserStat[] }) {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-full" style={{ pointerEvents: loading ? "none" : "auto" }}>
-      {users.map(({ user, content, entries }, index) => (
-        <>
-          <div className="flex gap-4 items-center" onClick={() => setOpenIndexes((p) => xor(p, [index]))}>
-            <div class="w-4">{index + 1}</div>
-            <div class="grow shrink">{user}</div>
-            <button type="button" class="btn btn-error h-fit shrink-0" onClick={(e) => deleteElement(e, "users", user)}>
-              Delete
-            </button>
-          </div>
-          <div
-            class="overflow-x-auto max-h-[200px] grow transition-all h-[400px]"
-            style={openIndexes.includes(index)
-              ? { maxHeight: "400px", overflowY: "visible" }
-              : { maxHeight: "0", overflowY: "hidden" }}
-          >
-            <table class="table-xs table-pin-rows w-full max-w-full">
-              <SubTable type="content" datas={content} onClick={(e, t, id) => deleteElement(e, t, `${user};;${id}`)} />
-              <SubTable type="entries" datas={entries} onClick={(e, t, id) => deleteElement(e, t, `${user};;${id}`)} />
-            </table>
-          </div>
-        </>
-      ))}
-    </div>
+    <Card title="Users">
+      <div className="flex flex-col w-full max-w-full" style={{ pointerEvents: loading ? "none" : "auto" }}>
+        {users.map(({ user, content, entries }, index) => (
+          <>
+            <div className="flex gap-4 items-center" onClick={() => setOpenIndexes((p) => xor(p, [index]))}>
+              <div class="w-4">{index + 1}</div>
+              <div class="min-w-0 overflow-auto">{user}</div>
+              <button
+                type="button"
+                class="btn btn-error h-fit shrink-0"
+                onClick={(e) => deleteElement(e, "users", user)}
+              >
+                Delete
+              </button>
+            </div>
+            <div
+              class="overflow-x-auto max-h-[200px] grow transition-all h-[400px]"
+              style={openIndexes.includes(index)
+                ? { maxHeight: "400px", overflowY: "visible" }
+                : { maxHeight: "0", overflowY: "hidden" }}
+            >
+              <table class="table-xs table-pin-rows w-full max-w-full">
+                <SubTable
+                  type="content"
+                  datas={content}
+                  onClick={(e, t, id) => deleteElement(e, t, `${user};;${id}`)}
+                />
+                <SubTable
+                  type="entries"
+                  datas={entries}
+                  onClick={(e, t, id) => deleteElement(e, t, `${user};;${id}`)}
+                />
+              </table>
+            </div>
+          </>
+        ))}
+      </div>
+    </Card>
   );
 }
 

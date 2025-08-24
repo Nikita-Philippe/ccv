@@ -26,7 +26,12 @@ export interface IDefaultPageHandler {
 
 /** Stats displayed on the super-admin page */
 export interface IAdminUserStat {
-  user: string;
-  content: string[];
-  entries: string[];
+  users: {
+    user: string;
+    content: string[];
+    entries: string[];
+  }[],
+  db: {
+    path?: string;
+  }
 }

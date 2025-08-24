@@ -148,8 +148,9 @@
 - [x] Add templating system
   - [x] Add config templates
   - [ ] Add stats templates
-- [ ] Create a basic data backup system
-- [ ] Research on a key rotation strategy / admin key management
+- [x] Create a basic db backup system
+- [x] Research on a key rotation strategy / admin key management
+- [ ] Better habits layout, (1 per line is maybe the easiest temp fix)
 - [ ] Checkout landing page & content on it
 - [ ] Check the content on app
 - [ ] Better release management
