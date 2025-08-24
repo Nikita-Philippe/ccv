@@ -9,33 +9,34 @@ export const config: RouteConfig = {
 
 export default async function Hello(req: Request) {
   const user = await getUserBySession(req, true);
-  // if (user?.isAuthenticated) return Response.redirect(new URL("/app", req.url));
+  if (user?.isAuthenticated) return Response.redirect(new URL("/app", req.url));
 
   const redirectTo = new URL(req.url).searchParams.get("redirectTo");
   if (redirectTo) return Response.redirect(new URL(redirectTo, req.url));
 
   return (
     <div class="max-w-2xl p-6 mx-auto relative h-screen flex flex-col justify-center  gap-4">
-      <h1>Welcome to CCV !</h1>
+      <h1 class="inline-flex">Welcome to <img id="header_logo_first" class="max-h-6 w-auto" src="/logo/logo.svg" alt="CCV" /> !</h1>
       <p>
-        CCV is a habits tracking app that aims for a simple, fast and minimalistic interface
+        CCV is a simple, data-focused, free and privacy-first habits tracker.{" "}
+        <a class="link text-sm italic" href="/#features" target="_blank">Learn more</a>
       </p>
       <p>
-        Create your first{" "}
+        Create - or pick from a template - your first{" "}
         <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
           <a href="/app/config">configuration</a>
-        </Button>{" "}
+        </Button>{"  "}
         and start tracking your habits.
       </p>
       <p>
-        You are currently connected as a public user. All of your config and datas will only be available on this
-        device, and will expire {DateTime.fromJSDate(user!.expires).setLocale("en").toRelative()}.
+        You’re currently using a public session. Your configuration and data are stored on this device only and will
+        expire {DateTime.fromJSDate(user!.expires).setLocale("en").toRelative()}.
       </p>
       <p>
         <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
           <a href="/signin">Sign In</a>
         </Button>{" "}
-        now to keep your current datas, and to sync your data across devices !
+        now to keep your current data and sync across devices !
       </p>
     </div>
   );
