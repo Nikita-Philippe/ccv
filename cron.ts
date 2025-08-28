@@ -5,6 +5,7 @@ import { NotificationService } from "@utils/notifications.ts";
 import { getSettings } from "@utils/settings.ts";
 import { DateTime } from "luxon";
 import { checkForDailyAnswer } from "@utils/reminder.ts";
+import { backupDB } from "@utils/backup.ts";
 
 const parseTimeToday = (timeString: string | undefined): DateTime => {
   if (!timeString) return DateTime.invalid("no time");
@@ -81,4 +82,6 @@ export default function () {
       }
     },
   );
+
+  Deno.cron("Daily GCS backup", "15 0 * * *", backupDB);
 }

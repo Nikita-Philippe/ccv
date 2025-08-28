@@ -24,6 +24,7 @@
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "@google-cloud/storage": "npm:@google-cloud/storage@^7.17.0",
     "@kitsonk/kv-toolbox": "jsr:@kitsonk/kv-toolbox@^0.30.0",
     "notyf": "npm:notyf@^3.10.0",
     "preact": "https://esm.sh/preact@10.22.0",
