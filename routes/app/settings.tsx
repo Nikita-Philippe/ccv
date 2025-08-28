@@ -10,7 +10,6 @@ import { getSettings, setSettings } from "@utils/settings.ts";
 import ImportButton from "@islands/Settings/ImportButton.tsx";
 import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
 import Button from "@islands/UI/Button.tsx";
-import { hashUserId } from "@utils/crypto.ts";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -77,6 +76,10 @@ export default async function Settings(req: Request) {
 
   const userSettings = isSignedIn ? await getSettings(user.id) : null;
 
+  const appVersion = Deno.env.get("APP_VERSION") || "local";
+  const denoVersion = Deno.version.deno ? ` - Deno ${Deno.version.deno}` : ""; 
+  const deployVersion = Deno.env.get("DENO_DEPLOY") === "1" ? ` - Deploy ${Deno.env.get("DENO_DEPLOY_APP_ID")}/${Deno.env.get("DENO_DEPLOY_REVISION_ID")}` : "";
+
   return (
     <div className="flex flex-col gap-4">
       {content && (
@@ -85,15 +88,13 @@ export default async function Settings(req: Request) {
           <ImportButton />
         </>
       )}
-      <Card title={"Sync"} sx={{ content: "p-4 flex-col no-wrap relative" }}>
+      <Card title="Sync" sx={{ content: "p-4 flex-col no-wrap relative" }}>
         {isSignedIn
           ? (
             <>
               <p>Welcome back {user.name} !</p>
               <p>Your datas are currently synced.</p>
               <p>Your are signed in using Google with {user.email}.</p>
-              {/* FIXME: */}
-              <p>{await hashUserId(user.id)}</p>
               <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
                 <a href="/signout?success_url=/app/settings">Sign Out</a>
               </Button>
@@ -103,7 +104,7 @@ export default async function Settings(req: Request) {
             <>
               <p>Your are currently not logged in.</p>
               <p>
-                As a public user, your <a className={"link"} href="/app/config">configuration</a>{" "}
+                As a public user, your <a className="link" href="/app/config">configuration</a>{" "}
                 and daily entries will expire{" "}
                 {DateTime.fromJSDate(publicSession!.expires).setLocale("en").toRelative()}.
               </p>
@@ -197,7 +198,7 @@ export default async function Settings(req: Request) {
         </Card>
       )}
       <Card
-        title={"Danger zone"}
+        title="Danger zone"
         sx={{ content: "border-2 border-error border-dashed p-4 flex-col no-wrap relative", title: "text-error" }}
       >
         <Card sx={{ content: "p-4 flex-col no-wrap" }}>
@@ -226,7 +227,7 @@ export default async function Settings(req: Request) {
                 pressDuration={2000}
                 formId="delete_form"
               >
-                <>Delete account</>
+                <span>Delete account</span>
               </LongPressButton>
             </div>
           </Card>
@@ -234,7 +235,7 @@ export default async function Settings(req: Request) {
       </Card>
 
       <p className="absolute bottom-0 right-0 text-xs text-gray-500">
-        APP Version: {Deno.env.get("DENO_DEPLOYMENT_ID") || "local"} - Deno Version: {Deno.version.deno}
+        Version: {appVersion}{denoVersion}{deployVersion}
       </p>
     </div>
   );

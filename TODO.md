@@ -107,9 +107,9 @@
 - [ ] Easier deploy
   - [ ] Srcipt run to check env/paths/etc
   - [ ] env example & generator
-- [ ] Implement releases
-  - [ ] Changelog
-  - [ ] Versioning
+- [x] Implement releases
+  - [x] Changelog
+  - [x] Versioning
 - [ ] Env-based deploy (prod/dev)
   - [ ] Enable onesignal only on prod
 
@@ -136,7 +136,7 @@
 
 ## Main additional features
 - [ ] Can datas be cleanup automatically, server side ?
-- [ ] Version/deploy version in the app about
+- [x] Version/deploy version in the app about
 - [ ] Add fake "pricing" page
 - [ ] Add Goals
 - [ ] Add reminders in field ("specifically remind me every 3 day to fill this field")
@@ -150,14 +150,14 @@
   - [ ] Add stats templates
 - [x] Create a basic db backup system
 - [x] Research on a key rotation strategy / admin key management
-- [ ] Better habits layout, (1 per line is maybe the easiest temp fix)
 - [ ] Checkout landing page & content on it
+  - [ ] Set logo to go back to landing page from app
 - [ ] Check the content on app
 - [ ] Better release management
   - [ ] CLI-based release (or actions if better)
-  - [ ] Pinned envs
-  - [ ] Auto changelog
-  - [ ] Versionnig / Tagging
+  - [x] Pinned envs
+  - [x] Auto changelog
+  - [x] Versionnig / Tagging
 - [ ] Full review of the privacy policy / terms of service
 
 ## Bugs

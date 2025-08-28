@@ -29,4 +29,16 @@ export default function () {
 
   // General purpose envs
   ["OAUTH_REDIRECTURI"].map((key) => !loadedEnvs[key] ? logAndQuit(`${key} is not set or size is < 32.`) : "");
+
+  // Check and set app version
+  if (!loadedEnvs.APP_VERSION) {
+    try {
+      const config = JSON.parse(Deno.readTextFileSync("deno.json").trim());
+      console.log("Config! ", config)
+      if (config.version) Deno.env.set("APP_VERSION", config.version);
+      else throw new Error('Deno.json needs version')
+    } catch {
+      logAndQuit("`version` not set or could not be read in deno.json config file.");
+    }
+  }
 }

@@ -1,4 +1,5 @@
 {
+  "version": "0.1.0",
   "lock": false,
   "tasks": {
     "css": "deno run -A npm:@tailwindcss/cli -i ./static/app.css -o ./static/styles.css --watch",
