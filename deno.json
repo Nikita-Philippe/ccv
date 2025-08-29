@@ -2,15 +2,58 @@
   "version": "0.1.0",
   "lock": false,
   "tasks": {
-    "css": "deno run -A npm:@tailwindcss/cli -i ./static/app.css -o ./static/styles.css --watch",
-    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
-    "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=routes,cron.ts,tailwind.config.ts,static/app.css dev.ts",
-    "build": "deno run -A dev.ts build",
-    "preview": "deno run -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update .",
-    "deploy": "deno task build && deployctl deploy --env-file=.env.deploy --exclude=.env,.env.piknik,.env.production.local --project=ccv --entrypoint=main.ts --prod"
+    "css": {
+      "description": "Manually generate the tw style file.",
+      "command": "deno run -A npm:@tailwindcss/cli -i ./static/app.css -o ./static/styles.css --watch"
+    },
+    "check": {
+      "description": "Check code with fmt, lint and type check.",
+      "command": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx"
+    },
+    "cli": {
+      "description": "Run the fresh cli.",
+      "command": "echo \"import '$fresh/src/dev/cli.ts'\" | deno run --unstable -A -"
+    },
+    "manifest": {
+      "description": "Generate the fresh manifest.",
+      "command": "manifest $(pwd)",
+      "dependencies": [
+        "cli"
+      ]
+    },
+    "start": {
+      "description": "Start the dev server with file watching.",
+      "command": "deno run -A --watch=routes,cron.ts,tailwind.config.ts,static/app.css dev.ts"
+    },
+    "build": {
+      "description": "Build the app for production.",
+      "command": "deno run -A dev.ts build"
+    },
+    "preview": {
+      "description": "Preview the built app.",
+      "command": "deno run -A main.ts",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "update": {
+      "description": "Update the fresh framework.",
+      "command": "deno run -A -r https://fresh.deno.dev/update ."
+    },
+    "ldeploy": {
+      "description": "Deploy to Deno deploy in preview mode. Call with DENO_DEPLOY_TOKEN for auto-auth.",
+      "command": "deployctl deploy --env-file=.env.previewdeploy --exclude=\".env*,**/*.csv,**/*.sqlite3,.git,.vscode,.github\" --project=ccv --entrypoint=main.ts",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "ldeploy-prod": {
+      "description": "Deploy to Deno deploy in production mode. Call with DENO_DEPLOY_TOKEN for auto-auth.",
+      "command": "deployctl deploy --env-file=.env.deploy --exclude=\".env*,**/*.csv,**/*.sqlite3,.git,.vscode,.github\" --project=ccv --entrypoint=main.ts --prod",
+      "dependencies": [
+        "build"
+      ]
+    }
   },
   "lint": {
     "rules": {
@@ -82,8 +125,12 @@
   "deploy": {
     "project": "a84c2c04-be8e-40fc-9f3a-8a07227d4b50",
     "exclude": [
-      ".env",
-      ".env.*",
+      ".env*",
+      "**/*.csv",
+      "**/*.sqlite3",
+      ".git",
+      ".vscode",
+      ".github",
       "**/node_modules"
     ],
     "include": [],

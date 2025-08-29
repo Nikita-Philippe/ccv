@@ -24,6 +24,7 @@
   - [x] Tell public user 'your are public, warning in x days everything delete'
     - [ ] Make it more clear for public user that data expiry
   - [x] Landing page
+- [ ] Fix icons
 
 ## Configuration (Content)
 - [x] Add Validation/Sanitize on each content field (name, etc)
@@ -42,6 +43,7 @@
 - [ ] Delete avant last entry not working (entry index not correct)
 - [ ] Add value unit (hour, /per day, etc)
 - [ ] Does deleting a config field will impact the entries "linked" to that field ?
+- [ ] Add icons in config
 
 ## Entries
 - [ ] Add validation on each field. Try ssr validation (default html form validation), or using islands if not possible
@@ -143,6 +145,9 @@
 - [ ] Offline mode. Is it possible to access page only cached ? Content can still be 'saved', when internet is back it really saves it.
 - [ ] Redo the whole config/entries view. Use a drag and drop system to create the entries form, with popover to customize the fields
 - [ ] [Localization](https://www.i18next.com/)
+- [ ] Store (free of course)
+  - [ ] Templates
+  - [ ] Themes
 
 ## To do before beta release
 - [x] Add templating system
@@ -153,8 +158,8 @@
 - [ ] Checkout landing page & content on it
   - [ ] Set logo to go back to landing page from app
 - [ ] Check the content on app
-- [ ] Better release management
-  - [ ] CLI-based release (or actions if better)
+- [x] Better release management
+  - [x] CLI-based release (or actions if better)
   - [x] Pinned envs
   - [x] Auto changelog
   - [x] Versionnig / Tagging
