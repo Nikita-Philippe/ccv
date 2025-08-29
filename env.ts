@@ -34,7 +34,6 @@ export default function () {
   if (!loadedEnvs.APP_VERSION) {
     try {
       const config = JSON.parse(Deno.readTextFileSync("deno.json").trim());
-      console.log("Config! ", config)
       if (config.version) Deno.env.set("APP_VERSION", config.version);
       else throw new Error('Deno.json needs version')
     } catch {
