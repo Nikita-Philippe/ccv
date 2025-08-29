@@ -58,12 +58,12 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div ref={heroSectionRef} class="flex flex-col gap-8 md:gap-12 items-center">
+    <div ref={heroSectionRef} class="flex flex-col gap-8 md:gap-12 items-center mt-6">
       <a href="/" class="flex w-full h-full max-w-36 md:max-w-52">
         <img id="header_logo_first" class="max-w-full max-h-full" src="/logo/logo.svg" alt="CCV" />
       </a>
       <h1 id="header_text_first" class="text-3xl font-semibold max-w-2xl text-center">
-        A simple, data-focused, free and privacy-first habits tracker
+        A simple, data-focused, free and privacy-first habits tracker.
       </h1>
       <div class="flex flex-col items-center gap-1">
         <button

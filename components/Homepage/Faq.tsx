@@ -9,7 +9,7 @@ const FAQs: Array<{ title: string; content: string }> = [
   {
     title: "All that for free, without ads or tracking ? What's the catch ?",
     content:
-      "Well, I can code things pretty good but I absolutely cannot sell things, so it's fully free !\nWill it be free forever ? I don't know, but I will never lock current users behind a paywall, so enjoy the app !",
+      "Well, I can code things pretty good but I absolutely don't know how to sell anything, so it's fully free !\nWill it be free forever ? I don't know, but I will never lock current users behind a paywall, so enjoy the app !",
   },
   {
     title: "Is this project open-source ? Can I contribute to it ?",
@@ -24,7 +24,7 @@ const FAQs: Array<{ title: string; content: string }> = [
   {
     title: "Is there a mobile app version for CCV ?",
     content:
-      "CCV is a progressive web app (PWA). In other words, it's an app that runs on your browser, like a website. CCV can be installed on your phone home screen and used just like a app.",
+      "CCV is a progressive web app (PWA). In other words, it's an app that runs on your browser, like a website. Your browser should provide a way to add CCV to your phone home screen and use it just like any app.",
   },
   // {
   //   title: "Is there an offline mode ?",
@@ -34,7 +34,7 @@ const FAQs: Array<{ title: string; content: string }> = [
   {
     title: "How secure is my data?",
     content:
-      "Your habits, entries and settings are end-to-end encrypted and stored securely using AES-256. We use a zero-knowledge architecture, meaning that you are the only one, with your Google account, that have acces to all of your datas.",
+      "Your habits, entries and user settings are end-to-end encrypted and stored securely using AES-256. We use a zero-knowledge architecture, meaning that you are the only one, with your Google account, that have acces to all of your datas.",
   },
   // {
   //   title: "Can I export my data?",
@@ -44,7 +44,7 @@ const FAQs: Array<{ title: string; content: string }> = [
   {
     title: "What happens if I lose access to my account?",
     content:
-      "You can recover your account using the recovery feature in settings, using your recovery key and your account email. If you cannot retrieve your recovery key, we will not be able to recover your datas and your account will be deleted.",
+      "You can recover your account using the recovery feature in settings, using your recovery key and your account email. If you cannot retrieve your recovery key, we will not be able to recover your datas.",
   },
 ];
 

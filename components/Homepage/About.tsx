@@ -39,7 +39,7 @@ export default function About() {
         <p>
           Ready to{" "}
           <button type="button" class="btn font-bold rounded-full px-3 py-2 w-fit h-fit">
-            <a href="/app">test it out</a>
+            <a href="/app">try it out</a>
           </button>{" "}
           ?
         </p>

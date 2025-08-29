@@ -3,6 +3,7 @@ import { getUserBySession } from "@utils/auth.ts";
 import { IDefaultPageHandler } from "@models/App.ts";
 import Toast from "@islands/UI/Toast.tsx";
 import { isSuperAdmin } from "@utils/user.ts";
+import Footer from "@components/Homepage/Footer.tsx";
 
 export default async function Layout(req: Request, ctx: RouteContext<IDefaultPageHandler>) {
   const user = await getUserBySession(req, true);
@@ -58,7 +59,7 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
 
   return (
     <>
-      <div class="max-w-2xl p-6 mx-auto relative">
+      <div class="max-w-2xl p-6 mx-auto relative min-h-screen">
         <div role="tablist" className="tabs pb-4">
           {navItems.map(({ item, active }) => (
             <a
@@ -76,6 +77,7 @@ export default async function Layout(req: Request, ctx: RouteContext<IDefaultPag
       </div>
       {/* {ctx.data?.message && <ToasterWrapper content={{ id: "1", description: ctx.data.message }} />} */}
       {ctx.data?.message && <Toast toast={ctx.data.message} />}
+      <Footer />
     </>
   );
 }

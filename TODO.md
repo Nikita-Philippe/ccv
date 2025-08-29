@@ -155,18 +155,18 @@
   - [ ] Add stats templates
 - [x] Create a basic db backup system
 - [x] Research on a key rotation strategy / admin key management
-- [ ] Checkout landing page & content on it
-  - [ ] Set logo to go back to landing page from app
-- [ ] Check the content on app
+- [x] Checkout landing page & content on it
+  - [x] Set logo to go back to landing page from app
+- [x] Check the content on app
 - [x] Better release management
   - [x] CLI-based release (or actions if better)
   - [x] Pinned envs
   - [x] Auto changelog
   - [x] Versionnig / Tagging
-- [ ] Full review of the privacy policy / terms of service
+- [x] Full review of the privacy policy / terms of service
 
 ## Bugs
-- [ ] On main page, the "missed" days seems to be stuck to 5 days. Aftere 5 days they are always considered missing.
+- [x] On main page, the "missed" days seems to be stuck to 5 days. Aftere 5 days they are always considered missing.
 - [x] Header layout on mobile / overflow with import/export
 - [x] Errors
   - [x] On callback reload `OAuth session not found at getAndDeleteOAuthSession (https://jsr.io/@deno/kv-oauth/0.11.0/lib/_kv.ts:34:11)`

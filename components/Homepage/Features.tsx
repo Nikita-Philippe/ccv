@@ -120,8 +120,8 @@ export default function Features() {
               </div>
               <CardText>Import and export habit configurations for easy backup.</CardText>
               <CardText>
-                Import a CSV dataset as CCV entries to pick up where you left.<span class="text-sm italic">
-                  <br />Experimental - subject to changes
+                Import a CSV dataset as CCV entries to pick up where you left.*<span class="text-sm italic">
+                  <br />*Experimental - subject to changes
                 </span>
               </CardText>
             </div>
