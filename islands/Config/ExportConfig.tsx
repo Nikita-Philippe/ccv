@@ -44,13 +44,13 @@ export default function ExportConfig({ config, replaceConfig }: {
 
   return (
     <div className="flex gap-2 items-center ml-auto w-fit order-first md:order-1">
-      <div className="tooltip tooltip-bottom" data-tip="Exporter la config en JSON">
+      <div className="tooltip tooltip-bottom" data-tip="Export config as JSON">
         <button type="button" className="btn" onClick={exportConfig}>
           {/* @ts-ignore */}
           <FileExport />
         </button>
       </div>
-      <div className="tooltip tooltip-bottom" data-tip="Importer une config en JSON">
+      <div className="tooltip tooltip-bottom" data-tip="Import config from JSON">
         <input
           type="file"
           className="opacity-0 cursor-pointer absolute left-0 w-full top-0 bottom-0 z-10"

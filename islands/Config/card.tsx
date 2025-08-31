@@ -85,7 +85,7 @@ export default function ConfigCard({ bubbleConfig, removeConfig, duplicateConfig
         {/* Name Field */}
         <fieldset
           className={cn("fieldset", isAlreadyConfigured && "tooltip")}
-          data-tip="Le nom est unique et ne peux être changé."
+          data-tip="Name is unique and cannot be changed."
         >
           <legend htmlFor="name" className="fieldset-legend">Name</legend>
           <input

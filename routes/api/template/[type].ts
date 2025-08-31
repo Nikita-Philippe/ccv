@@ -23,7 +23,6 @@ export const handler: Handlers = {
       for await (const { name } of templateDir) {
         try {
           const parsedFile: unknown = JSON.parse(await Deno.readTextFile(resolve(basePath, name)));
-          console.log('Parsed file', parsedFile);
           if (
             !parsedFile || typeof parsedFile !== "object" ||
             !("type" in parsedFile && "label" in parsedFile && "content" in parsedFile)

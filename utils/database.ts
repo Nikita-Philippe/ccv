@@ -3,7 +3,7 @@ import { CryptoKv } from "@kitsonk/kv-toolbox/crypto";
 import { unique } from "@kitsonk/kv-toolbox/keys";
 import { IAuthenticatedUser, IGoogleUser, TUser } from "@models/User.ts";
 import { getUserBySession } from "@utils/auth.ts";
-import { KV_CONTENT, KV_DAILY_ENTRY } from "@utils/constants.ts";
+import { KV_CONTENT, KV_DAILY_ENTRY, KV_SETTINGS, KV_STATS } from "@utils/constants.ts";
 import { getContent, setContent } from "@utils/content.ts";
 import { getCryptoKey, getUserEncryptionKey, hashUserId } from "@utils/crypto.ts";
 import { exportEntries, getEntry, missingEntries, saveEntries } from "@utils/entries.ts";
@@ -145,9 +145,12 @@ export const wipeUser = async (user: IAuthenticatedUser | string, recoveryEntry?
   // Remove/delete does not delete deeply, so iterate over all keys
   const configKey = await unique(kv, [KV_CONTENT, key]);
   const entryKey = await unique(kv, [KV_DAILY_ENTRY, key]);
-  for await (const key of [...configKey, ...entryKey]) {
+  const settingsKey = await unique(kv, [KV_SETTINGS, key]);
+  const statsKey = await unique(kv, [KV_STATS, key]);
+  for await (const key of [...configKey, ...entryKey, ...settingsKey, ...statsKey]) {
     await remove(kv, key);
   }
+
   if (Debug.get("user")) console.log(`Wiping user ${isUserId ? user : user.id}`, { user, key });
   if (recoveryEntry) await remove(kv, recoveryEntry);
   await deleteUser(user);

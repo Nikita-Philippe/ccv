@@ -1,15 +1,15 @@
 import { Handlers } from "$fresh/server.ts";
+import Card from "@components/UI/Card.tsx";
 import ExportButtons from "@islands/Settings/ExportButtons.tsx";
-import Card from "../../components/UI/Card.tsx";
+import ImportButton from "@islands/Settings/ImportButton.tsx";
+import Button from "@islands/UI/Button.tsx";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
+import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
+import { IDefaultPageHandler, ISettings } from "@models/App.ts";
 import { getHelloPageRedirect, getPublicUser, getUserBySession } from "@utils/auth.ts";
 import { requestTransaction, wipeUser } from "@utils/database.ts";
-import { DateTime } from "luxon";
-import { IDefaultPageHandler, ISettings } from "@models/App.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
-import ImportButton from "@islands/Settings/ImportButton.tsx";
-import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
-import Button from "@islands/UI/Button.tsx";
+import { DateTime } from "luxon";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -21,6 +21,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
       const user = await getUserBySession(req, true);
       if (!user?.isAuthenticated) return await ctx.render();
       await wipeUser(user);
+      return new Response(null, { status: 303, headers: { Location: "/signout" } });
     }
 
     // Updating settings
@@ -28,22 +29,28 @@ export const handler: Handlers<IDefaultPageHandler> = {
       const user = await getUserBySession(req, true);
       if (!user?.isAuthenticated) return await ctx.render();
 
-      const userSettings = await getSettings(user.id);
-
       // Verify data before processing them
       switch (settings) {
         case "notifications": {
-          const { reminder_start, reminder_end, notif_discord_webhook } = restForm;
-          const start = DateTime.fromFormat(reminder_start as string, "HH:mm", { zone: "utc" });
-          const end = DateTime.fromFormat(reminder_end as string, "HH:mm", { zone: "utc" });
-          if (!start.isValid || !end.isValid) return await ctx.render({ message: { type: "error", message: "Time format are invalid" } });
-          if (start.hour === 0 && start.minute < 10) {
+          const { reminder_start, reminder_end } = restForm as Record<string, string>;
+
+          const hasStart = typeof reminder_start === "string" && reminder_start.trim() !== "";
+          const hasEnd = typeof reminder_end === "string" && reminder_end.trim() !== "";
+
+          const start = hasStart ? DateTime.fromFormat(reminder_start, "HH:mm", { zone: "utc" }) : null;
+          const end = hasEnd ? DateTime.fromFormat(reminder_end, "HH:mm", { zone: "utc" }) : null;
+
+          if ((hasStart && !start!.isValid) || (hasEnd && !end!.isValid)) {
+            return await ctx.render({ message: { type: "error", message: "Time format are invalid" } });
+          }
+          if (hasStart && start!.hour === 0 && start!.minute < 10) {
             return await ctx.render({ message: { type: "error", message: "Start time must be after 00:10" } });
           }
-          if (end.hour === 23 && end.minute > 50) return await ctx.render({ message: { type: "error", message: "End time must be before 23:50" } });
-          if (start > end) return await ctx.render({ message: { type: "error", message: "Start time must be before end time" } });
-          if (!userSettings?.notifications?.discord_webhook && !notif_discord_webhook) {
-            return await ctx.render({ message: { type: "error", message: "Please provide a notification method" } });
+          if (hasEnd && end!.hour === 23 && end!.minute > 50) {
+            return await ctx.render({ message: { type: "error", message: "End time must be before 23:50" } });
+          }
+          if (hasStart && hasEnd && start! > end!) {
+            return await ctx.render({ message: { type: "error", message: "Start time must be before end time" } });
           }
           break;
         }
@@ -77,8 +84,10 @@ export default async function Settings(req: Request) {
   const userSettings = isSignedIn ? await getSettings(user.id) : null;
 
   const appVersion = Deno.env.get("APP_VERSION") || "local";
-  const denoVersion = Deno.version.deno ? ` - Deno ${Deno.version.deno}` : ""; 
-  const deployVersion = Deno.env.get("DENO_DEPLOY") === "1" ? ` - Deploy ${Deno.env.get("DENO_DEPLOY_APP_ID")}/${Deno.env.get("DENO_DEPLOY_REVISION_ID")}` : "";
+  const denoVersion = Deno.version.deno ? ` - Deno ${Deno.version.deno}` : "";
+  const deployVersion = Deno.env.get("DENO_DEPLOY") === "1"
+    ? ` - Deploy ${Deno.env.get("DENO_DEPLOY_APP_ID")}/${Deno.env.get("DENO_DEPLOY_REVISION_ID")}`
+    : "";
 
   return (
     <div className="flex flex-col gap-4">
@@ -235,7 +244,9 @@ export default async function Settings(req: Request) {
       </Card>
 
       <p className="absolute bottom-0 right-0 text-xs text-gray-500">
-        Version: {appVersion}{denoVersion}{deployVersion}
+        Version: {appVersion}
+        {denoVersion}
+        {deployVersion}
       </p>
     </div>
   );
