@@ -13,7 +13,9 @@ type NotifEvent =
   /** Public test event, for letting the user test the notification system. */
   | "public_test"
   /** Contact form to admin */
-  | "contact";
+  | "contact"
+  /** User create/important update */
+  | "user_update";
 
 // The template object sent for each NotifEvent. It will use the template_id by default. If not set, will fallback on the defined content.
 type NotifTemplate = {
@@ -244,20 +246,22 @@ export class NotificationService {
   }
 
   /** Sends an email to the admin with the given event and email body.
-   * 
+   *
    * The admin should be set in the environment variable ADMIN_EMAIL, and exists as a valid OneSignal user.
-   * 
+   *
    * @param {NotifEvent} event - The event type for the notification.
    * @param {Object} email - The email object containing the from address and body.
    * @returns {Promise<CreateNotificationSuccessResponse | undefined>} - The response from OneSignal API or undefined if failed.
    */
-  public static sendAdminEmail = async ({ event, email: { from, body: emailBody } }: { event: NotifEvent; email: { from: string, body: string } }) => {
+  public static sendAdminEmail = async (
+    { event, email: { from, body: emailBody } }: { event: NotifEvent; email: { from: string; body: string } },
+  ) => {
     this.check();
 
     const adminEmail = Deno.env.get("ADMIN_EMAIL");
 
     if (!adminEmail) {
-      console.error("ADMIN_EMAIL env is not set. Could not create the sendAdminEmail", { from, emailBody })
+      console.error("ADMIN_EMAIL env is not set. Could not create the sendAdminEmail", { from, emailBody });
       return;
     }
 
@@ -381,4 +385,16 @@ const buildTemplate = <T extends NotifType>(type: T, event: NotifEvent): NotifTe
     default:
       return null;
   }
+};
+
+/** Simple template to notify the admin that a new user has signed up. */
+export const userCreatedTemplate = (name: string): { from: string; body: string } => {
+  return {
+    from: "admin@ccv.nikit.app",
+    body: [
+      `A new user has just signed up: <strong>${name}</strong>`,
+      `<br /><br />`,
+      `Check the admin panel to see more details.`,
+    ].join(""),
+  };
 };

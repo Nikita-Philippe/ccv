@@ -7,6 +7,7 @@ import { fetchSignedInUser, requestTransaction } from "@utils/database.ts";
 import { deleteUserBySession } from "@utils/user.ts";
 import { createGoogleOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import ky from "ky";
+import { NotificationService, userCreatedTemplate } from "@utils/notifications.ts";
 
 const { signIn, handleCallback, signOut, getSessionId: defaultGetSessionId } = createHelpers(
   createGoogleOAuthConfig({
@@ -84,6 +85,9 @@ export default {
               isAuthenticated: true,
             };
             await requestTransaction(req, { action: "createUser", args: [userInit] });
+
+            NotificationService.sendAdminEmail({ event: "user_update", email: userCreatedTemplate(googleUser.name) });
+
             response.headers.set("Location", encodeURI(`/app/firstConnexion?recovery=${recoveryKey}`));
           } else {
             await requestTransaction(req, { action: "setUserSession", args: [user, { sessionId }] });
