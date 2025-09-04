@@ -163,6 +163,11 @@ export class NotificationService {
     }
   }
 
+  /** Checks if the notification service is enabled (has valid config). */
+  public static enabled() {
+    return this.isConfigValid();
+  }
+
   /** Sends a push notification
    *
    * @param {NotifEvent} event - The event type for the notification.

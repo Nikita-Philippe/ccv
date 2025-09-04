@@ -29,7 +29,12 @@ export default function PushButton(
   }, []);
 
   const handleToggleNotification = (type: "push" | "email") => {
-    if (!settings.notifications || !globalThis?.OneSignal || !globalThis?.OneSignalDeferred) return;
+    if (!globalThis?.OneSignal || !globalThis?.OneSignalDeferred) return;
+
+    if (!settings.notifications) {
+      notif?.open({ type: "error", message: "Please set a first and/or last reminder time and save settings first." });
+      return;
+    }
 
     if (
       type === "email" && newValues.email &&
@@ -42,14 +47,14 @@ export default function PushButton(
     globalThis.OneSignalDeferred.push(async function (OneSignal) {
       setIsLoading(true);
 
-      const currentId = OneSignal.User.externalId;
+      const currentId = OneSignal.User?.externalId;
       const userId = user.email ?? user.name;
 
       if (currentId && currentId !== userId) {
         await OneSignal.logout();
       }
 
-      if (!OneSignal.User.externalId) {
+      if (!OneSignal.User?.externalId) {
         await OneSignal.login(userId);
         OneSignal.User.addTag("username", user.name);
       }
@@ -88,6 +93,13 @@ export default function PushButton(
   return globalThis?.OneSignalDeferred
     ? (
       <>
+        <div class="alert alert-warning alert-soft alert-vertical w-full">
+          <span>
+            The push feature is still experimental and may not work as expected. If you encounter any issues, try
+            disabled it and re-enabling it. If you continue to have issues, please{" "}
+            <a href="/#contact" class="link">contact me</a>.
+          </span>
+        </div>
         <div class="flex items-start w-full">
           {isPushSupported &&
             (

@@ -30,7 +30,7 @@ const init = () => {
       },
     });
 
-    // OneSignal.Debug.setLogLevel("debug");
+    if (isLocal) OneSignal.Debug.setLogLevel("debug");
 
     const currentId = OneSignal.User.externalId;
 
@@ -38,7 +38,9 @@ const init = () => {
       if (currentId) await OneSignal.logout();
       await OneSignal.login(userId);
     }
+
+    console.log("OneSignal initialized. Notification service enabled.");
   });
 };
 
-// init();
+init();

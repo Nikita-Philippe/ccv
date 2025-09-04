@@ -174,8 +174,8 @@
   - [x] On callback reload `OAuth session not found at getAndDeleteOAuthSession (https://jsr.io/@deno/kv-oauth/0.11.0/lib/_kv.ts:34:11)`
   - [x] Session ended (TTL expired) when signed in (redirect to specific page to re-connect. Do not bother with refresh token)
   - [ ] If the crypto keys change, OperationError: Decryption failed on kv transactions. Maybe add a check before app start ?
-- [ ] Notificcations
-  - [ ] Sync CCV - onesignal is pretty bad
+- [x] Notificcations
+  - [x] Sync CCV - onesignal is pretty bad
   - [x] Cannot save only notification hours: you need to add the discord hook
-  - [ ] On my local/multiple instances, I have multiple times the same email but I cannot use it
+  - [x] On my local/multiple instances, I have multiple times the same email but I cannot use it
 - [x] On account delete, the client crash (also account settings are NOT deleted)

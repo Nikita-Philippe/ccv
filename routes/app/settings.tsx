@@ -10,6 +10,7 @@ import { getHelloPageRedirect, getPublicUser, getUserBySession } from "@utils/au
 import { requestTransaction, wipeUser } from "@utils/database.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
 import { DateTime } from "luxon";
+import { NotificationService } from "@utils/notifications.ts";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -178,7 +179,7 @@ export default async function Settings(req: Request) {
               )}
             </div>
             <Card title="Methods" sx={{ content: "p-4 flex-col no-wrap" }}>
-              <PushButton user={user} settings={userSettings} />
+              {NotificationService.enabled() && <PushButton user={user} settings={userSettings} />}
               <fieldset class="fieldset">
                 <legend class="fieldset-legend pt-0">Discord webhook</legend>
                 <input

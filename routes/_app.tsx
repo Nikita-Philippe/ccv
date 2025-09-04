@@ -6,7 +6,7 @@ import { PushCheck } from "@islands/PushCheck.tsx";
 // deno-lint-ignore require-await
 export default async function App(req: Request, { Component }: FreshContext) {
   // Only instantiate OneSignal in-app
-  const fetchOneSignal = new URL(req.url).pathname.startsWith("/app");
+  const fetchOneSignal = Deno.env.get("ONESIGNAL_APP_ID") && new URL(req.url).pathname.startsWith("/app");
 
   const userOSId = getCookies(req.headers)[ONESIGNAL_EXTERNAL_ID];
 
