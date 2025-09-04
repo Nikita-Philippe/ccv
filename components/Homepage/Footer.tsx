@@ -36,11 +36,11 @@ export default function Footer() {
           </p>
           <a
             class="link"
-            href="https://www.instagram.com/troispetitsbruns"
+            href="https://www.instagram.com/viictor.bnt/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            troispetitsbruns
+            viictor.bnt
           </a>
         </div>
       </div>
