@@ -1,14 +1,16 @@
 import StatsCollection from "@islands/Stats/StatsCollection.tsx";
 import StatsCollectionEditor from "@islands/Stats/StatsCollectionEditor.tsx";
-import Card from "../../components/UI/Card.tsx";
-import { requestTransaction } from "@utils/database.ts";
-import { DateTime } from "luxon";
 import Button from "@islands/UI/Button.tsx";
+import { getContent } from "@utils/content.ts";
+import { exportEntries } from "@utils/entries.ts";
+import { getStats } from "@utils/stats.ts";
+import { DateTime } from "luxon";
+import Card from "../../components/UI/Card.tsx";
 
 export default async function Stats(req: Request) {
   const isEditMode = new URL(req.url).searchParams.get("edit") === "true";
 
-  const currentContent = await requestTransaction(req, { action: "getContent" });
+  const currentContent = await getContent(req);
 
   if (!currentContent) {
     return (
@@ -26,16 +28,13 @@ export default async function Stats(req: Request) {
     );
   }
 
-  const currentStats = await requestTransaction(req, { action: "getStats" });
+  const currentStats = await getStats(req);
 
   const entriesExtract = isEditMode
-    ? await requestTransaction(req, {
-      action: "exportEntries",
-      args: [{
-        contentId: currentContent.id,
-        from: DateTime.now().minus({ day: 60 }).toISODate(),
-        to: DateTime.now().toISODate(),
-      }],
+    ? await exportEntries(req, {
+      contentId: currentContent.id,
+      from: DateTime.now().minus({ day: 60 }).toISODate(),
+      to: DateTime.now().toISODate(),
     })
     : null;
 

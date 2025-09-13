@@ -1,6 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 import { openKvToolbox } from "@kitsonk/kv-toolbox";
-import { isSuperAdmin } from "@utils/user.ts";
+import { isSuperAdmin } from "@utils/user/index.ts";
 
 export const handler: Handlers = {
   async POST(req) {

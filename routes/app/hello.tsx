@@ -1,5 +1,5 @@
 import { RouteConfig } from "$fresh/server.ts";
-import { getUserBySession } from "@utils/auth.ts";
+import { getUserBySession } from "@utils/user/auth.ts";
 import { DateTime } from "luxon";
 import Button from "@islands/UI/Button.tsx";
 

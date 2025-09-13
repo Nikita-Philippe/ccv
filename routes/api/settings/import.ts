@@ -1,9 +1,9 @@
 import { Handlers } from "$fresh/server.ts";
 import { EConfigCardType, IDailyEntry } from "@models/Content.ts";
-import { getUserBySession } from "@utils/auth.ts";
 import { getDailyEntryKey } from "@utils/common.ts";
-import { openUserKv, requestTransaction } from "@utils/database.ts";
+import { getContent } from "@utils/content.ts";
 import { getEntry, saveEntries } from "@utils/entries.ts";
+import { getUserBySession } from "@utils/user/auth.ts";
 import { normalizeString } from "jsr:@iharuya/string";
 import { parse } from "jsr:@std/csv";
 import { DateTime } from "luxon";
@@ -102,7 +102,7 @@ export const handler: Handlers<TImportResponse> = {
         );
       }
 
-      const userContent = await requestTransaction(req, { action: "getContent" });
+      const userContent = await getContent(user);
       if (!userContent) {
         return new Response(
           JSON.stringify({
@@ -155,8 +155,6 @@ export const handler: Handlers<TImportResponse> = {
       // Keep track of errors, when parsing did not worked, or some other issues.
       const processRes: string[] = [];
 
-      console.log("Saving at content", userContent.id)
-
       // Format all the rows to match the IDailyEntry format.
       const formattedRows: IDailyEntry[] = parsedContent.slice(1).map((row) => {
         const at = getDailyEntryKey(DateTime.fromISO(row[0]));
@@ -172,24 +170,17 @@ export const handler: Handlers<TImportResponse> = {
         return { at, content: userContent.id, entries };
       });
 
-      // Use cyrptoKv directly instead of the requestTransaction for much better performance.
-      const cryptoKv = await openUserKv(user);
-
       for (const entry of formattedRows) {
         try {
           if (!overwriteExisting) {
-            const existing = await getEntry(cryptoKv, user, entry.at);
+            const existing = await getEntry(user, entry.at);
             if (existing) {
               processRes.push(`Entry already exists at ${entry.at}. Use overwrite option to replace it.`);
               continue;
             }
           }
 
-          await saveEntries(cryptoKv, user, {
-            contentId: entry.content,
-            entries: entry.entries,
-            at: entry.at,
-          });
+          await saveEntries(user, { contentId: entry.content, entries: entry.entries, at: entry.at });
         } catch (e) {
           console.error(`Error saving entry ${entry.at}:`, e);
           processRes.push(`Error saving entry ${entry.at}`);
@@ -198,7 +189,6 @@ export const handler: Handlers<TImportResponse> = {
 
       if (processRes.length > 0) console.warn("Res during processing:", processRes);
       processRes.push(`Finished processing ${formattedRows.length} entries.`);
-      cryptoKv.close();
 
       return new Response(JSON.stringify({ message: processRes }));
     } catch (error) {

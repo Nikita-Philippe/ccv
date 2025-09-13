@@ -1,33 +1,35 @@
 import { unique } from "@kitsonk/kv-toolbox/keys";
 import { IAdminUserStat } from "@models/App.ts";
-import { TUser } from "@models/User.ts";
-import { KV_CONTENT, KV_DAILY_ENTRY, KV_USER } from "./constants.ts";
-import { TKv } from "./database.ts";
-import { isSuperAdmin } from "./user.ts";
+import { KV_CONTENT, KV_DAILY_ENTRY } from "@utils/constants.ts";
+import { openKV } from "@utils/kv/instance.ts";
+import { KV_USER } from "@utils/user/constant.ts";
 
-export const getSAdminStats = async (
-  _kv: TKv,
-  user: TUser,
-): Promise<IAdminUserStat | null> => {
-  if (!await isSuperAdmin(user)) return null;
+/** Get some stats for the admin page.
+ * 
+ * Do NOT call this function before erifying user with `isSuperAdmin`
+ * 
+ * @param entry 
+ * @returns 
+ */
+export const getSAdminStats = async (): Promise<IAdminUserStat | null> => {
+  const defaultKv = await openKV();
 
-  const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
-
-  const userKeys = await unique(defaultKv, [KV_USER], { limit: 1000 }).then((v) => v.map(([_, key]) => key as string));
+  const userKeys = await unique(defaultKv, [KV_USER], { limit: 10000 }).then((v) => v.map(([_, key]) => key as string));
 
   const datas: IAdminUserStat = {
     users: [],
     db: {
       path: Deno.env.get("KV_PATH"),
     },
+    config: globalThis.ccv_config
   };
 
   for (const key of userKeys) {
-    const contentKeys = await unique(defaultKv, [KV_CONTENT, key], { limit: 1000 }).then((v) =>
-      v.map(([_, __, key]) => key as string)
+    const contentKeys = await unique(defaultKv, [KV_USER, key, KV_CONTENT], { limit: 10000 }).then((v) =>
+      v.map(([_, __,___, key]) => key as string)
     );
-    const entryKeys = await unique(defaultKv, [KV_DAILY_ENTRY, key], { limit: 1000 }).then((v) =>
-      v.map(([_, __, key]) => key as string)
+    const entryKeys = await unique(defaultKv, [KV_USER, key, KV_DAILY_ENTRY], { limit: 10000 }).then((v) =>
+      v.map(([_, __,___, key]) => key as string)
     );
 
     datas.users.push({ user: key, content: contentKeys, entries: entryKeys });

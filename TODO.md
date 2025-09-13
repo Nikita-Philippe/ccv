@@ -86,6 +86,7 @@
 - [x] Periodically delete content/config of public users from kv
 - [ ] Add a warning on the key page (when connect for first time) if user has not dl/copied key
   - [ ] Change recovery key name to include email
+- [ ] There is room for optimization on the handling of the getUser/getUserBySession/getUserKVConfig (less functions, quicker retrieving)
 
 ## Admin
 - [x] Add an admin account (set in env)
@@ -179,3 +180,5 @@
   - [x] Cannot save only notification hours: you need to add the discord hook
   - [x] On my local/multiple instances, I have multiple times the same email but I cannot use it
 - [x] On account delete, the client crash (also account settings are NOT deleted)
+- [ ] Sometimes if you signed in using a single google account, it will auto connect to this account when navigating to /signin. It should always show the Google "choose account" page.
+- [ ] If you cancel saving for the day when you already have saved something, you are prompted 2 times and the button stay in loading state

@@ -1,6 +1,6 @@
 import { FreshContext } from "$fresh/server.ts";
 import { getCookies, setCookie } from "@std/http/cookie";
-import { getUserBySession } from "@utils/auth.ts";
+import { getUserBySession } from "@utils/user/auth.ts";
 import { ONESIGNAL_EXTERNAL_ID } from "@utils/constants.ts";
 import { NotificationService } from "@utils/notifications.ts";
 import { getSettings, setSettings } from "@utils/settings.ts";
@@ -22,14 +22,14 @@ export async function handler(req: Request, ctx: FreshContext) {
   if (ctx.destination === "route" && normalRoutes.includes(route) && !getCookies(req.headers)[ONESIGNAL_EXTERNAL_ID]) {
     const user = await getUserBySession(req);
     if (user?.isAuthenticated) {
-      const settings = await getSettings(user.id);
+      const settings = await getSettings(user);
 
       const userExists = await NotificationService.checkOnesignalUser(settings);
 
       // If user does not exist, remove the onesignal_id from settings (to "sync" with OneSignal).
       if (userExists === false) {
         console.error(`User with ID ${user.id} does not exist in OneSignal. Removing onesignal_id from settings.`);
-        await setSettings(user.id, "notifications", { onesignal_id: undefined, push: undefined, email: undefined });
+        await setSettings(user, { notifications: { onesignal_id: undefined, push: undefined, email: undefined } });
       }
     }
   }
@@ -44,7 +44,7 @@ export async function handler(req: Request, ctx: FreshContext) {
      *
      * This is used to log in user at onesignal init script, making user able to receive notifications. */
     if (user?.isAuthenticated) {
-      const settings = await getSettings(user.id);
+      const settings = await getSettings(user);
 
       if (settings.notifications?.onesignal_id && !getCookies(req.headers)[ONESIGNAL_EXTERNAL_ID]) {
         setCookie(resp.headers, {

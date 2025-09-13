@@ -1,22 +1,20 @@
 import { Handlers } from "$fresh/server.ts";
 import { TField } from "@models/Content.ts";
-import { getUserBySession } from "@utils/auth.ts";
-import { wipeUser } from "@utils/database.ts";
-import { isSuperAdmin } from "@utils/user.ts";
-import { error } from "node:console";
+import { getUserBySession } from "@utils/user/auth.ts";
+import { isSuperAdmin, wipeUser } from "@utils/user/index.ts";
 
 export const handler: Handlers<TField | null> = {
   async DELETE(req, ctx) {
     try {
-      const user = await getUserBySession(req, true);
-      if (!user) throw new Error("Invalid request");
+      const adminUser = await getUserBySession(req, true);
+      // Forbidden request. Only super admin can delete a user. User deleting itself should use the settings page.
+      if (!await isSuperAdmin(adminUser)) throw new Error("Invalid request");
 
       const userId = ctx.params.id;
 
       if (!userId) throw new Error("Invalid id");
 
-      // Forbidden request. Only super admin can delete a user. User deleting itself should use the settings page.
-      if (!await isSuperAdmin(user)) throw new Error("Invalid request");
+      console.log("Deleting user", userId);
 
       await wipeUser(userId);
 
@@ -24,7 +22,7 @@ export const handler: Handlers<TField | null> = {
     } catch (e) {
       if (e instanceof Error) return new Response(e.message, { status: 400 });
 
-      console.error("Unknown error in user deletion", error);
+      console.error("Unknown error in user deletion", e);
 
       return new Response("Internal server error", { status: 500 });
     }

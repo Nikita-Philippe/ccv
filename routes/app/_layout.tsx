@@ -1,9 +1,9 @@
 import { RouteContext } from "$fresh/server.ts";
-import { getUserBySession } from "@utils/auth.ts";
 import { IDefaultPageHandler } from "@models/App.ts";
 import Toast from "@islands/UI/Toast.tsx";
-import { isSuperAdmin } from "@utils/user.ts";
+import { isSuperAdmin } from "@utils/user/index.ts";
 import Footer from "@components/Homepage/Footer.tsx";
+import { getUserBySession } from "@utils/user/auth.ts";
 
 export default async function Layout(req: Request, ctx: RouteContext<IDefaultPageHandler>) {
   const user = await getUserBySession(req, true);

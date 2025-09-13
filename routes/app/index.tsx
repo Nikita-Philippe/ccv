@@ -5,10 +5,10 @@ import Card from "../../components/UI/Card.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
 import { IEntry, TField } from "@models/Content.ts";
 import { APP_DAYS_MISS_CHECK } from "@utils/constants.ts";
-import { requestTransaction } from "@utils/database.ts";
-import { parseEntry, stringifyEntryValue } from "@utils/entries.ts";
+import { getEntry, missingEntries, parseEntry, saveEntries, stringifyEntryValue } from "@utils/entries.ts";
 import { capitalize, difference } from "lodash";
 import Button from "@islands/UI/Button.tsx";
+import { getContent } from "@utils/content.ts";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -19,7 +19,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
     if (!contentId) return await ctx.render({ message: { type: "error", message: "No content id provided" } });
     if (!date) return await ctx.render({ message: { type: "error", message: "No date provided" } });
 
-    const content = await requestTransaction(req, { action: "getContent" });
+    const content = await getContent(req, { id: contentId.toString() });
     if (!content) return await ctx.render({ message: { type: "error", message: "Content not found" } });
 
     // Check that form match the content
@@ -36,10 +36,7 @@ export const handler: Handlers<IDefaultPageHandler> = {
     );
 
     // Save daily data.
-    const res = await requestTransaction(req, {
-      action: "saveEntries",
-      args: [{ contentId: contentId.toString(), entries, at: date.toString() }],
-    });
+    const res = await saveEntries(req, { contentId: contentId.toString(), entries, at: date.toString() });
 
     if (!res) {
       return await ctx.render({
@@ -51,12 +48,9 @@ export const handler: Handlers<IDefaultPageHandler> = {
 };
 
 export default async function Home(req: Request) {
-  const content = await requestTransaction(req, { action: "getContent" });
-  const lastDay = await requestTransaction(req, { action: "getEntry" });
-  const missingDays = await requestTransaction(req, {
-    action: "missingEntries",
-    args: [{ days: APP_DAYS_MISS_CHECK }],
-  });
+  const content = await getContent(req);
+  const lastDay = content ? await getEntry(req) : null;
+  const missingDays = content ? await missingEntries(req, { days: APP_DAYS_MISS_CHECK }) : [];
 
   const entriesContent = content?.fields.reduce((acc, field) => {
     const group = field.group ?? "";

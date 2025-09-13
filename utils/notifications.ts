@@ -96,16 +96,20 @@ export class NotificationService {
     return Boolean(this.API_KEY) && Boolean(this.APP_ID);
   }
 
-  private static check() {
-    if (!this.isSSR()) throw new Error("NotificationService cannot be used in client side.");
-    if (!this.isConfigValid()) {
-      throw new Error("NotificationService is missing API_KEY or APP_ID environment variables.");
+  private static check(strategy: 'throw' | 'log' | 'none' = 'throw') {
+    let error: Error | null = null;
+    if (!this.isSSR()) error = new Error("NotificationService cannot be used in client side.");
+    if (!this.isConfigValid()) error = new Error("NotificationService is missing API_KEY or APP_ID environment variables.");
+  
+    if (error) {
+      if (strategy === 'throw') throw error;
+      if (strategy === 'log') console.error(error.message);
     }
+
+    return !error;
   }
 
   private static getTemplate<T extends NotifType>(type: T, event: NotifEvent): NotifTemplate[T] | null {
-    this.check();
-
     return {
       ...buildTemplate(type, event),
       ...(type === "push" && {
@@ -234,7 +238,8 @@ export class NotificationService {
    * @returns {Promise<boolean | undefined>} - Returns true if user exists, false if not, or undefined if no ID is set.
    */
   public static async checkOnesignalUser(settings: ISettings | null): Promise<boolean | undefined> {
-    this.check();
+    
+    if (!this.check('none')) return;
 
     if (!settings?.notifications?.onesignal_id) return;
 
@@ -261,7 +266,8 @@ export class NotificationService {
   public static sendAdminEmail = async (
     { event, email: { from, body: emailBody } }: { event: NotifEvent; email: { from: string; body: string } },
   ) => {
-    this.check();
+    
+    if (!this.check('log')) return;
 
     const adminEmail = Deno.env.get("ADMIN_EMAIL");
 

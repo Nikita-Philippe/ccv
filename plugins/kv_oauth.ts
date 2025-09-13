@@ -1,13 +1,13 @@
 import type { Plugin } from "$fresh/server.ts";
-import { PartialBy } from "@models/Common.ts";
-import { IAuthenticatedUser, IGoogleUser } from "@models/User.ts";
-import { cleanupPublicUser, getHelloPageRedirect } from "@utils/auth.ts";
-import { createUserRecoveryKey } from "@utils/crypto.ts";
-import { fetchSignedInUser, requestTransaction } from "@utils/database.ts";
-import { deleteUserBySession } from "@utils/user.ts";
+import { IAuthenticatedUser, IGoogleUser, MinUser } from "@models/User.ts";
+import { createUserRecoveryKey } from "@utils/crypto/recovery.ts";
+import { NotificationService, userCreatedTemplate } from "@utils/notifications.ts";
+import { deleteUserBySession, setUserSession } from "@utils/session/index.ts";
+import { getHelloPageRedirect } from "@utils/user/auth.ts";
+import { createUser, getUser } from "@utils/user/index.ts";
+import { cleanupPublicUser } from "@utils/user/public.ts";
 import { createGoogleOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import ky from "ky";
-import { NotificationService, userCreatedTemplate } from "@utils/notifications.ts";
 
 const { signIn, handleCallback, signOut, getSessionId: defaultGetSessionId } = createHelpers(
   createGoogleOAuthConfig({
@@ -72,29 +72,36 @@ export default {
           // If no user, redirect to hello page to create a public user
           if (!googleUser) throw new Error(`No google user found for token "${tokens.accessToken}"`);
 
-          const user = await fetchSignedInUser(googleUser);
+          const pseudoUser = {
+            ...googleUser,
+            isAuthenticated: true,
+            provider: "google",
+          } as MinUser;
+
+          const user = await getUser(pseudoUser);
 
           if (!user) {
-            const recoveryKey = await createUserRecoveryKey(googleUser);
-
-            const userInit: PartialBy<IAuthenticatedUser, "token"> = {
+            const userInit: IAuthenticatedUser = {
               id: googleUser.id,
               name: googleUser.name,
               email: googleUser.email,
               sessionId,
               isAuthenticated: true,
+              provider: "google",
             };
-            await requestTransaction(req, { action: "createUser", args: [userInit] });
+
+            const recoveryKey = await createUserRecoveryKey(userInit as IAuthenticatedUser);
+            await createUser(userInit);
 
             NotificationService.sendAdminEmail({ event: "user_update", email: userCreatedTemplate(googleUser.name) });
 
             response.headers.set("Location", encodeURI(`/app/firstConnexion?recovery=${recoveryKey}`));
           } else {
-            await requestTransaction(req, { action: "setUserSession", args: [user, { sessionId }] });
+            await setUserSession(user, { sessionId });
           }
 
           // Return response cleanup of the public user, with migrated datas if applicable
-          return await cleanupPublicUser(req, response, !user ? googleUser.id : undefined);
+          return await cleanupPublicUser(req, response, !user ? pseudoUser : undefined);
         } catch (e) {
           console.error("Error in callback", e);
           return getHelloPageRedirect("/app");

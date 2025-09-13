@@ -1,8 +1,8 @@
 import { Handlers } from "$fresh/server.ts";
 import { ISettings } from "@models/App.ts";
 import { TField } from "@models/Content.ts";
-import { getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
 import { setSettings } from "@utils/settings.ts";
+import { getHelloPageRedirect, getUserBySession } from "@utils/user/auth.ts";
 
 export const handler: Handlers<TField | null> = {
   async PUT(req, _) {
@@ -15,10 +15,12 @@ export const handler: Handlers<TField | null> = {
 
     if (!body || !body.onesignal_id) return new Response(null, { status: 400 });
 
-    const newSettings = await setSettings(user.id, "notifications", {
-      onesignal_id: body.onesignal_id,
-      ...(body.push !== undefined ? { push: body.push } : {}),
-      ...(body.email !== undefined ? { email: body.email } : {}),
+    const newSettings = await setSettings(user, {
+      notifications: {
+        onesignal_id: body.onesignal_id,
+        ...(body.push !== undefined ? { push: body.push } : {}),
+        ...(body.email !== undefined ? { email: body.email } : {}),
+      },
     });
 
     return new Response(JSON.stringify(newSettings), { status: 200 });

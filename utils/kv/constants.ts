@@ -1,0 +1,1 @@
+export const KV_PATH = Deno.env.get('KV_PATH');

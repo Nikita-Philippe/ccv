@@ -1,7 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { AvailableTemplateType, ITemplate } from "@models/Template.ts";
 import { resolve } from "@std/path/resolve";
-import { getUserBySession } from "@utils/auth.ts";
+import { getUserBySession } from "@utils/user/auth.ts";
 
 export const handler: Handlers = {
   async GET(req, ctx) {

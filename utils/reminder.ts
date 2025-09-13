@@ -1,7 +1,8 @@
 import { KV_DAILY_ENTRY } from "@utils/constants.ts";
 import { DateTime } from "luxon";
-import { getLastKey } from "./kv.ts";
-import { compareDate } from "./common.ts";
+import { getLastKey } from "@utils/kv/index.ts";
+import { compareDate } from "@utils/common.ts";
+import { KV_USER } from "./user/constant.ts";
 
 /** Check if the user has already answered the daily question today.
  *
@@ -13,7 +14,7 @@ import { compareDate } from "./common.ts";
  */
 export const checkForDailyAnswer = async (userKey: string) => {
   // Base our check on the last key (which is entry 'at' date)
-  const lastKey = await getLastKey([KV_DAILY_ENTRY, userKey]);
+  const lastKey = await getLastKey([KV_USER, userKey, KV_DAILY_ENTRY]);
 
   return compareDate(lastKey ?? "1970-01-01", DateTime.now().minus({ day: 1 })).isSameOrAfter;
 };

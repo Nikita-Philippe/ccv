@@ -7,12 +7,11 @@
 
 import "@std/dotenv/load";
 
-import("./env.ts").then(env => env.default());
+await import("./env.ts").then(async (env) => await env.default());
 
 import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
 import config from "./fresh.config.ts";
-
 
 import("./cron.ts").then(cron => cron.default());
 

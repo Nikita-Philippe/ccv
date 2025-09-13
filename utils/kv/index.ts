@@ -1,5 +1,7 @@
 import { CryptoKv } from "@kitsonk/kv-toolbox/crypto";
-import { unique } from "@kitsonk/kv-toolbox/keys";
+import { KeyTree, tree, unique } from "@kitsonk/kv-toolbox/keys";
+import { openKV } from "./instance.ts";
+import { remove } from "@kitsonk/kv-toolbox/blob";
 
 /** Convert the data to a blob, to be used by the KV store
  *
@@ -44,7 +46,7 @@ export const deblobifyData = <T>(data: Uint8Array): T | null => {
  * @experimental
  */
 export const getLastKey = async (key: Deno.KvKey): Promise<string | undefined> => {
-  const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
+  const kv = await openKV();
   const keys = await unique(kv, key, { limit: 1, reverse: true });
   kv.close();
   return ((keys as unknown as string[][])[0] ?? []).pop();
@@ -97,7 +99,7 @@ export const listInKv = async <T>(
   // FIXME: Implement start/end based on code research
   // @ts-expect-error - Prefix and/or start-end
   const prefix = (selector.prefix ?? selector.start ?? selector.end) as Deno.KvKey;
-  const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
+  const defaultKv = await openKV();
   const keys = await unique(defaultKv, prefix, options);
   defaultKv.close();
   if (!keys) return [];
@@ -132,3 +134,76 @@ export const listInKv = async <T>(
 //   defaultKv.close();
 //   return entries;
 // };
+
+/** Get all key paths from a KeyTree up to a specified depth.
+ *
+ * @param tree The KeyTree to extract keys from.
+ * @param depth The maximum depth to traverse. Defaults to Infinity.
+ * @returns An array of Deno.KvKey paths.
+ * @example
+ * ```ts
+ * const kv = await Deno.openKv();
+ * const keyTree = await tree(kv, ['some', 'prefix']);
+ * const allKeys = getAllKeyPaths(keyTree, 2); // Get all keys up to depth 2
+ * console.log(allKeys);
+ * ```
+ * @experimental
+ */
+export function getAllKeyPaths(tree: KeyTree, depth = Infinity): Deno.KvKey[] {
+  const results: Deno.KvKey[] = [];
+
+  function walk(node: Required<KeyTree>["children"][0], path: Deno.KvKey, currentDepth: number) {
+    const currentPath = [...path, node.part];
+
+    // If this node has children with toolbox keys, add this path and stop recursion
+    if (node.children?.some((child) => child.part === "__kv_toolbox_blob__" || child.part === "__kv_toolbox_meta__")) {
+      results.push(currentPath);
+      return;
+    }
+
+    if (node.hasValue) {
+      results.push(currentPath);
+    }
+
+    if (node.children && currentDepth < depth) {
+      for (const child of node.children) {
+        walk(child, currentPath, currentDepth + 1);
+      }
+    }
+  }
+
+  // Start with the prefix if present
+  const startPath: Deno.KvKey = tree.prefix ? [...tree.prefix] : [];
+  if (tree.children) {
+    for (const child of tree.children) {
+      walk(child, startPath, 0);
+    }
+  }
+
+  return results;
+}
+
+/** Remove a key and all its sub-keys from the KV store.
+ *
+ * @param kv The Deno.Kv or CryptoKv instance.
+ * @param key The key path to remove.
+ * @param depth The maximum depth to traverse for removal. Defaults to Infinity.
+ * @returns True if the operation was successful, false otherwise.
+ * @experimental
+ */
+export const removeInKv = async (kv: Deno.Kv, key: Deno.KvKey, { depth = Infinity } = {}) => {
+  try {
+    const keyGraph = await tree(kv, key);
+
+    const allKeys = getAllKeyPaths(keyGraph, depth);
+
+    for (const key of allKeys) {
+      await remove(kv, key);
+    }
+
+    return true;
+  } catch (e) {
+    console.error("Failed to removeInKv", e);
+    return false;
+  }
+};

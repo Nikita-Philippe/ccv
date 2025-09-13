@@ -1,8 +1,9 @@
 import { FreshContext } from "$fresh/server.ts";
 import { setCookie } from "@std/http/cookie";
-import { createPublicUser, getHelloPageRedirect, isAuthorized, isSessionExpired } from "@utils/auth.ts";
-import { PUBLIC_USER_ID } from "@utils/constants.ts";
+import { PUBLIC_USER_COOKIE } from "@utils/constants.ts";
 import { Debug } from "@utils/debug.ts";
+import { isAuthorized, isSessionExpired, getHelloPageRedirect } from "@utils/user/auth.ts";
+import { createPublicUser } from "@utils/user/public.ts";
 
 // List of routes to not check for user authorization
 const authorizedRoutes = [
@@ -65,11 +66,11 @@ export async function handler(req: Request, ctx: FreshContext) {
       if (Debug.get("user")) console.log("Creating public user", newUser.id);
 
       setCookie(response.headers, {
-        name: PUBLIC_USER_ID,
+        name: PUBLIC_USER_COOKIE,
         value: encodeURIComponent(JSON.stringify(newUser)),
         path: "/",
         httpOnly: true,
-        expires: newUser.expires,
+        expires: +newUser.expires,
       });
 
       return response;

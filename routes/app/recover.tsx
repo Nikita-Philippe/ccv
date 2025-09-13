@@ -1,14 +1,13 @@
 import { Handlers, RouteContext } from "$fresh/server.ts";
-import Card from "../../components/UI/Card.tsx";
+import Button from "@islands/UI/Button.tsx";
 import FileDownloader from "@islands/UI/FileDownloader.tsx";
-import { IContent, IDailyEntry } from "@models/Content.ts";
-import { ERROR_MESSAGE } from "@models/Errors.ts";
-import { recoverUserAccount } from "@utils/crypto.ts";
-import { getUserBySession } from "@utils/auth.ts";
-import { getSessionId } from "../../plugins/kv_oauth.ts";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
 import { IDefaultPageHandler } from "@models/App.ts";
-import Button from "@islands/UI/Button.tsx";
+import { IContent, IDailyEntry } from "@models/Content.ts";
+import { ERROR_MESSAGE } from "@models/Errors.ts";
+import { recoverUserAccount } from "@utils/crypto/recovery.ts";
+import Card from "@components/UI/Card.tsx";
+import { getSessionId } from "../../plugins/kv_oauth.ts";
 
 type HandlerType = IDefaultPageHandler & {
   recovered?: {
@@ -34,8 +33,12 @@ export const handler: Handlers<HandlerType | null> = {
       const recoveryKey = formData.recovery_key as string;
       const recoveryEmail = formData.recovery_email as string;
 
-      if (!recoveryKey) return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_KEY } });
-      if (!recoveryEmail) return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_EMAIL } });
+      if (!recoveryKey) {
+        return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_KEY } });
+      }
+      if (!recoveryEmail) {
+        return await ctx.render({ message: { type: "error", message: ERROR_MESSAGE.RECOVER_MISSING_EMAIL } });
+      }
 
       const sessionId = await getSessionId(req!);
       const res = await recoverUserAccount(recoveryKey, recoveryEmail, sessionId ?? "");
@@ -48,18 +51,21 @@ export const handler: Handlers<HandlerType | null> = {
   },
 };
 
-export default async function Recover(req: Request, { data }: RouteContext<HandlerType>) {
-  const user = await getUserBySession(req);
-
+export default async function Recover(_: Request, { data }: RouteContext<HandlerType>) {
   return (
     <>
-      {(!user && data?.recovered)
+      {(data?.recovered)
         ? (
           <div role="alert" className="alert alert-soft w-full flex flex-col gap-2">
             <p className="text-lg font-semibold">Account recovered</p>
             <p>
               Your account has been recovered and deleted. You can download the files below.
             </p>
+            <div className="alert alert-error alert-soft">
+              <p>
+                Please do not reload this page, as the recovery key is single-use and your account has been deleted.
+              </p>
+            </div>
             <div className="flex gap-2 flex-wrap">
               {data?.recovered?.configs.data && (
                 <FileDownloader
@@ -86,7 +92,7 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
           </div>
         )
         : (
-          <Card title={"Recover"} sx={{ content: "border-2 border-error border-dashed p-4 flex-col no-wrap relative" }}>
+          <Card title="Recover" sx={{ content: "border-2 border-error border-dashed p-4 flex-col no-wrap relative" }}>
             <form
               method="POST"
               className="flex flex-col gap-2 justify-start"
@@ -94,7 +100,7 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
             >
               <input type="hidden" name="action" value="recover" />
               <fieldset
-                className={"fieldset p-0"}
+                className="fieldset p-0"
               >
                 <legend className="fieldset-legend">Recover key</legend>
                 <input
@@ -104,7 +110,7 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
                 />
               </fieldset>
               <fieldset
-                className={"fieldset p-0"}
+                className="fieldset p-0"
               >
                 <legend className="fieldset-legend">Account email</legend>
                 <input type="email" class="input input-primary w-full" name="recovery_email" />
@@ -119,7 +125,7 @@ export default async function Recover(req: Request, { data }: RouteContext<Handl
                   pressDuration={2000}
                   formId="recover-form"
                 >
-                  <>Recover account</>
+                  <p>Recover account</p>
                 </LongPressButton>
               </div>
             </form>

@@ -84,6 +84,7 @@
     "@std/dotenv": "jsr:@std/dotenv",
     "@std/http": "jsr:@std/http",
     "@std/path": "jsr:@std/path",
+    "@std/encoding": "jsr:@std/encoding",
     "@models/": "./models/",
     "@components/": "./components/",
     "@islands/": "./islands/",
@@ -107,6 +108,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "types": [
+      "./models/global.d.ts",
       "./models/apexcharts.d.ts",
       "./models/onesignal.d.ts"
     ],

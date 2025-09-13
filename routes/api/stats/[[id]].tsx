@@ -1,8 +1,8 @@
 import { Handlers } from "$fresh/server.ts";
 import { TField } from "@models/Content.ts";
 import { IPartialStat, IStat } from "@models/Stats.ts";
-import { getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
-import { requestTransaction } from "@utils/database.ts";
+import { setStats } from "@utils/stats.ts";
+import { getHelloPageRedirect, getUserBySession } from "@utils/user/auth.ts";
 
 export const handler: Handlers<TField | null> = {
   async PUT(req, _) {
@@ -14,7 +14,7 @@ export const handler: Handlers<TField | null> = {
     const stats = body?.stats as IStat | IPartialStat | null;
     if (!stats) return new Response("No content provided", { status: 400 });
 
-    const res = await requestTransaction(req, { action: "setStats", args: [{ stats }] });
+    const res = await setStats(user, { stats });
 
     if (res?.id) {
       return new Response(JSON.stringify(res), { status: 200 });

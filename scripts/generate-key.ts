@@ -1,9 +1,5 @@
-// Script to generate a key - save as generate-key.ts
-const generateSecureKey = (): string => {
-  const keyBytes = new Uint8Array(32); // 256 bits = 32 bytes
-  crypto.getRandomValues(keyBytes);
-  // Convert to base64 for storage
-  return btoa(String.fromCharCode(...keyBytes));
-};
+import { generateEncryptionKey } from "@utils/crypto/generators.ts";
 
-console.log("Generated key:", generateSecureKey());
+generateEncryptionKey().then((key) => {
+  console.log("Generated encryption key:", key);
+});

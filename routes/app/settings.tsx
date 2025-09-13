@@ -5,12 +5,14 @@ import ImportButton from "@islands/Settings/ImportButton.tsx";
 import Button from "@islands/UI/Button.tsx";
 import LongPressButton from "@islands/UI/LongPressButton.tsx";
 import PushButton from "@islands/UI/NotificationsOptButtons.tsx";
-import { IDefaultPageHandler, ISettings } from "@models/App.ts";
-import { getHelloPageRedirect, getPublicUser, getUserBySession } from "@utils/auth.ts";
-import { requestTransaction, wipeUser } from "@utils/database.ts";
-import { getSettings, setSettings } from "@utils/settings.ts";
-import { DateTime } from "luxon";
+import { IDefaultPageHandler } from "@models/App.ts";
+import { getContent } from "@utils/content.ts";
 import { NotificationService } from "@utils/notifications.ts";
+import { getSettings, setSettings } from "@utils/settings.ts";
+import { getHelloPageRedirect, getUserBySession } from "@utils/user/auth.ts";
+import { wipeUser } from "@utils/user/index.ts";
+import { getPublicUser } from "@utils/user/public.ts";
+import { DateTime } from "luxon";
 
 export const handler: Handlers<IDefaultPageHandler> = {
   async POST(req, ctx) {
@@ -59,10 +61,12 @@ export const handler: Handlers<IDefaultPageHandler> = {
           break;
       }
 
-      await setSettings(user.id, settings as keyof ISettings, {
-        start: restForm.reminder_start as string,
-        end: restForm.reminder_end as string,
-        discord_webhook: restForm.notif_discord_webhook as string,
+      await setSettings(user, {
+        notifications: {
+          start: restForm.reminder_start as string,
+          end: restForm.reminder_end as string,
+          discord_webhook: restForm.notif_discord_webhook as string,
+        },
       });
 
       return await ctx.render({ message: { type: "success", message: "Settings updated" } });
@@ -76,13 +80,13 @@ export default async function Settings(req: Request) {
   const user = await getUserBySession(req, true);
   if (!user) return getHelloPageRedirect(req.url);
 
-  const content = await requestTransaction(req, { action: "getContent" });
+  const content = await getContent(req);
 
   const publicSession = getPublicUser(req);
 
   const isSignedIn = user.isAuthenticated;
 
-  const userSettings = isSignedIn ? await getSettings(user.id) : null;
+  const userSettings = isSignedIn ? await getSettings(user) : null;
 
   const appVersion = Deno.env.get("APP_VERSION") || "local";
   const denoVersion = Deno.version.deno ? ` - Deno ${Deno.version.deno}` : "";
@@ -92,7 +96,7 @@ export default async function Settings(req: Request) {
 
   return (
     <div className="flex flex-col gap-4">
-      {content && (
+      {(isSignedIn && content) && (
         <>
           <ExportButtons content={content} />
           <ImportButton />
@@ -115,8 +119,7 @@ export default async function Settings(req: Request) {
               <p>Your are currently not logged in.</p>
               <p>
                 As a public user, your <a className="link" href="/app/config">configuration</a>{" "}
-                and daily entries will expire{" "}
-                {DateTime.fromJSDate(publicSession!.expires).setLocale("en").toRelative()}.
+                and daily entries will expire {publicSession!.expires.setLocale("en").toRelative()}.
               </p>
               <p>
                 <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>

@@ -5,3 +5,4 @@ _fresh/
 node_modules/
 fresh.gen.ts
 static/styles.css
+ccv.json

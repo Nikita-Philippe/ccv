@@ -39,7 +39,7 @@ export default function () {
         for (const users of allSettings) {
           const userKey = (users as string[]).pop();
           if (!userKey) continue;
-          const settings = await getSettings(userKey, true);
+          const settings = await getSettings(userKey);
           if (settings?.notifications) {
             let sendNotification = false;
             const notifications = settings.notifications;

@@ -1,63 +1,47 @@
 import { IPartialStat, IStat } from "@models/Stats.ts";
-import { TUser } from "@models/User.ts";
-import { hashUserId } from "@utils/crypto.ts";
-import { TKv } from "@utils/database.ts";
-import { getInKv, getLastKey, setInKv } from "@utils/kv.ts";
-import { getUserDatasExpiry } from "@utils/user.ts";
+import { KV_STATS } from "@utils/constants.ts";
+import { getInKv, getLastKey, setInKv } from "@utils/kv/index.ts";
+import { getUserKVConfig, UserKVConfigEntry } from "@utils/kv/instance.ts";
+import { KV_USER } from "@utils/user/constant.ts";
+import { getUserDatasExpiry } from "@utils/user/index.ts";
 import { DateTime } from "luxon";
-import { KV_CONTENT_PUBLIC, KV_STATS } from "./constants.ts";
-
-const getPublicKey = (key: string) => `${KV_CONTENT_PUBLIC}${key}`;
-
-/** Get the partial key in the stats kv for the current user.
- *
- * @param user The user to get the key from
- * @returns The kv stats key
- */
-const getStatsKey = async (user: TUser) => {
-  const kvKeyId = await hashUserId(user.id);
-  return user.isAuthenticated ? kvKeyId : getPublicKey(kvKeyId);
-};
 
 /** Get the stats from the KV store.
  *
- * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
- * @param user The user to get the stats for. Set by default using `getUserBySession`.
+ * @param entry The {@linkcode UserKVConfigEntry entry} to get the content for.
  * @param args.id The id of the stats to get. If not provided, the last stats is returned.
  * @returns The stats. Null if not found.
  */
 export const getStats = async (
-  kv: TKv,
-  user: TUser,
+  entry: UserKVConfigEntry,
   { id }: { id?: string } = {},
 ): Promise<IStat | null> => {
-  const key = await getStatsKey(user);
+  const { kv, uKey } = await getUserKVConfig(entry);
 
   let entryId = id;
   if (!entryId) {
-    const lastKey = await getLastKey([KV_STATS, key]);
+    const lastKey = await getLastKey([KV_USER, uKey, KV_STATS]);
     if (lastKey) entryId = lastKey;
     else return null;
   }
-  const { value } = await getInKv<IStat>(kv, [KV_STATS, key, entryId]);
+  const { value } = await getInKv<IStat>(kv, [KV_USER, uKey, KV_STATS, entryId]);
   return value;
 };
 
 /** Set the stats in the KV store.
  *
- * @param kv The user's cryptoKv store. Set by default using `requestTransaction`.
- * @param user The user to set the stats for. Set by default using `getUserBySession`.
+ * @param entry The {@linkcode UserKVConfigEntry entry} to get the content for.
  * @param args.stats The stats to set. Must be a valid `IStat` object.
  * @returns The stats. Null if not saved.
  */
 export const setStats = async (
-  kv: TKv,
-  user: TUser,
+  entry: UserKVConfigEntry,
   { stats }: {
     stats: IStat | IPartialStat;
   },
 ): Promise<IStat | null> => {
-  const key = await getStatsKey(user);
+  const cfg = await getUserKVConfig(entry);
+
   // Set a new id, to create a new stats. Use date to have a sequencially inserted entries
   if (!stats.id) stats.id = String(DateTime.now().toUnixInteger());
 
@@ -73,7 +57,9 @@ export const setStats = async (
     );
   });
 
-  const res = await setInKv(kv, [KV_STATS, key, stats.id], stats, { expireIn: getUserDatasExpiry(user) });
-  if (res.ok) return await getStats(kv, user, { id: stats.id });
+  const res = await setInKv(cfg.kv, [KV_USER, cfg.uKey, KV_STATS, stats.id], stats, {
+    expireIn: getUserDatasExpiry(cfg.user),
+  });
+  if (res.ok) return await getStats(cfg, { id: stats.id });
   else return null;
 };

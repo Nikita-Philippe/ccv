@@ -2,7 +2,7 @@
 
 import "@std/dotenv/load";
 
-import("./env.ts").then(env => env.default());
+await import("./env.ts").then(async (env) => await env.default());
 
 import dev from "$fresh/dev.ts";
 import config from "./fresh.config.ts";

@@ -1,9 +1,10 @@
 import { Handlers } from "$fresh/server.ts";
 import { getMeta, remove } from "@kitsonk/kv-toolbox/blob";
-import { getUserBySession } from "@utils/auth.ts";
 import { KV_DAILY_ENTRY } from "@utils/constants.ts";
-import { hashUserId } from "@utils/crypto.ts";
-import { isSuperAdmin } from "@utils/user.ts";
+import { getUserBySession } from "@utils/user/auth.ts";
+import { isSuperAdmin } from "@utils/user/index.ts";
+import { getUserKVConfig, openKV } from "@utils/kv/instance.ts";
+import { KV_USER } from "@utils/user/constant.ts";
 
 export const handler: Handlers = {
   async DELETE(req, ctx) {
@@ -15,17 +16,17 @@ export const handler: Handlers = {
 
       if (!userKey || !entryKey) throw new Error("Invalid id");
 
-      const currentUserKey = await hashUserId(user.id);
+      const { uKey } = await getUserKVConfig(req);
 
       // Forbidden request. Only current user or super admin can delete entry.
-      if (currentUserKey !== userKey && !await isSuperAdmin(user)) throw new Error("Invalid request");
+      if (uKey !== userKey && !await isSuperAdmin(user)) throw new Error("Invalid request");
 
-      const defaultKv = await Deno.openKv(Deno.env.get("KV_PATH"));
+      const defaultKv = await openKV();
 
-      const isEntryExist = await getMeta(defaultKv, [KV_DAILY_ENTRY, userKey, entryKey]).then((v) => !!v.versionstamp);
+      const isEntryExist = await getMeta(defaultKv, [KV_USER, userKey, KV_DAILY_ENTRY, entryKey]).then((v) => !!v.versionstamp);
       if (!isEntryExist) throw new ReferenceError(`Entry ${entryKey} does not exists for deletion.`);
 
-      await remove(defaultKv, [KV_DAILY_ENTRY, userKey, entryKey]);
+      await remove(defaultKv, [KV_USER, userKey, KV_DAILY_ENTRY, entryKey]);
 
       defaultKv.close();
 

@@ -33,5 +33,12 @@ export interface IAdminUserStat {
   }[],
   db: {
     path?: string;
-  }
+  },
+  config: IAppConfig
+}
+
+/** The main CCV settings, which are defined in the ccv.json file at app root. */
+export interface IAppConfig {
+  /** Configure emails that have a "admin" access to the app. Used to manage user, database, and more. */
+  admin_email?: [string],
 }

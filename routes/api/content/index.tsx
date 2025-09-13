@@ -1,7 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { IContent, TField } from "@models/Content.ts";
-import { getHelloPageRedirect, getUserBySession } from "@utils/auth.ts";
-import { requestTransaction } from "@utils/database.ts";
+import { getContent, setContent } from "@utils/content.ts";
+import { getHelloPageRedirect, getUserBySession } from "@utils/user/auth.ts";
 
 export const handler: Handlers<TField | null> = {
   async PUT(req, _) {
@@ -13,7 +13,7 @@ export const handler: Handlers<TField | null> = {
     const content = body?.content as IContent | undefined;
     if (!content) return new Response("No content provided", { status: 400 });
 
-    const currentContent = await requestTransaction(req, { action: "getContent", args: [{ id: content.id }] });
+    const currentContent = await getContent(user, { id: content.id });
 
     // Group all names from current and new, and check if some are more than 2 times (current + new)
     const occurenceOfNames = [
@@ -37,7 +37,7 @@ export const handler: Handlers<TField | null> = {
       );
     }
 
-    const res = await requestTransaction(req, { action: "setContent", args: [{ content }] });
+    const res = await setContent(user, { content });
 
     if (res?.id) {
       return new Response(JSON.stringify(res), { status: 200 });
