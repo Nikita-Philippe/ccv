@@ -2,8 +2,8 @@ import { initCryptoKeys } from "@utils/crypto/config.ts";
 
 // This file is used to check and initialize env in app.
 const logAndQuit = (message: string) => {
-  console.error(`ENV: Error - ${message}`);
-  Deno.exit(1);
+  console.trace(message);
+  throw new Error(`ENV: Error - ${message}`);
 };
 
 export default async function () {
@@ -30,11 +30,11 @@ export default async function () {
   if (Deno.args.includes("build")) return;
 
   // Check KV path
-  if (globalThis.ccv_config.kv?.basePath && loadedEnvs.DENO_DEPLOYMENT_ID) {
-    logAndQuit("`config.kb.basePath`should not be set in your config when using Deno deploy.");
+  if (!!globalThis.ccv_config.kv?.basePath && loadedEnvs.DENO_DEPLOYMENT_ID) {
+    logAndQuit("`config.kv.basePath`should not be set in your config when using Deno deploy.");
   }
   if (!globalThis.ccv_config.kv?.basePath && !loadedEnvs.DENO_DEPLOYMENT_ID) {
-    logAndQuit("`config.kb.basePath` is not set in your config. Please set it, for data stability.");
+    logAndQuit("`config.kv.basePath` is not set in your config. Please set it, for data stability.");
   }
 
   // Check crypto keys
