@@ -5,9 +5,9 @@ import { Debug } from "./debug.ts";
 // import { getSettings, setSettings } from "./settings.ts";
 
 /** Available notification types. */
-type NotifType = "push" | "email" | "discord_webhook";
+export type NotifType = "push" | "email" | "discord_webhook";
 
-type NotifEvent =
+export type NotifEvent =
   /** Main event, for daily reminders and habit tracking. */
   | "reminder"
   /** Public test event, for letting the user test the notification system. */
@@ -269,7 +269,7 @@ export class NotificationService {
     
     if (!this.check('log')) return;
 
-    const adminEmail = Deno.env.get("ADMIN_EMAIL");
+    const adminEmail = globalThis.ccv_config.admin?.emails
 
     if (!adminEmail) {
       console.error("ADMIN_EMAIL env is not set. Could not create the sendAdminEmail", { from, emailBody });
@@ -282,7 +282,7 @@ export class NotificationService {
       const body: NotificationBody = {
         app_id: this.APP_ID!,
         target_channel: "email",
-        email_to: [adminEmail],
+        email_to: adminEmail,
         email_subject: `[${event}] New message from ${from}`,
         email_reply_to_address: from,
         email_body: emailBody,
@@ -312,11 +312,7 @@ export class NotificationService {
  * @returns {NotifTemplate[T] | null} - The notification template or null if not found.
  */
 const buildTemplate = <T extends NotifType>(type: T, event: NotifEvent): NotifTemplate[T] | null => {
-  // One signal template are defined in the environment variable ONESIGNAL_TEMPLATES, like:
-  // ONESIGNAL_TEMPLATES=push:reminder:template_id,push:public_test:template_id
-  const templates = (Deno.env.get("ONESIGNAL_TEMPLATES") ?? "").split(",").map((t) => t.split(":")).map((
-    [t, e, i],
-  ) => ({ type: t, event: e, id: i }));
+  const templates = globalThis.ccv_config.reminders?.templates ?? [];
 
   const currentTemplate = templates.find((t) => t.type === type && t.event === event);
 

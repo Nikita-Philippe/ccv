@@ -1,3 +1,6 @@
+import { DebugFlag } from "@utils/debug.ts";
+import { NotifEvent, NotifType } from "@utils/notifications.ts";
+
 // Settings entry for a user
 export interface ISettings {
   notifications?: INotifications;
@@ -30,15 +33,36 @@ export interface IAdminUserStat {
     user: string;
     content: string[];
     entries: string[];
-  }[],
-  db: {
-    path?: string;
-  },
-  config: IAppConfig
+  }[];
+  config: IAppConfig;
 }
 
-/** The main CCV settings, which are defined in the ccv.json file at app root. */
+/** The main CCV settings, which are defined in the ccv.json file at app root.
+ *
+ * These settings will be available under the `globalThis.ccv_config` on the server.
+ */
 export interface IAppConfig {
-  /** Configure emails that have a "admin" access to the app. Used to manage user, database, and more. */
-  admin_email?: [string],
+  server?: {
+    /** Debug flags */
+    debug?: Array<keyof typeof DebugFlag>;
+  };
+  kv?: {
+    /** Path of the KV store. Should be set, except for Deno deploy. */
+    basePath?: string;
+  };
+  /** Custom crypto configurations for generating keys. */
+  crypto?: {
+    derive_salt?: string;
+    derive_iterations?: number;
+  };
+  reminders: {
+    /** Delay for reminder check (in minutes). A lower value will check more often. */
+    delay?: number;
+    /** The OneSignal templates used for the type and event. */
+    templates?: { type: NotifType; event: NotifEvent; id: string }[];
+  };
+  admin: {
+    /** Configure emails that have a "admin" access to the app. Used to manage user, database, and more. */
+    emails?: string[];
+  };
 }

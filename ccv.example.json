@@ -1,3 +1,21 @@
 {
-    "admin_email": [""]
+    "server": {
+        "debug": [
+            "perf_http",
+            "perf_kv",
+            "perf_cron"
+        ]
+    },
+    "admin": {
+        "emails": []
+    },
+    "kv": {
+        "basePath": "./db/kv.sqlite3"
+    },
+    "crypto": {
+        "derive_iterations": 600000
+    },
+    "reminders": {
+        "delay": 30
+    }
 }

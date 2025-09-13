@@ -1,7 +1,6 @@
 import { IPublicUser, ISessionUser, MinUser, TUser } from "@models/User.ts";
 import { getUKey, getUUDEK } from "../user/crypto.ts";
 import { CryptoKv, Encryptor, openCryptoKv as openKVTCryptoKV } from "@kitsonk/kv-toolbox/crypto";
-import { KV_PATH } from "./constants.ts";
 import { getUserBySession } from "../user/auth.ts";
 
 /** Open an encrypted KV instance for the user.
@@ -17,7 +16,7 @@ export const openUserKV = async (user: MinUser) => {
   // Add the user id, so that the key remain only usable at runtime. Hash it to get 32 bytes
   const uuDEK = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(baseDEK + user.id)));
 
-  return await openKVTCryptoKV(uuDEK, KV_PATH);
+  return await openKVTCryptoKV(uuDEK, globalThis.ccv_config.kv?.basePath);
 };
 
 /** Open a non-encrypted KV instance.
@@ -27,7 +26,7 @@ export const openUserKV = async (user: MinUser) => {
  * @returns The opened Deno.Kv instance
  */
 export const openKV = async () => {
-  return await Deno.openKv(KV_PATH);
+  return await Deno.openKv(globalThis.ccv_config.kv?.basePath);
 };
 
 /** Open an encrypted KV instance with a provided key.
@@ -38,7 +37,7 @@ export const openKV = async () => {
  * @returns The opened CryptoKv instance
  */
 export const openCryptoKv = async (key: string | Uint8Array | Encryptor) => {
-  return await openKVTCryptoKV(key, KV_PATH);
+  return await openKVTCryptoKV(key, globalThis.ccv_config.kv?.basePath);
 };
 
 export type TKv = CryptoKv; // | Deno.Kv;

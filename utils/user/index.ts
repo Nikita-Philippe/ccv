@@ -98,7 +98,7 @@ export const getUserDatasExpiry = (user: IAuthenticatedUser | IPublicUser | ISes
 };
 
 export const isSuperAdmin = async (data: Request | IAuthenticatedUser | IPublicUser | ISessionUser | null) => {
-  const admins = globalThis.ccv_config.admin_email;
+  const admins = globalThis.ccv_config.admin?.emails;
   if (!admins) return false;
 
   let user;

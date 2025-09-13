@@ -1,4 +1,4 @@
-const DebugFlag = {
+export const DebugFlag = {
   http: "http",
   env: "env",
   cron: "cron",
@@ -12,7 +12,7 @@ const DebugFlag = {
   perf_user: "perf_user",
   perf_cron: "perf_cron",
   perf_reminders: "perf_reminders",
-  entries: "entries"
+  entries: "entries",
 } as const;
 
 const isClientSide = () => globalThis?.document !== undefined;
@@ -32,29 +32,11 @@ export class Debug {
   private constructor() {
     if (isClientSide()) throw new Error("Debug class should not be used in client side.");
 
-    const env = Deno.env.get("DEBUG");
+    const env = globalThis.ccv_config.server?.debug
 
-    if (!env || env == "0" || env == "false") return; // No debug mode
+    if (!env) return; // No debug mode
 
-    // env contains char other
-    if (!/^[01a-zA-Z_,]+$/.test(env)) {
-      console.warn(
-        `DEBUG env "${env}" contains invalid characters. Only 0, 1, letters, underscores and colon are allowed.`,
-      );
-      return;
-    }
-
-    if (env == "1" || env == "true") {
-      this.flags = ["http"];
-    } else {
-      const parsed = env.split(",");
-      parsed.map((e) => {
-        const pe = e as keyof typeof DebugFlag;
-        if (DebugFlag[pe]) this.flags.push(pe);
-        else console.warn(`DEBUG Unknown flag "${pe}" in env.`);
-      });
-      this.flags = Array.from(new Set(this.flags));
-    }
+    this.flags = Array.from(new Set(env));
 
     console.log(`Debug mode enabled with flags: ${this.flags.join(", ")}`);
 

@@ -15,16 +15,14 @@ const parseTimeToday = (timeString: string | undefined): DateTime => {
 };
 
 export default function () {
-  const cronDelay = parseInt(Deno.env.get("CRON_REMINDERS_DELAY") ?? "10");
-
-  console.log("Starting cron, each ", cronDelay, "m");
+  const cronDelay = globalThis.ccv_config.reminders?.delay ?? 10;
   // Check for daily answer at 00:01
   Deno.cron(
     "Check for reminder to send troughout the day",
     { minute: { every: cronDelay } },
     async () => {
       if (Debug.get("perf_cron")) console.time("cron:reminders");
-      const kv = await Deno.openKv(Deno.env.get("KV_PATH"));
+      const kv = await Deno.openKv(globalThis.ccv_config.kv?.basePath);
       try {
         const now = DateTime.now().setZone("utc");
         const nextCheck = now.plus({ minutes: cronDelay });

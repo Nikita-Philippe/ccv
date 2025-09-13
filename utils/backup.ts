@@ -24,7 +24,7 @@ function normPrefix(p = "ccv/daily/") {
 }
 
 async function exportNdjson(): Promise<Uint8Array> {
-  const kv = await openKvToolbox({ path: Deno.env.get("KV_PATH") });
+  const kv = await openKvToolbox({ path: globalThis.ccv_config.kv?.basePath });
   const resp = await kv.export({ prefix: [] }, {
     type: "response",
     filename: "backup.ndjson",

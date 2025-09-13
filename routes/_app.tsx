@@ -46,7 +46,7 @@ export default async function App(req: Request, { Component }: FreshContext) {
             <script
               src={`/onesignal-init.js?appId=${encodeURIComponent(Deno.env.get("ONESIGNAL_APP_ID")!)}&safariWebId=${
                 encodeURIComponent(Deno.env.get("ONESIGNAL_APP_SAFARI_ID") || "")
-              }&isLocal=${Deno.env.get("ENVIRONMENT") === "local"}${userOSId ? `&userId=${userOSId}` : ""}`}
+              }&isLocal=${req.url.includes("localhost")}${userOSId ? `&userId=${userOSId}` : ""}`}
               defer
             />
           </>

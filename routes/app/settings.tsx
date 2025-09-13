@@ -147,7 +147,7 @@ export default async function Settings(req: Request) {
           <p>Each day, you can configure up to two notifications, sent to remind you to fill your daily entry !</p>
           <div className="alert alert-info">
             <p className="italic">
-              Please allow for +/- {Deno.env.get("CRON_REMINDERS_DELAY") ?? 10}{" "}
+              Please allow for +/- {globalThis.ccv_config.reminders.delay ?? 10}{" "}
               minutes of variation. Notifications will only be sent if no entry has been filled at the time.
             </p>
           </div>

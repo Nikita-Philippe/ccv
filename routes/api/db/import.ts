@@ -26,7 +26,7 @@ export const handler: Handlers = {
 
     const overwrite = form.get("overwrite") === "on";
 
-    const kv = await openKvToolbox({ path: Deno.env.get("KV_PATH") });
+    const kv = await openKvToolbox({ path: globalThis.ccv_config.kv?.basePath });
     const res = await kv.import(file.stream(), { overwrite });
 
     return toAdmin({

@@ -1,6 +1,4 @@
 import { initCryptoKeys } from "@utils/crypto/config.ts";
-import ccv_config from "./ccv.json" with { type: "json" };
-import { IAppConfig } from "@models/App.ts";
 
 // This file is used to check and initialize env in app.
 const logAndQuit = (message: string) => {
@@ -9,6 +7,17 @@ const logAndQuit = (message: string) => {
 };
 
 export default async function () {
+  // Get and set app config
+  const configFilePath = Deno.env.get("APP_CONFIG") ?? "./ccv.json";
+  const configText = Deno.readTextFileSync(configFilePath);
+  try {
+    const config = JSON.parse(configText);
+    globalThis.ccv_config = config;
+    console.log(`Loaded config at ${configFilePath}`);
+  } catch {
+    logAndQuit(`Could not parse ccv config file at ${configFilePath}`);
+  }
+
   const loadedEnvs = Deno.env.toObject();
 
   // On build, only set GOOGLE envs (mandatory to build)
@@ -20,10 +29,12 @@ export default async function () {
 
   if (Deno.args.includes("build")) return;
 
-  // Check KV_PATH
-  if (loadedEnvs.KV_PATH && loadedEnvs.DENO_DEPLOYMENT_ID) logAndQuit("KV_PATH should not be set in Deno deploy.");
-  if (!loadedEnvs.KV_PATH && !loadedEnvs.DENO_DEPLOYMENT_ID) {
-    logAndQuit("KV_PATH is not set. Please set it, for data stability.");
+  // Check KV path
+  if (globalThis.ccv_config.kv?.basePath && loadedEnvs.DENO_DEPLOYMENT_ID) {
+    logAndQuit("`config.kb.basePath`should not be set in your config when using Deno deploy.");
+  }
+  if (!globalThis.ccv_config.kv?.basePath && !loadedEnvs.DENO_DEPLOYMENT_ID) {
+    logAndQuit("`config.kb.basePath` is not set in your config. Please set it, for data stability.");
   }
 
   // Check crypto keys
@@ -32,9 +43,6 @@ export default async function () {
   } catch (e) {
     logAndQuit(`Crypto keys error: ${(e as Error).message}`);
   }
-
-  // Get and set app config
-  globalThis.ccv_config = (ccv_config || {}) as Readonly<IAppConfig>;
 
   // Check and set app version
   if (!loadedEnvs.APP_VERSION) {

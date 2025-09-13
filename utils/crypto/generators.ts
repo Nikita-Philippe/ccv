@@ -37,8 +37,8 @@ export const generateCryptoKey = async (data: string): Promise<CryptoKey> => {
     {
       name: "PBKDF2",
       hash: "SHA-256",
-      salt: decodeHex(Deno.env.get("CRYPTO_SALT") || ""),
-      iterations: parseInt(Deno.env.get("CRYPTO_DERIVE_ITERATIONS") || "600000"),
+      salt: decodeHex(globalThis.ccv_config.crypto?.derive_salt || ""),
+      iterations: globalThis.ccv_config.crypto?.derive_iterations || 600000,
     },
     keyedId,
     { name: "AES-GCM", length: 256 },

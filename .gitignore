@@ -1,8 +1,18 @@
-# dotenv environment variable files
+# dev internal files
+**/internal_*
 .env
 .env.*
+ccv.json
+ccv.*.json
+
+# Fresh/Deno files
 _fresh/
 node_modules/
 fresh.gen.ts
+
+# Build output
 static/styles.css
-ccv.json
+
+# Example files
+!.env.example
+!ccv.example.json

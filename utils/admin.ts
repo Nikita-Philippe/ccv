@@ -18,9 +18,6 @@ export const getSAdminStats = async (): Promise<IAdminUserStat | null> => {
 
   const datas: IAdminUserStat = {
     users: [],
-    db: {
-      path: Deno.env.get("KV_PATH"),
-    },
     config: globalThis.ccv_config
   };
 

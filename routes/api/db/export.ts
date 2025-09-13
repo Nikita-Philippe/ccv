@@ -6,7 +6,7 @@ export const handler: Handlers = {
   async GET(req) {
     if (!await isSuperAdmin(req)) return new Response(null, { status: 403 });
 
-    const kv = await openKvToolbox({ path: Deno.env.get("KV_PATH") });
+    const kv = await openKvToolbox({ path: globalThis.ccv_config.kv?.basePath });
     return kv.export({ prefix: [] }, {
       type: "response",
       filename: `ccv-backup-${new Date().toISOString()}.ndjson`,

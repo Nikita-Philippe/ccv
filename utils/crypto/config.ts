@@ -27,7 +27,11 @@ export const getCryptoKey = (k: TCryptoKeys) => Deno.env.get(CryptoEnvMap[k]);
 export const initCryptoKeys = async () => {
   const KEK = getCryptoKey("KEK");
 
-  if (!KEK) throw new Error(`A 'CRYPTO_KEK' should be set in your envs.`);
+  if (!KEK) {
+    throw new Error(
+      "A 'CRYPTO_KEK' should be set in your envs. Use `deno scripts/generate-key.ts` to generate a valid key.",
+    );
+  }
 
   const kv = await openCryptoKv(KEK);
 
