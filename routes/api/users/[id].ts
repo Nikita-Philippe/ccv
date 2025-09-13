@@ -14,8 +14,6 @@ export const handler: Handlers<TField | null> = {
 
       if (!userId) throw new Error("Invalid id");
 
-      console.log("Deleting user", userId);
-
       await wipeUser(userId);
 
       return new Response(null, { status: 200 });

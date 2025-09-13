@@ -127,7 +127,6 @@ const invalidateAllSessions = async (kv: Deno.Kv) => {
  */
 const reEncryptDatas = async (oldKv: CryptoKv, newKv: CryptoKv, keys: Deno.KvKey[]) => {
   for (const key of keys) {
-    console.log(`Re-encrypting data for key: `, key);
     try {
       const value = await oldKv.getAsBlob(key, { consistency: "strong" });
       if (value) await newKv.setBlob(key, value);

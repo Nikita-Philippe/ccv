@@ -41,8 +41,6 @@ export const handler: Handlers<PageData> = {
       }
     }
 
-    console.log({ action, rest });
-
     // Only "super" admin user has access to this page
 
     return await ctx.render();
@@ -89,7 +87,7 @@ export default async function Admin(req: Request, { data: ctxData }: RouteContex
         <h2 class=" font-bold">Export database</h2>
         <div class="flex gap-4">
           <p>Custom path:</p>
-          <pre>{data.db.path ?? "none"}</pre>
+          <pre>{globalThis.ccv_config.kv?.basePath ?? "none"}</pre>
         </div>
         <button type="button" className="btn btn-secondary">
           <a href={`/api/db/export`}>Download DB (ndjson)</a>

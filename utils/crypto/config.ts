@@ -66,8 +66,6 @@ export const saveKey = async (key: TCryptoKeys, value: string) => {
   const KEK = getCryptoKey("KEK");
   if (!KEK) throw new Error(`A 'CRYPTO_KEK' should be set in your envs.`);
 
-  console.debug("Saving key", { key, value });
-
   Deno.env.set(CryptoEnvMap[key], value);
 
   const kv = await openCryptoKv(KEK);

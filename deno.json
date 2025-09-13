@@ -40,19 +40,13 @@
       "description": "Update the fresh framework.",
       "command": "deno run -A -r https://fresh.deno.dev/update ."
     },
-    "ldeploy": {
-      "description": "Deploy to Deno deploy in preview mode. Call with DENO_DEPLOY_TOKEN for auto-auth.",
-      "command": "deployctl deploy --env-file=.env.previewdeploy --exclude=\".env*,**/*.csv,**/*.sqlite3,.git,.vscode,.github\" --project=ccv --entrypoint=main.ts",
-      "dependencies": [
-        "build"
-      ]
+    "deploy": {
+      "description": "Deploy to EA Deno deploy in preview mode. Call with DENO_DEPLOY_TOKEN.",
+      "command": "deno deploy"
     },
-    "ldeploy-prod": {
-      "description": "Deploy to Deno deploy in production mode. Call with DENO_DEPLOY_TOKEN for auto-auth.",
-      "command": "deployctl deploy --env-file=.env.deploy --exclude=\".env*,**/*.csv,**/*.sqlite3,.git,.vscode,.github\" --project=ccv --entrypoint=main.ts --prod",
-      "dependencies": [
-        "build"
-      ]
+    "deploy-prod": {
+      "description": "Deploy to EA Deno deploy in production mode. Call with DENO_DEPLOY_TOKEN.",
+      "command": "deno deploy --prod"
     }
   },
   "lint": {
@@ -125,17 +119,7 @@
     "kv"
   ],
   "deploy": {
-    "project": "a84c2c04-be8e-40fc-9f3a-8a07227d4b50",
-    "exclude": [
-      ".env*",
-      "**/*.csv",
-      "**/*.sqlite3",
-      ".git",
-      ".vscode",
-      ".github",
-      "**/node_modules"
-    ],
-    "include": [],
-    "entrypoint": "main.ts"
+    "org": "nikita-pps",
+    "app": "ccv"
   }
 }
