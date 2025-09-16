@@ -40,9 +40,11 @@ export default function FirstConnexion(req: Request) {
       <h2 class="text-xl font-semibold">What's Next?</h2>
       <p class="mb-4">
         Create your first{" "}
-        <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
-          <a href="/app/config">configuration</a>
-        </Button>{" "}
+        <a href="/app/config">
+          <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
+            configuration
+          </Button>
+        </a>{" "}
         and start tracking your habits.
       </p>
     </div>

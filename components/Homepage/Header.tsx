@@ -8,13 +8,15 @@ export default function Header() {
         A simple, data-focused, free and privacy-first habits tracker
       </h1>
       <div class="w-1/6 flex justify-end">
-        <button
-          id="header_app_end"
-          type="button"
-          class="btn text-lg font-bold rounded-full px-4 py-2 w-fit ml-auto h-fit whitespace-nowrap"
-        >
-          <a href="/app">Try for free</a>
-        </button>
+        <a href="/app">
+          <button
+            id="header_app_end"
+            type="button"
+            class="btn text-lg font-bold rounded-full px-4 py-2 w-fit ml-auto h-fit whitespace-nowrap"
+          >
+            Try for free
+          </button>
+        </a>
       </div>
     </header>
   );

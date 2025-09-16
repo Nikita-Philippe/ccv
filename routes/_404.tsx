@@ -18,22 +18,26 @@ export default function Error404(req: Request) {
       </Head>
       <div class="max-w-2xl p-6 mx-auto relative h-screen flex flex-col justify-center  gap-4">
         <h1>Oooops... sorry!</h1>
-        {error ? <p>{decodeURIComponent(error)}</p> : <p>It seems that the page you are looking for does not exist...</p>}
+        {error
+          ? <p>{decodeURIComponent(error)}</p>
+          : <p>It seems that the page you are looking for does not exist...</p>}
         {redirectTo
           ? (
             <p>
-              <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
-                <a href={redirectTo.startsWith("/") ? redirectTo : `/${redirectTo}`}>
+              <a href={redirectTo.startsWith("/") ? redirectTo : `/${redirectTo}`}>
+                <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
                   Go back
-                </a>
-              </Button>
+                </Button>
+              </a>
             </p>
           )
           : (
             <p>
-              <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
-                <a href="/">Go to homepage</a>
-              </Button>
+              <a href="/">
+                <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
+                  Go to homepage
+                </Button>
+              </a>
             </p>
           )}
       </div>

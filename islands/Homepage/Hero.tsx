@@ -66,18 +66,22 @@ export default function HeroSection() {
         A simple, data-focused, free and privacy-first habits tracker.
       </h1>
       <div class="flex flex-col items-center gap-1">
-        <button
-          id="header_app_first"
-          type="button"
-          class="btn text-xl md:text-2xl font-bold rounded-full px-5 py-4 w-fit h-fit"
-        >
-          <a href="/app">Create your first habits in 30s.</a>
-        </button>
+        <a href="/app">
+          <button
+            id="header_app_first"
+            type="button"
+            class="btn text-xl md:text-2xl font-bold rounded-full px-5 py-4 w-fit h-fit"
+          >
+            Create your first habits in 30s.
+          </button>
+        </a>
         <span class="text-sm">no account required</span>
       </div>
-      <button type="button" class="btn text-lg md:text-xl font-semibold rounded-full px-3 py-1 w-fit h-fit">
-        <a href="#features">Features</a>
-      </button>
+      <a href="#features">
+        <button type="button" class="btn text-lg md:text-xl font-semibold rounded-full px-3 py-1 w-fit h-fit">
+          Features
+        </button>
+      </a>
       <img
         class="max-h-[500px]"
         src="/assets/homepage/herosection.png"
@@ -88,8 +92,7 @@ export default function HeroSection() {
         }}
       />
 
-      <header
-        class="fixed top-[var(--banner-height,0)] left-0 w-screen opacity-100 pointer-events-auto flex justify-between items-center gap-4 p-4 2xl:px-[20vw] bg-white shadow-xs z-50">
+      <header class="fixed top-[var(--banner-height,0)] left-0 w-screen opacity-100 pointer-events-auto flex justify-between items-center gap-4 p-4 2xl:px-[20vw] bg-white shadow-xs z-50">
         <a class="w-1/6 flex justify-start" href="/">
           <img id="header_logo_end" class="max-w-full max-h-[2em]" src="/logo/logo.svg" alt="CCV" />
         </a>
@@ -97,13 +100,15 @@ export default function HeroSection() {
           A simple, data-focused, free and privacy-first habits tracker
         </h1>
         <div class="w-1/6 flex justify-end">
-          <button
-            id="header_app_end"
-            type="button"
-            class="btn text-lg font-bold rounded-full px-4 py-2 w-fit ml-auto h-fit whitespace-nowrap"
-          >
-            <a href="/app">Try for free</a>
-          </button>
+          <a href="/app">
+            <button
+              id="header_app_end"
+              type="button"
+              class="btn text-lg font-bold rounded-full px-4 py-2 w-fit ml-auto h-fit whitespace-nowrap"
+            >
+              Try for free
+            </button>
+          </a>
         </div>
       </header>
     </div>

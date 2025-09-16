@@ -109,9 +109,11 @@ export default async function Settings(req: Request) {
               <p>Welcome back {user.name} !</p>
               <p>Your datas are currently synced.</p>
               <p>Your are signed in using Google with {user.email}.</p>
-              <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
-                <a href="/signout?success_url=/app/settings">Sign Out</a>
-              </Button>
+              <a href="/signout?success_url=/app/settings">
+                <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
+                  Sign Out
+                </Button>
+              </a>
             </>
           )
           : (
@@ -122,9 +124,11 @@ export default async function Settings(req: Request) {
                 and daily entries will expire {publicSession!.expires.setLocale("en").toRelative()}.
               </p>
               <p>
-                <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
-                  <a href="/signin">Sign In</a>
-                </Button>{" "}
+                <a href="/signin">
+                  <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
+                    Sign In
+                  </Button>
+                </a>{" "}
                 to keep your current datas, and to sync your data across devices !
               </p>
               {content?.id && (
@@ -216,11 +220,11 @@ export default async function Settings(req: Request) {
       >
         <Card sx={{ content: "p-4 flex-col no-wrap" }}>
           <p>If you lost access to your account, recover your daily entries and your configs using the recovery key.</p>
-          <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
-            <a href="/app/recover">
+          <a href="/app/recover">
+            <Button class="btn w-fit" spinnerProps={{ class: "loading-dots" }}>
               Recover account
-            </a>
-          </Button>
+            </Button>
+          </a>
         </Card>
         {user.isAuthenticated && (
           <Card sx={{ content: "p-4 flex-col no-wrap" }}>

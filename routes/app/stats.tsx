@@ -19,9 +19,11 @@ export default async function Stats(req: Request) {
           You don't have any content configured yet.
         </h3>
         <p>
-          <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
-            <a href="/app/config">Configure</a>
-          </Button>{" "}
+          <a href="/app/config">
+            <Button class="btn w-fit h-fit py-0.5" spinnerProps={{ class: "loading-dots" }}>
+              Configure
+            </Button>
+          </a>{" "}
           now your first form, and start tracking your habits !
         </p>
       </Card>

@@ -86,9 +86,11 @@ export default async function Recover(_: Request, { data }: RouteContext<Handler
                 />
               )}
             </div>
-            <Button type="submit" className="btn w-fit mt-4 self-start" spinnerProps={{ class: "loading-dots" }}>
-              <a href="/app">Go back to the home page</a>
-            </Button>
+            <a href="/app">
+              <Button type="submit" className="btn w-fit mt-4 self-start" spinnerProps={{ class: "loading-dots" }}>
+                Go back to the home page
+              </Button>
+            </a>
           </div>
         )
         : (
@@ -99,9 +101,7 @@ export default async function Recover(_: Request, { data }: RouteContext<Handler
               id="recover-form"
             >
               <input type="hidden" name="action" value="recover" />
-              <fieldset
-                className="fieldset p-0"
-              >
+              <fieldset className="fieldset p-0">
                 <legend className="fieldset-legend">Recover key</legend>
                 <input
                   type="text"
@@ -109,9 +109,7 @@ export default async function Recover(_: Request, { data }: RouteContext<Handler
                   name="recovery_key"
                 />
               </fieldset>
-              <fieldset
-                className="fieldset p-0"
-              >
+              <fieldset className="fieldset p-0">
                 <legend className="fieldset-legend">Account email</legend>
                 <input type="email" class="input input-primary w-full" name="recovery_email" />
               </fieldset>

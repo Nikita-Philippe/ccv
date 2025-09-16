@@ -89,9 +89,11 @@ export default async function Admin(req: Request, { data: ctxData }: RouteContex
           <p>Custom path:</p>
           <pre>{globalThis.ccv_config.kv?.basePath ?? "none"}</pre>
         </div>
-        <button type="button" className="btn btn-secondary">
-          <a href={`/api/db/export`}>Download DB (ndjson)</a>
-        </button>
+        <a href={`/api/db/export`}>
+          <button type="button" className="btn btn-secondary">
+            Download DB (ndjson)
+          </button>
+        </a>
         <div class="divider" />
         <h2 class="font-bold">Import a database</h2>
         <form
