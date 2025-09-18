@@ -1,5 +1,18 @@
 # TODOs:
 
+This file lists the current tasks, future features, and known issues.
+
+> [!INFO]
+> This file also serves as a seconde brain for me to track what needs to be done. It may contain some entries that are outdated, incomplete, or not relevant to the project. Please take it with a grain of salt.
+
+## Current major features to implement before v1.0.0
+- [ ] - WIP - Full rework of the habits configuration and daily entries UI/UX 
+- [ ] - Fresh 2.X upgrade (followed by full dependency upgrade)
+- [ ] - WIP - Better, and more notificiation channels (using a dedicated notification service to orchestrate them)
+- [ ] - I18n / Localization
+- [ ] - Conception of a better stats page
+- [ ] - Layout of the architecture for the streak/goals system
+
 ## UX & UI
 - [ ] Create the main app layout
 - [x] Add toast
